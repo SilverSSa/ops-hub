@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Vault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Cloudflare D1 Connected</p>
+        <h1>Word Vault</h1>
+        <p class="sub">Create, edit, and manage words directly from your live database.</p>
+      </header>
+
+      <section class="panel">
+        <h2>Add a word</h2>
+        <form id="create-form" class="form-grid">
+          <label>
+            Word
+            <input id="word" name="word" required maxlength="100" />
+          </label>
+          <label>
+            Definition
+            <textarea id="definition" name="definition" rows="3" required maxlength="600"></textarea>
+          </label>
+          <button type="submit">Save Word</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="list-head">
+          <h2>Saved words</h2>
+          <button id="refresh" type="button" class="ghost">Refresh</button>
+        </div>
+        <p id="status" class="status"></p>
+        <div id="word-list" class="list"></div>
+      </section>
+    </main>
+
+    <template id="word-template">
+      <article class="card">
+        <div class="card-content">
+          <input class="edit-word" maxlength="100" />
+          <textarea class="edit-definition" rows="3" maxlength="600"></textarea>
+        </div>
+        <div class="card-actions">
+          <button class="save" type="button">Update</button>
+          <button class="delete" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
