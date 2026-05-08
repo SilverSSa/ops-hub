@@ -1,13 +1,17 @@
 :root {
-  --bg-1: #f4efe6;
-  --bg-2: #ddd5c4;
-  --ink: #1f1a14;
-  --ink-soft: #594f42;
-  --panel: #fff9ed;
-  --line: #d7cbb8;
-  --brand: #ae4b29;
-  --brand-dark: #8d3e21;
-  --danger: #a62f2f;
+  --bg-1: #f4f3ff;
+  --bg-2: #ede9ff;
+  --ink: #1a1535;
+  --ink-soft: #5a5480;
+  --panel: #ffffff;
+  --line: #dddaf5;
+  --brand: #6d56f5;
+  --brand-dark: #8b73ff;
+  --brand-light: #ede9ff;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --cyan: #0891b2;
+  --cyan-bg: #e0f7fa;
 }
 
 * {
@@ -16,9 +20,9 @@
 
 body {
   margin: 0;
-  font-family: "Manrope", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
   color: var(--ink);
-  background: radial-gradient(circle at 10% 10%, var(--bg-1), var(--bg-2));
+  background: linear-gradient(135deg, #f4f3ff 0%, #ede9ff 50%, #e0f2fe 100%);
   min-height: 100vh;
 }
 
@@ -46,6 +50,13 @@ body {
 h1 {
   margin: 0.45rem 0 0.15rem;
   font-size: clamp(1.9rem, 3vw, 2.7rem);
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+h1 span {
+  color: var(--brand);
 }
 
 .sub {
@@ -55,17 +66,19 @@ h1 {
 
 .panel {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 1.25rem;
   margin-top: 1rem;
-  box-shadow: 0 10px 30px rgba(48, 33, 18, 0.09);
+  box-shadow: 0 1px 3px rgba(109,86,245,0.08), 0 4px 16px rgba(109,86,245,0.06);
   animation: rise 420ms ease-out;
 }
 
 h2 {
   margin: 0 0 0.75rem;
   font-size: 1.1rem;
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
 }
 
 .form-grid,
@@ -84,12 +97,20 @@ label {
 input,
 textarea {
   width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
   padding: 0.65rem 0.75rem;
   font: inherit;
   color: var(--ink);
-  background: #fff;
+  background: var(--bg-1);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(109,86,245,0.12);
 }
 
 textarea {
@@ -98,22 +119,37 @@ textarea {
 
 button {
   border: 0;
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--brand);
   color: #fff;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
   padding: 0.6rem 0.9rem;
   cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(109,86,245,0.35);
 }
 
 button:hover {
   background: var(--brand-dark);
+  box-shadow: 0 6px 20px rgba(109,86,245,0.4);
+}
+
+button:active {
+  transform: scale(0.98);
 }
 
 .ghost {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--ink);
+  background: var(--bg-1);
+  border: 1.5px solid var(--line);
+  color: var(--ink-soft);
+  box-shadow: none;
+}
+
+.ghost:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-light);
 }
 
 .list-head {
@@ -135,10 +171,11 @@ button:hover {
 }
 
 .card {
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
   padding: 0.75rem;
-  background: #fffcf5;
+  background: var(--bg-1);
+  box-shadow: 0 1px 4px rgba(109,86,245,0.04);
 }
 
 .card-actions {
@@ -149,12 +186,17 @@ button:hover {
 
 .delete {
   background: var(--danger);
+  box-shadow: 0 2px 8px rgba(220,38,38,0.3);
+}
+
+.delete:hover {
+  background: #b91c1c;
 }
 
 .empty {
   color: var(--ink-soft);
-  border: 1px dashed var(--line);
-  border-radius: 10px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
   padding: 1rem;
   text-align: center;
 }
