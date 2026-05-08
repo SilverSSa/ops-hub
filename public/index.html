@@ -113,6 +113,10 @@ body.dark-mode .chat-messages { background: var(--bg); }
 body.dark-mode .msg.bot .msg-bubble { background: var(--bg2); border-color: var(--border); color: var(--text); }
 body.dark-mode .chat-header { background: var(--bg2); }
 body.dark-mode .chat-input-area textarea { background: var(--bg3); border-color: var(--border2); color: var(--text); }
+body.dark-mode .chat-welcome-title { color: var(--text); }
+body.dark-mode .chat-welcome-sub { color: var(--text3); }
+body.dark-mode .chat-chip { background: var(--bg3); border-color: var(--border); color: var(--text2); }
+body.dark-mode .chat-chip:hover { background: var(--accent3); color: var(--accent); }
 body.dark-mode .msg-avatar { background: var(--bg3); }
 body.dark-mode .fp-os { background: var(--bg); }
 body.dark-mode .fp-hero { background: linear-gradient(135deg, #241a12 0%, #1a140e 100%); border-color: var(--border2); }
@@ -1295,6 +1299,15 @@ body {
 .chat-confirm-btn.reject { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
 .chat-confirm-btn.reject:hover { background: var(--red-bg); color: var(--red); border-color: var(--red); }
 
+.chat-welcome { display: flex; flex-direction: column; align-items: center; padding: 28px 16px 16px; text-align: center; }
+.chat-welcome-icon { width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--amber)); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Syne',sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(174,75,41,0.3); }
+.chat-welcome-title { font-family: 'Syne',sans-serif; font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.chat-welcome-sub { font-size: 12px; color: var(--text3); margin-bottom: 18px; }
+.chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 280px; }
+.chat-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 12px; color: var(--text2); cursor: pointer; transition: all .12s; font-family: 'IBM Plex Sans',sans-serif; }
+.chat-chip:hover { background: var(--accent3); border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.chat-welcome.hidden { display: none; }
+
 .chat-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
 .chat-divider::before, .chat-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .chat-divider span { font-size: 9px; color: var(--text3); font-family: 'Space Mono',monospace; text-transform: uppercase; letter-spacing: .8px; }
@@ -1764,9 +1777,18 @@ body {
     <div class="chat-close" onclick="toggleChat()">✕</div>
   </div>
   <div class="chat-messages" id="chat-messages">
-    <div class="msg bot">
-      <div class="msg-avatar">AI</div>
-      <div class="msg-bubble">Hello! I'm your DevHub assistant. I can create GDDs, projects, add phases, set statuses, navigate the app, and more. Try <code>create gdd My Design Doc</code> or <code>go to storage</code>.</div>
+    <div class="chat-welcome" id="chat-welcome">
+      <div class="chat-welcome-icon">DS</div>
+      <div class="chat-welcome-title">DevHub AI</div>
+      <div class="chat-welcome-sub">Your assistant. Create, navigate, maintain.</div>
+      <div class="chat-suggestions">
+        <button class="chat-chip" onclick="sendSuggestion('create gdd Game Design')">📄 Create GDD</button>
+        <button class="chat-chip" onclick="sendSuggestion('create project My App')">🗂️ New Project</button>
+        <button class="chat-chip" onclick="sendSuggestion('go to storage')">💾 Storage</button>
+        <button class="chat-chip" onclick="sendSuggestion('go to commands')">⌨️ Commands</button>
+        <button class="chat-chip" onclick="sendSuggestion('menu')">📋 Menu</button>
+        <button class="chat-chip" onclick="sendSuggestion('storage size')">📊 Storage Size</button>
+      </div>
     </div>
   </div>
   <div class="chat-input-area">
@@ -3139,10 +3161,11 @@ function formatChatText(text) {
 }
 
 async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
   if(!text) return;
   
+  document.getElementById('chat-welcome')?.classList.add('hidden');
   appendMessage('user', text);
   input.value = '';
   input.style.height = 'auto';
@@ -3200,6 +3223,14 @@ async function sendChat() {
   } catch (e) {
     appendMessage('bot', 'Connection error. Please try again.');
   }
+}
+
+function sendSuggestion(text) {
+  document.getElementById('chat-welcome')?.classList.add('hidden');
+  var tgl = document.getElementById('ai-chat-window');
+  if (tgl && !tgl.classList.contains('open')) tgl.classList.add('open');
+  document.getElementById('chat-input').value = text;
+  sendChat();
 }
 
 function appendConfirmMessage(response) {
