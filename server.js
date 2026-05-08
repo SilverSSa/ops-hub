@@ -115,6 +115,54 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/favicon.ico', (_req, res) => res.status(204).end());
 
+// ── PUBLIC CHAT ROUTES (before auth) ──────────────
+app.get("/api/ai/chat/poll", async (req, res) => {
+  try {
+    const sessionId = req.query.sessionId || "default";
+    await d1Query("CREATE TABLE IF NOT EXISTS chat_bridge (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, sender TEXT NOT NULL, text TEXT NOT NULL, delivered INTEGER DEFAULT 0, created_at INTEGER DEFAULT (unixepoch()))");
+    const rows = d1Rows(await d1Query("SELECT * FROM chat_bridge WHERE session_id = ? AND delivered = 0 AND sender = 'bot' ORDER BY created_at ASC", [sessionId]));
+    for (const row of rows) {
+      await d1Query("UPDATE chat_bridge SET delivered = 1 WHERE id = ?", [row.id]);
+    }
+    res.json(rows.map(r => ({ sender: r.sender, text: r.text, time: r.created_at })));
+  } catch (e) { res.json([]); }
+});
+
+app.post("/api/ai/chat", async (req, res) => {
+  try {
+    const { message = "", sessionId = "default" } = req.body || {};
+    const lowMsg = String(message).toLowerCase().trim();
+    const pending = PENDING_ACTIONS.get(sessionId);
+    if (pending && (lowMsg === "yes" || lowMsg === "confirm" || lowMsg === "accept" || lowMsg === "ok" || lowMsg === "sure" || lowMsg === "y")) {
+      PENDING_ACTIONS.delete(sessionId);
+      return res.json({ response: await executeToolAction(pending.action), action: pending.uiAction || null });
+    }
+    if (pending && (lowMsg === "no" || lowMsg === "cancel" || lowMsg === "reject" || lowMsg === "stop" || lowMsg === "n")) {
+      PENDING_ACTIONS.delete(sessionId);
+      return res.json({ response: "Alright, I've cancelled that action. What else can I help with?" });
+    }
+    let result = null;
+    let llmText = null;
+    if (process.env.OPENAI_API_KEY) llmText = await callOpenAI(message);
+    if (!llmText && process.env.N8N_AI_WEBHOOK_URL) { result = await callN8N(message); if (result) llmText = JSON.stringify(result); }
+    if (llmText) {
+      const parsed = result || parseAIResponse(llmText);
+      if (parsed.needsConfirm && parsed.confirmAction) {
+        PENDING_ACTIONS.set(sessionId, { action: parsed.confirmAction, uiAction: parsed.action || null });
+        return res.json({ response: parsed.response, needsConfirm: true, action: null });
+      }
+      if (parsed.action && parsed.action.type) {
+        const actionResult = await executeToolAction(parsed.action);
+        return res.json({ response: parsed.response + "\n\n" + actionResult, action: mapUIAction(parsed.action) });
+      }
+      return res.json({ response: parsed.response || llmText, action: null });
+    }
+    const fallback = await runAIFallback(message);
+    bridgeToTelegram(sessionId, message);
+    res.json(fallback);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Only apply auth to /api routes
 app.use("/api", authMiddleware);
 
@@ -914,18 +962,7 @@ app.get("/api/ai/health", async (_req, res) => {
   res.json(status);
 });
 
-// ── CHAT BRIDGE (Website ↔ Telegram) ──────────────
-app.get("/api/ai/chat/poll", async (req, res) => {
-  try {
-    const sessionId = req.query.sessionId || "default";
-    await d1Query("CREATE TABLE IF NOT EXISTS chat_bridge (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, sender TEXT NOT NULL, text TEXT NOT NULL, delivered INTEGER DEFAULT 0, created_at INTEGER DEFAULT (unixepoch()))");
-    const rows = d1Rows(await d1Query("SELECT * FROM chat_bridge WHERE session_id = ? AND delivered = 0 AND sender = 'bot' ORDER BY created_at ASC", [sessionId]));
-    for (const row of rows) {
-      await d1Query("UPDATE chat_bridge SET delivered = 1 WHERE id = ?", [row.id]);
-    }
-    res.json(rows.map(r => ({ sender: r.sender, text: r.text, time: r.created_at })));
-  } catch (e) { res.json([]); }
-});
+// ── CHAT BRIDGE helpers ─────────────────────────
 
 // Store a web chat message and forward to Telegram
 async function bridgeToTelegram(sessionId, message) {
@@ -934,8 +971,7 @@ async function bridgeToTelegram(sessionId, message) {
   const id = "bridge_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
   await d1Query("CREATE TABLE IF NOT EXISTS chat_bridge (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, sender TEXT NOT NULL, text TEXT NOT NULL, delivered INTEGER DEFAULT 0, created_at INTEGER DEFAULT (unixepoch()))");
   await d1Query("INSERT INTO chat_bridge (id, session_id, sender, text) VALUES (?,?,?,?)", [id, sessionId, "user", message]);
-  // Forward to Telegram via HTTP
-  const body = JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: "💬 Web: " + message, parse_mode: "HTML" });
+  const body = JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: "Web: " + message, parse_mode: "HTML" });
   require("https").request({ hostname: "api.telegram.org", path: `/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, method: "POST", headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) } }, res => res.on("data", () => {})).end(body);
 }
 
@@ -946,59 +982,6 @@ async function bridgeFromTelegram(sessionId, text) {
   await d1Query("CREATE TABLE IF NOT EXISTS chat_bridge (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, sender TEXT NOT NULL, text TEXT NOT NULL, delivered INTEGER DEFAULT 0, created_at INTEGER DEFAULT (unixepoch()))");
   await d1Query("INSERT INTO chat_bridge (id, session_id, sender, text) VALUES (?,?,?,?)", [id, sessionId, "bot", text]);
 }
-
-const PENDING_ACTIONS = new Map();
-
-app.post("/api/ai/chat", async (req, res) => {
-  try {
-    const { message = "", sessionId = "default" } = req.body || {};
-    const lowMsg = String(message).toLowerCase().trim();
-
-    // Handle confirmation responses
-    const pending = PENDING_ACTIONS.get(sessionId);
-    if (pending && (lowMsg === "yes" || lowMsg === "confirm" || lowMsg === "accept" || lowMsg === "ok" || lowMsg === "sure" || lowMsg === "y")) {
-      PENDING_ACTIONS.delete(sessionId);
-      return res.json({ response: await executeToolAction(pending.action), action: pending.uiAction || null });
-    }
-    if (pending && (lowMsg === "no" || lowMsg === "cancel" || lowMsg === "reject" || lowMsg === "stop" || lowMsg === "n")) {
-      PENDING_ACTIONS.delete(sessionId);
-      return res.json({ response: "Alright, I've cancelled that action. What else can I help with?" });
-    }
-
-    // Try LLM first, then fallback
-    let result = null;
-    let llmText = null;
-    
-    if (process.env.OPENAI_API_KEY) {
-      llmText = await callOpenAI(message);
-    }
-    if (!llmText && process.env.N8N_AI_WEBHOOK_URL) {
-      result = await callN8N(message);
-      if (result) llmText = JSON.stringify(result);
-    }
-
-    if (llmText) {
-      const parsed = result || parseAIResponse(llmText);
-      if (parsed.needsConfirm && parsed.confirmAction) {
-        PENDING_ACTIONS.set(sessionId, { action: parsed.confirmAction, uiAction: parsed.action || null });
-        return res.json({ response: parsed.response, needsConfirm: true, action: null });
-      }
-      if (parsed.action && parsed.action.type) {
-        const actionResult = await executeToolAction(parsed.action);
-        return res.json({
-          response: parsed.response + "\n\n" + actionResult,
-          action: mapUIAction(parsed.action)
-        });
-      }
-      return res.json({ response: parsed.response || llmText, action: null });
-    }
-
-    // Fallback
-    const fallback = await runAIFallback(message);
-    bridgeToTelegram(sessionId, message);
-    res.json(fallback);
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
 
 async function executeToolAction(action) {
   if (!action || !action.type) return "Done.";

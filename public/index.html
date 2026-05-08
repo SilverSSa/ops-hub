@@ -3179,7 +3179,7 @@ async function sendChat() {
   try {
     var r = await fetch(API + '/api/ai/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: text, sessionId: CHAT_SESSION_ID })
     });
     var data = await r.json();
@@ -3209,9 +3209,7 @@ function startChatPolling() {
   if (CHAT_POLL_INTERVAL) return;
   CHAT_POLL_INTERVAL = setInterval(async () => {
     try {
-      var r = await fetch(API + '/api/ai/chat/poll?sessionId=' + CHAT_SESSION_ID, {
-        headers: { 'Authorization': authHeader() }
-      });
+      var r = await fetch(API + '/api/ai/chat/poll?sessionId=' + CHAT_SESSION_ID);
       var msgs = await r.json();
       if (Array.isArray(msgs)) {
         msgs.forEach(function(m) { appendMessage('bot', m.text); });
@@ -3275,7 +3273,7 @@ async function confirmAction(answer) {
   try {
     var r = await fetch(API + '/api/ai/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: answer, sessionId: CHAT_SESSION_ID })
     });
     var data = await r.json();
