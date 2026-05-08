@@ -3117,12 +3117,14 @@ const PROJ = { gdds: [], sites: [], customSites: [], fproj: [] };
 let GDD_DEBOUNCE = null;
 
 function toggleChat() {
-  const win = document.getElementById('ai-chat-window');
+  var win = document.getElementById('ai-chat-window');
   if (!win) return;
   win.classList.toggle('open');
   if(win.classList.contains('open')) {
-    appendMessage('bot', 'Hello! How can I help you organize your DevHub today?');
-    fetch(API + '/api/backups/cleanup', { method: 'POST', headers: { 'Authorization': authHeader() } }).catch(() => {});
+    startChatPolling();
+  } else {
+    clearInterval(CHAT_POLL_INTERVAL);
+    CHAT_POLL_INTERVAL = null;
   }
 }
 
@@ -3160,6 +3162,10 @@ function formatChatText(text) {
   return html;
 }
 
+let CHAT_SESSION_ID = localStorage.getItem('chat_session_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8));
+localStorage.setItem('chat_session_id', CHAT_SESSION_ID);
+let CHAT_POLL_INTERVAL = null;
+
 async function sendChat() {
   var input = document.getElementById('chat-input');
   var text = input.value.trim();
@@ -3171,12 +3177,12 @@ async function sendChat() {
   input.style.height = 'auto';
   
   try {
-    const r = await fetch(API + '/api/ai/chat', {
+    var r = await fetch(API + '/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
-      body: JSON.stringify({ message: text, sessionId: 'chat' })
+      body: JSON.stringify({ message: text, sessionId: CHAT_SESSION_ID })
     });
-    const data = await r.json();
+    var data = await r.json();
     
     if (data.needsConfirm) {
       appendConfirmMessage(data.response);
@@ -3189,39 +3195,53 @@ async function sendChat() {
     }
     
     if(data.action) {
-      const { type, params } = data.action;
-      if(type === 'open_modal') {
-        openModal(params.id);
-        if(params.data) {
-           if(params.id === 'm-add-root') {
-             document.getElementById('r-name').value = params.data.name || '';
-           } else if(params.id === 'm-add-link') {
-             document.getElementById('l-name').value = params.data.name || '';
-             document.getElementById('l-url').value = params.data.url || '';
-           }
-        }
-      } else if(type === 'nav') {
-        if(params.section === 'commands') {
-          switchMode('projects'); projNav('commands');
-        } else if(params.section === 'apps') {
-          switchMode('projects'); projNav('apps');
-        } else if(params.section === 'storage' || params.section === 'vocab' || params.section === 'gdds' || params.section === 'sites' || params.section === 'fproj') {
-          switchMode('projects');
-          projNav(params.section);
-        }
-      } else if(type === 'refresh_sources') {
-        await loadAll();
-        switchMode('sources');
-        renderSidebar();
-        renderHome();
-      } else if(type === 'refresh_projects') {
-        await loadProjectsData();
-        switchMode('projects');
-        renderProjContent();
-      }
+      handleChatAction(data.action);
     }
+
+    // Start polling for Telegram replies
+    if (!CHAT_POLL_INTERVAL) startChatPolling();
   } catch (e) {
     appendMessage('bot', 'Connection error. Please try again.');
+  }
+}
+
+function startChatPolling() {
+  if (CHAT_POLL_INTERVAL) return;
+  CHAT_POLL_INTERVAL = setInterval(async () => {
+    try {
+      var r = await fetch(API + '/api/ai/chat/poll?sessionId=' + CHAT_SESSION_ID, {
+        headers: { 'Authorization': authHeader() }
+      });
+      var msgs = await r.json();
+      if (Array.isArray(msgs)) {
+        msgs.forEach(function(m) { appendMessage('bot', m.text); });
+      }
+    } catch (e) { /* silent */ }
+  }, 2500);
+}
+
+function handleChatAction(action) {
+  if (!action) return;
+  var type = action.type, params = action.params;
+  if (type === 'open_modal') {
+    openModal(params.id);
+    if (params.data) {
+      if (params.id === 'm-add-root') document.getElementById('r-name').value = params.data.name || '';
+      else if (params.id === 'm-add-link') {
+        document.getElementById('l-name').value = params.data.name || '';
+        document.getElementById('l-url').value = params.data.url || '';
+      }
+    }
+  } else if (type === 'nav') {
+    if (params.section === 'commands') { switchMode('projects'); projNav('commands'); }
+    else if (params.section === 'apps') { switchMode('projects'); projNav('apps'); }
+    else if (['storage','vocab','gdds','sites','fproj'].indexOf(params.section) !== -1) {
+      switchMode('projects'); projNav(params.section);
+    }
+  } else if (type === 'refresh_sources') {
+    loadAll().then(function() { switchMode('sources'); renderSidebar(); renderHome(); });
+  } else if (type === 'refresh_projects') {
+    loadProjectsData().then(function() { switchMode('projects'); renderProjContent(); });
   }
 }
 
@@ -3253,25 +3273,14 @@ function appendConfirmMessage(response) {
 async function confirmAction(answer) {
   appendMessage('user', answer);
   try {
-    const r = await fetch(API + '/api/ai/chat', {
+    var r = await fetch(API + '/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
-      body: JSON.stringify({ message: answer, sessionId: 'chat' })
+      body: JSON.stringify({ message: answer, sessionId: CHAT_SESSION_ID })
     });
-    const data = await r.json();
+    var data = await r.json();
     appendMessage('bot', data.response || 'Done.');
-    if(data.action) {
-      const { type, params } = data.action;
-      if(type === 'nav') {
-        if(params.section === 'commands') switchMode('projects'), projNav('commands');
-        else if(params.section === 'apps') switchMode('projects'), projNav('apps');
-        else { switchMode('projects'); projNav(params.section); }
-      } else if(type === 'refresh_sources') {
-        await loadAll(); switchMode('sources'); renderSidebar(); renderHome();
-      } else if(type === 'refresh_projects') {
-        await loadProjectsData(); switchMode('projects'); renderProjContent();
-      }
-    }
+    if(data.action) handleChatAction(data.action);
   } catch (e) {
     appendMessage('bot', 'Connection error.');
   }
