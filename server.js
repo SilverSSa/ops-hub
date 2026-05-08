@@ -88,7 +88,7 @@ app.post("/api/login", (req, res) => {
 });
 
 function authMiddleware(req, res, next) {
-  if (req.path === "/login" || req.path === "/telegram" || req.path === "/files/download") return next();
+  if (req.path === "/login" || req.path === "/telegram" || req.path === "/files/download" || req.path === "/ai/chat/poll" || req.path === "/api/ai/chat/poll") return next();
   const auth = req.headers.authorization;
   if (!auth) return res.status(401).json({ error: "Missing authorization header" });
   
