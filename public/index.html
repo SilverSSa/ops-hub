@@ -3128,20 +3128,49 @@ function toggleChat() {
   }
 }
 
-function appendMessage(sender, text) {
-  const msgBox = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = `msg ${sender}`;
-  const avatar = document.createElement('div');
+function appendMessage(sender, text, buttons) {
+  var msgBox = document.getElementById('chat-messages');
+  var div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  var avatar = document.createElement('div');
   avatar.className = 'msg-avatar';
   avatar.textContent = sender === 'bot' ? 'AI' : 'TX';
-  const bubble = document.createElement('div');
+  var bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = formatChatText(text);
+  if (buttons && buttons.length) {
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:10px';
+    buttons.forEach(function(b) {
+      var btn = document.createElement('button');
+      btn.className = 'chat-chip ' + (b.style || '');
+      btn.textContent = b.label;
+      btn.onclick = function() { handleChatButton(b); };
+      btnRow.appendChild(btn);
+    });
+    bubble.appendChild(btnRow);
+  }
   div.appendChild(avatar);
   div.appendChild(bubble);
   msgBox.appendChild(div);
   msgBox.scrollTop = msgBox.scrollHeight;
+}
+
+function handleChatButton(b) {
+  if (b.action === 'accept') { confirmAction('yes'); return; }
+  if (b.action === 'reject') { confirmAction('no'); return; }
+  if (b.action === 'menu') { sendSuggestion('menu'); return; }
+  if (b.action === 'navigate') { handleChatAction({ type: 'nav', params: { section: b.section } }); return; }
+  if (b.action === 'command') { sendSuggestion(b.command); return; }
+  if (b.action === 'open') { window.open(b.url, '_blank'); return; }
+  if (b.action === 'refresh') { handleChatAction({ type: b.section === 'sources' ? 'refresh_sources' : 'refresh_projects' }); return; }
+}
+
+function appendConfirmMessage(response) {
+  appendMessage('bot', response, [
+    { label: 'Accept', style: 'accept', action: 'accept' },
+    { label: 'Reject', style: 'reject', action: 'reject' }
+  ]);
 }
 
 function formatChatText(text) {
@@ -3187,7 +3216,7 @@ async function sendChat() {
     if (data.needsConfirm) {
       appendConfirmMessage(data.response);
     } else {
-      appendMessage('bot', data.response || 'Sorry, I encountered an error.');
+      appendMessage('bot', data.response || 'Sorry, I encountered an error.', data.buttons);
     }
     
     if (!data.needsConfirm && /(created|updated|renamed|appended|cleaned|restored|saved|completed|done)/i.test(data.response || '')) {

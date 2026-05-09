@@ -115,6 +115,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/favicon.ico', (_req, res) => res.status(204).end());
 
+// In-memory store for pending confirmations
+const PENDING_ACTIONS = new Map();
+
 // ── PUBLIC CHAT ROUTES (before auth) ──────────────
 app.get("/api/ai/chat/poll", async (req, res) => {
   try {
