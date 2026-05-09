@@ -132,31 +132,47 @@ app.post("/api/ai/chat", async (req, res) => {
   try {
     const { message = "", sessionId = "default" } = req.body || {};
     const lowMsg = String(message).toLowerCase().trim();
+
+    // Handle pending confirmations
     const pending = PENDING_ACTIONS.get(sessionId);
-    if (pending && (lowMsg === "yes" || lowMsg === "confirm" || lowMsg === "accept" || lowMsg === "ok" || lowMsg === "sure" || lowMsg === "y")) {
+    if (pending && /^(yes|confirm|accept|ok|sure|y)$/i.test(lowMsg)) {
       PENDING_ACTIONS.delete(sessionId);
       return res.json({ response: await executeToolAction(pending.action), action: pending.uiAction || null });
     }
-    if (pending && (lowMsg === "no" || lowMsg === "cancel" || lowMsg === "reject" || lowMsg === "stop" || lowMsg === "n")) {
+    if (pending && /^(no|cancel|reject|stop|n)$/i.test(lowMsg)) {
       PENDING_ACTIONS.delete(sessionId);
-      return res.json({ response: "Alright, I've cancelled that action. What else can I help with?" });
+      return res.json({ response: "Cancelled. What else can I help with?" });
     }
-    let result = null;
-    let llmText = null;
-    if (process.env.OPENAI_API_KEY) llmText = await callOpenAI(message);
-    if (!llmText && process.env.N8N_AI_WEBHOOK_URL) { result = await callN8N(message); if (result) llmText = JSON.stringify(result); }
-    if (llmText) {
-      const parsed = result || parseAIResponse(llmText);
-      if (parsed.needsConfirm && parsed.confirmAction) {
-        PENDING_ACTIONS.set(sessionId, { action: parsed.confirmAction, uiAction: parsed.action || null });
-        return res.json({ response: parsed.response, needsConfirm: true, action: null });
+
+    // Try n8n first — return response pass-through
+    if (process.env.N8N_AI_WEBHOOK_URL) {
+      const n8n = await callN8N(message);
+      if (n8n && n8n.response) {
+        bridgeToTelegram(sessionId, message);
+
+        // Handle needsConfirm
+        if (n8n.needsConfirm && n8n.confirmAction) {
+          PENDING_ACTIONS.set(sessionId, { action: n8n.confirmAction, uiAction: n8n.action || null });
+          return res.json({ response: n8n.response, needsConfirm: true, action: null, buttons: n8n.buttons || undefined });
+        }
+
+        // Execute DevHub action server-side if present
+        if (n8n.action && n8n.action.type) {
+          await executeToolAction(n8n.action).catch(() => {});
+        }
+
+        // Return n8n response pass-through with all fields
+        return res.json({
+          response: n8n.response,
+          action: n8n.action ? mapUIAction(n8n.action) : null,
+          buttons: n8n.buttons || undefined,
+          needsConfirm: n8n.needsConfirm || false,
+          confirmAction: n8n.confirmAction || undefined
+        });
       }
-      if (parsed.action && parsed.action.type) {
-        const actionResult = await executeToolAction(parsed.action);
-        return res.json({ response: parsed.response + "\n\n" + actionResult, action: mapUIAction(parsed.action) });
-      }
-      return res.json({ response: parsed.response || llmText, action: null });
     }
+
+    // Fallback only if n8n is unreachable
     const fallback = await runAIFallback(message);
     bridgeToTelegram(sessionId, message);
     res.json(fallback);
