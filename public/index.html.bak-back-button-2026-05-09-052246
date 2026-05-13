@@ -34,13 +34,6 @@
   --shadow2:  0 2px 8px rgba(79, 65, 48, 0.14), 0 8px 32px rgba(79, 65, 48, 0.10);
   --node-line: #d7cbb8;
   --node-dot:  #ae4b29;
-  --glass: rgba(255, 252, 246, 0.68);
-  --glass-strong: rgba(255, 253, 248, 0.84);
-  --glass-soft: rgba(255, 255, 255, 0.46);
-  --glass-panel: rgba(255, 255, 255, 0.34);
-  --glass-border: rgba(215, 203, 184, 0.72);
-  --glass-border-strong: rgba(196, 180, 154, 0.92);
-  --glass-shadow: 0 24px 60px rgba(79, 65, 48, 0.12);
 }
 
 /* ── DARK THEME ───────────────────────────────────── */
@@ -71,13 +64,6 @@ body.dark-mode {
   --shadow2:  0 8px 28px rgba(0, 0, 0, 0.55), 0 18px 56px rgba(0, 0, 0, 0.38);
   --node-line: #6b5237;
   --node-dot:  #e2784c;
-  --glass: rgba(28, 22, 17, 0.68);
-  --glass-strong: rgba(35, 28, 21, 0.84);
-  --glass-soft: rgba(35, 28, 21, 0.52);
-  --glass-panel: rgba(24, 19, 15, 0.34);
-  --glass-border: rgba(107, 82, 55, 0.74);
-  --glass-border-strong: rgba(155, 115, 79, 0.92);
-  --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
 }
 
 body.light-theme {
@@ -212,8 +198,7 @@ body.dark-mode .md-viewer-loading { color: var(--text3); }
 html { scroll-behavior: smooth; }
 
 body {
-  background: radial-gradient(circle at 12% 8%, rgba(174, 75, 41, 0.10) 0, transparent 24%), radial-gradient(circle at 88% 16%, rgba(122, 138, 120, 0.10) 0, transparent 24%), radial-gradient(circle at 50% 104%, rgba(141, 62, 33, 0.06) 0, transparent 28%), var(--bg);
-  background-attachment: fixed;
+  background: var(--bg);
   color: var(--text);
   font-family: 'IBM Plex Sans', sans-serif;
   min-height: 100vh;
@@ -1539,132 +1524,6 @@ body {
 .fp-canvas-handle { height:32px; background:linear-gradient(90deg, var(--bg3), var(--bg2)); border-radius:14px 14px 0 0; display:flex; align-items:center; padding:0 12px; font-size:10px; color:var(--text3); cursor:grab; }
 .fp-kicker { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:.6px; }
 .fp-orbital-score { display:none; }
-
-/* ── GLASS PROJECT SHELL ───────────────────────────── */
-.fp-workspace, body.dark-mode .fp-workspace {
-  display:grid; grid-template-columns:236px minmax(0,1fr) 332px; gap:12px;
-  min-height:calc(100vh - 56px); padding:12px; margin:0 0 12px;
-  background:var(--glass); border:1px solid var(--glass-border); border-radius:32px;
-  box-shadow:var(--glass-shadow); overflow:hidden;
-  backdrop-filter:blur(18px) saturate(1.14); -webkit-backdrop-filter:blur(18px) saturate(1.14);
-}
-.fp-workspace.context-collapsed { grid-template-columns:236px minmax(0,1fr) 44px; }
-.fp-work-rail, body.dark-mode .fp-work-rail {
-  position:sticky; top:56px; align-self:start; display:flex; flex-direction:column; gap:10px;
-  min-height:calc(100vh - 80px); padding:12px 10px;
-  background:var(--glass-strong); border:1px solid var(--glass-border); border-radius:24px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
-  backdrop-filter:blur(16px) saturate(1.12); -webkit-backdrop-filter:blur(16px) saturate(1.12);
-}
-.fp-work-back, body.dark-mode .fp-work-back,
-.fp-rail-button, body.dark-mode .fp-rail-button {
-  background:rgba(255,255,255,.38); border-color:var(--glass-border);
-  text-align:left; border:1px solid transparent; border-radius:12px; padding:8px 10px;
-  cursor:pointer; transition:all .12s; font-family:'IBM Plex Sans',sans-serif;
-  font-size:12px; font-weight:600; display:flex; align-items:center; gap:8px;
-  backdrop-filter:blur(10px) saturate(1.06); -webkit-backdrop-filter:blur(10px) saturate(1.06);
-}
-.fp-rail-button:hover, .fp-rail-button.active { background:var(--accent3); color:var(--accent); border-color:var(--accent3); }
-.fp-rail-button i { font-style:normal; width:16px; text-align:center; opacity:.9; }
-.fp-rail-section { display:flex; flex-direction:column; gap:6px; }
-.fp-rail-section-title { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:1.2px; color:var(--text3); text-transform:uppercase; padding:0 10px; margin-top:2px; }
-.fp-rail-divider { height:1px; background:var(--glass-border); margin:2px 10px; }
-.fp-work-brand { padding:10px; margin-bottom:0; }
-.fp-work-brand-kicker { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:1.2px; color:var(--text3); text-transform:uppercase; margin-bottom:4px; }
-.fp-work-brand-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--text); line-height:1.15; }
-.fp-work-main, body.dark-mode .fp-work-main {
-  min-width:0; display:flex; flex-direction:column; gap:12px; padding:12px;
-  background:var(--glass-panel); border:1px solid var(--glass-border); border-radius:28px;
-  overflow:hidden; box-shadow:var(--shadow);
-  backdrop-filter:blur(14px) saturate(1.08); -webkit-backdrop-filter:blur(14px) saturate(1.08);
-}
-.fp-work-hero, body.dark-mode .fp-work-hero {
-  padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:14px;
-  border:1px solid var(--glass-border); border-radius:20px; background:var(--glass-soft);
-  position:sticky; top:56px; z-index:10; box-shadow:var(--shadow);
-  backdrop-filter:blur(16px) saturate(1.08); -webkit-backdrop-filter:blur(16px) saturate(1.08);
-}
-.fp-page, body.dark-mode .fp-page {
-  display:flex; flex-direction:column; gap:12px; padding:0;
-  background:transparent; border:none; border-radius:0; box-shadow:none;
-  animation:pageSlide .18s ease-out;
-}
-.fp-panel, body.dark-mode .fp-panel,
-.fp-phase-row, body.dark-mode .fp-phase-row,
-.fp-task-row, body.dark-mode .fp-task-row {
-  background:var(--glass-soft); border:1px solid var(--glass-border); border-radius:16px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(12px) saturate(1.08); -webkit-backdrop-filter:blur(12px) saturate(1.08);
-}
-.fp-board-command, body.dark-mode .fp-board-command {
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  margin:0 4px; padding:12px 16px;
-  background:var(--glass-soft); border:1px solid var(--glass-border); border-radius:18px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(14px) saturate(1.08); -webkit-backdrop-filter:blur(14px) saturate(1.08);
-}
-.fp-board-command p { display:none; }
-.fp-board-actions { display:flex; flex-wrap:wrap; gap:6px; }
-.fp-board-actions .m-btn { font-size:11px; padding:6px 12px; border-radius:8px; }
-.fp-canvas-wrap, body.dark-mode .fp-canvas-wrap { background:transparent; padding:0 4px 4px; min-height:calc(100vh - 160px); }
-.fp-board-side, body.dark-mode .fp-board-side {
-  display:flex; flex-direction:column; gap:12px; padding:12px;
-  min-height:calc(100vh - 80px); overflow:auto;
-  background:var(--glass-panel); border-left:1px solid var(--glass-border); border-radius:28px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(14px) saturate(1.08); -webkit-backdrop-filter:blur(14px) saturate(1.08);
-}
-.fp-context-body, body.dark-mode .fp-context-body { display:grid; gap:12px; padding:0; }
-.fp-side-card, body.dark-mode .fp-side-card {
-  padding:14px 16px; margin:0; border:1px solid var(--glass-border); border-radius:18px;
-  background:var(--glass-soft); box-shadow:var(--shadow);
-  backdrop-filter:blur(12px) saturate(1.08); -webkit-backdrop-filter:blur(12px) saturate(1.08);
-}
-.fp-side-card h3 { margin-bottom:8px; }
-.fp-canvas, body.dark-mode .fp-canvas {
-  min-height:calc(100vh - 200px); border-radius:20px; border:1px solid var(--glass-border);
-  background:linear-gradient(180deg, rgba(255,255,255,.50), rgba(255,255,255,.34)), linear-gradient(90deg, rgba(215,203,184,.24) 1px, transparent 1px), linear-gradient(rgba(215,203,184,.24) 1px, transparent 1px);
-  background-size:auto, 28px 28px, 28px 28px; padding:14px; overflow:auto; position:relative;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.26), var(--shadow);
-  backdrop-filter:blur(10px) saturate(1.04); -webkit-backdrop-filter:blur(10px) saturate(1.04);
-}
-.fp-canvas-item, body.dark-mode .fp-canvas-item {
-  position:absolute; background:rgba(255,255,255,.56); border:1px solid var(--glass-border);
-  border-radius:16px; box-shadow:var(--shadow); overflow:hidden;
-  backdrop-filter:blur(12px) saturate(1.08); -webkit-backdrop-filter:blur(12px) saturate(1.08);
-}
-.fp-canvas-item.selected { border-color:var(--glass-border-strong); box-shadow:var(--shadow2); }
-.fp-canvas-actions { display:none; position:absolute; bottom:0; left:0; right:0; padding:4px 8px; background:linear-gradient(0deg, rgba(255,255,255,.72), transparent); border-radius:0 0 16px 16px; justify-content:flex-end; gap:4px; z-index:5; }
-.fp-canvas-item:hover .fp-canvas-actions { display:flex; }
-.fp-canvas-links { position:absolute; top:8px; right:40px; display:flex; gap:4px; z-index:5; }
-.fp-canvas-link-pill { width:22px; height:22px; border-radius:50%; background:var(--accent3); border:1px solid var(--accent); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; transition:all .12s; }
-.fp-canvas-link-pill:hover { background:var(--accent); color:#fff; }
-.fp-canvas-handle, body.dark-mode .fp-canvas-handle {
-  height:34px; display:flex; align-items:center; justify-content:space-between; gap:8px;
-  padding:0 10px; background:rgba(255,255,255,.42); border-bottom:1px solid var(--glass-border);
-  cursor:grab; user-select:none;
-}
-.fp-canvas-handle:active { cursor:grabbing; }
-.fp-field, body.dark-mode .fp-field {
-  background:rgba(255,255,255,.50); border:1px solid var(--glass-border);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
-  backdrop-filter:blur(10px) saturate(1.06); -webkit-backdrop-filter:blur(10px) saturate(1.06);
-}
-.fp-card, body.dark-mode .fp-card,
-.fp-lane, body.dark-mode .fp-lane,
-.fp-command, body.dark-mode .fp-command,
-.fp-stat, body.dark-mode .fp-stat,
-.fp-empty-lane, body.dark-mode .fp-empty-lane,
-.fp-save-pill, body.dark-mode .fp-save-pill,
-.fp-chip, body.dark-mode .fp-chip,
-.fp-orbital-score, body.dark-mode .fp-orbital-score {
-  background:var(--glass-soft); border-color:var(--glass-border); box-shadow:var(--shadow);
-  backdrop-filter:blur(10px) saturate(1.06); -webkit-backdrop-filter:blur(10px) saturate(1.06);
-}
-.fp-chip.hot { background:rgba(255,255,255,.62); }
-.fp-empty-lane { border-style:dashed; }
-.fp-work-main .fp-page-title { padding:0 4px; }
-
 /* ── MOBILE HAMBURGER ───────────────────────────────── */
 .hamburger { display:none; background:none; border:1.5px solid var(--border); border-radius:9px; width:36px; height:36px; align-items:center; justify-content:center; cursor:pointer; color:var(--text); font-size:18px; flex-shrink:0; transition:all .15s; }
 .hamburger:hover { border-color:var(--accent); color:var(--accent); background:var(--accent3); }
@@ -1837,16 +1696,6 @@ body {
 @media (max-width: 1100px) { .fp-board-layout { grid-template-columns:1fr; } .fp-board-side { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-left:none; } }
 @media (max-width: 680px) { .fp-hero, .fp-work-hero { flex-direction:column; align-items:flex-start; } .fp-hero-actions { align-items:flex-start; } .fp-stats, .fp-overview-grid, .fp-board-side { grid-template-columns:1fr; } .fp-work-meta { flex-wrap:wrap; } }
 </style>
-
-<style id="project-interaction-safety-css">
-  .overlay:not(.active):not(.show):not([style*="display: flex"]):not([style*="display:flex"]) {
-    pointer-events: none !important;
-  }
-  #m-vocab-reader:not(.active):not(.show):not([style*="display: flex"]):not([style*="display:flex"]) {
-    pointer-events: none !important;
-  }
-</style>
-
 </head>
 <body>
 
@@ -1903,9 +1752,6 @@ body {
         <div class="proj-nav-item" onclick="projNav('fproj');closeSidebar()">🗂️ Future Projects</div>
         <div class="proj-nav-item" onclick="projNav('storage');closeSidebar()">💾 Storage</div>
         <div class="proj-nav-item" onclick="projNav('vocab');closeSidebar()">📖 Vocab</div>
-        <div class="proj-nav-item" onclick="projNav('challenges');closeSidebar()">📋 Challenges</div>
-        <div class="proj-nav-item" onclick="projNav('exams');closeSidebar()">📝 Exams</div>
-        <div class="proj-nav-item" onclick="projNav('knowledge');closeSidebar()">🧠 Knowledge</div>
         <div class="proj-nav-item" onclick="projNav('commands');closeSidebar()">⌨️ Commands</div>
         <div class="proj-nav-item" onclick="projNav('apps');closeSidebar()">🚀 Apps</div>
       </div>
@@ -3253,51 +3099,7 @@ function escA(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#3
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey||e.metaKey) && e.key==='k') { e.preventDefault(); openSearch(); }
   if (e.key==='Escape' && !document.getElementById('app-dialog')?.classList.contains('open')) document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));
-
-  // Project shortcuts — only when a project is open and user is not typing
-  if (!FP_CURRENT_ID) return;
-  const target = e.target;
-  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable) return;
-
-  if (e.key === 'n' || e.key === 'N') { e.preventDefault(); addCanvasItem('note'); }
-  if (e.key === 't' || e.key === 'T') { e.preventDefault(); addProjectTask('New task'); }
-  if (e.key === 'd' || e.key === 'D') { e.preventDefault(); addProjectDiagramNodeFromRail(); }
-  if (e.key === 'a' || e.key === 'A') { e.preventDefault(); openProjectContext('ai'); }
-  if (e.key === 'Escape') { e.preventDefault(); clearProjectSelection(); }
-  if (e.key === '?' && !e.shiftKey) { e.preventDefault(); toggleShortcutOverlay(); }
-  if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); scheduleProjectSave(); }
-  if ((e.ctrlKey||e.metaKey) && e.key === 'b') { e.preventDefault(); focusProjectBoard(); }
-  if ((e.ctrlKey||e.metaKey) && e.shiftKey && e.key === 'd') { e.preventDefault(); focusProjectDiagram(); }
-  if (e.key === ' ' && !e.repeat) { e.preventDefault(); toggleProjectContextPanel(); }
 });
-
-// ── SHORTCUT OVERLAY ───────────────────────────────────────
-function toggleShortcutOverlay() {
-  const existing = document.getElementById('shortcut-overlay');
-  if (existing) { existing.remove(); return; }
-  const overlay = document.createElement('div');
-  overlay.id = 'shortcut-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(6px);';
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  const shortcuts = [
-    ['N', 'Add Note block'],
-    ['T', 'Add Task'],
-    ['D', 'Add Diagram Node'],
-    ['A', 'Open AI Mission Panel'],
-    ['Space', 'Toggle Context Panel'],
-    ['Escape', 'Clear Selection'],
-    ['Ctrl+B', 'Board Focus'],
-    ['Ctrl+Shift+D', 'Diagram Focus'],
-    ['Ctrl+S', 'Force Save'],
-    ['Ctrl+K', 'Global Search'],
-    ['?', 'Toggle this overlay']
-  ];
-  overlay.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--glass-border);border-radius:24px;padding:28px 34px;box-shadow:var(--glass-shadow);max-width:480px;width:90vw;max-height:80vh;overflow:auto;backdrop-filter:blur(20px);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h2 style="font-family:Syne,sans-serif;font-size:18px;color:var(--text);margin:0">Keyboard Shortcuts</h2><button class="m-btn" onclick="document.getElementById('shortcut-overlay').remove()">✕</button></div>
-    <div style="display:grid;gap:6px">${shortcuts.map(([key, desc]) => `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-family:Space Mono,monospace;font-size:11px;color:var(--accent);background:var(--accent3);padding:3px 8px;border-radius:6px;min-width:60px;text-align:center">${key}</span><span style="font-size:12px;color:var(--text2);margin-left:16px;flex:1">${desc}</span></div>`).join('')}</div>
-  </div>`;
-  document.body.appendChild(overlay);
-}
 
 document.getElementById('ap').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 document.getElementById('au').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('ap').focus(); });
@@ -3326,148 +3128,7 @@ function toggleChat() {
   }
 }
 
-
-// Real AI chat Back button support
-window.__aiChatHistory = window.__aiChatHistory || [];
-window.__aiChatCurrentSection = window.__aiChatCurrentSection || null;
-
-function aiChatRememberSection(section) {
-  if (!section) return;
-
-  if (window.__aiChatCurrentSection && window.__aiChatCurrentSection !== section) {
-    window.__aiChatHistory.push(window.__aiChatCurrentSection);
-  }
-
-  window.__aiChatCurrentSection = section;
-}
-
-function aiChatBack() {
-  const previousBot = window.__aiChatBotHistory && window.__aiChatBotHistory.pop();
-
-  if (previousBot && typeof appendMessage === 'function') {
-    window.__aiChatRestoringBack = true;
-    appendMessage('bot', previousBot.text, previousBot.buttons);
-    window.__aiChatRestoringBack = false;
-    window.__aiChatLastBotState = previousBot;
-    return;
-  }
-
-  const previous = window.__aiChatHistory && window.__aiChatHistory.pop();
-
-  if (previous) {
-    if (typeof handleChatAction === 'function') {
-      handleChatAction({ type: 'nav', params: { section: previous } });
-      window.__aiChatCurrentSection = previous;
-      return;
-    }
-
-    if (typeof showSection === 'function') {
-      showSection(previous);
-      window.__aiChatCurrentSection = previous;
-      return;
-    }
-  }
-
-  if (typeof appendMessage === 'function') {
-    appendMessage('bot', 'No previous chat option or section to go back to.');
-  }
-}
-
-
-
-// AI chat message-level Back history
-window.__aiChatBotHistory = window.__aiChatBotHistory || [];
-window.__aiChatLastBotState = window.__aiChatLastBotState || null;
-window.__aiChatRestoringBack = false;
-
-function aiChatSaveBotState(text, buttons) {
-  const state = {
-    text: String(text || ''),
-    buttons: Array.isArray(buttons) ? buttons : []
-  };
-
-  if (
-    window.__aiChatLastBotState &&
-    !window.__aiChatRestoringBack &&
-    (
-      window.__aiChatLastBotState.text !== state.text ||
-      JSON.stringify(window.__aiChatLastBotState.buttons) !== JSON.stringify(state.buttons)
-    )
-  ) {
-    window.__aiChatBotHistory.push(window.__aiChatLastBotState);
-  }
-
-  window.__aiChatLastBotState = state;
-}
-
-
-function normalizeSectionName(section) {
-  section = String(section || '').trim().toLowerCase();
-
-  const aliases = {
-    project: 'fproj',
-    projects: 'fproj',
-    fprojects: 'fproj',
-    futureprojects: 'fproj',
-    'future-projects': 'fproj',
-    future_projects: 'fproj',
-    future: 'fproj',
-    fproj: 'fproj',
-    gdd: 'gdds',
-    gdds: 'gdds',
-    vocab: 'vocab',
-    vocabulary: 'vocab',
-    site: 'sites',
-    sites: 'sites',
-    websites: 'sites',
-    storage: 'storage',
-    commands: 'commands',
-    command: 'commands',
-    apps: 'apps',
-    app: 'apps',
-    sources: 'sources',
-    source: 'sources'
-  };
-
-  return aliases[section] || section;
-}
-
-function goToSectionSafe(section) {
-  const normalized = normalizeSectionName(section);
-
-  if (typeof showSection === 'function') {
-    showSection(normalized);
-    return;
-  }
-
-  if (typeof navigateSection === 'function') {
-    navigateSection(normalized);
-    return;
-  }
-
-  if (typeof switchSection === 'function') {
-    switchSection(normalized);
-    return;
-  }
-
-  const el = document.querySelector(`[data-section="${normalized}"]`) ||
-             document.querySelector(`[data-page="${normalized}"]`) ||
-             document.querySelector(`#${normalized}`);
-
-  if (el) el.click();
-}
-
 function appendMessage(sender, text, buttons) {
-
-  // Save bot responses so the Back button can restore previous chat options
-  try {
-    if (sender === 'bot' || sender === 'ai' || sender === 'AI') {
-      aiChatSaveBotState(text, buttons);
-    }
-  } catch (e) {
-    console.warn('AI chat history save failed:', e);
-  }
-
   var msgBox = document.getElementById('chat-messages');
   var div = document.createElement('div');
   div.className = 'msg ' + sender;
@@ -3498,20 +3159,8 @@ function appendMessage(sender, text, buttons) {
 function handleChatButton(b) {
   if (b.action === 'accept') { confirmAction('yes'); return; }
   if (b.action === 'reject') { confirmAction('no'); return; }
-  if (b.action === 'back' || String(b.label || '').includes('Back') || String(b.label || '').includes('⬅')) {
-    aiChatBack();
-    return;
-  }
   if (b.action === 'menu') { sendSuggestion('menu'); return; }
-  if (b.action === 'back' || String(b.label || '').includes('Back') || String(b.label || '').includes('⬅')) {
-    aiChatGoBack();
-    return;
-  }
-  if (b.action === 'navigate') {
-    aiChatRememberSection(b.section);
-    handleChatAction({ type: 'nav', params: { section: b.section } });
-    return;
-  }
+  if (b.action === 'navigate') { handleChatAction({ type: 'nav', params: { section: b.section } }); return; }
   if (b.action === 'command') { sendSuggestion(b.command); return; }
   if (b.action === 'open') { window.open(b.url, '_blank'); return; }
   if (b.action === 'refresh') { handleChatAction({ type: b.section === 'sources' ? 'refresh_sources' : 'refresh_projects' }); return; }
@@ -3623,108 +3272,7 @@ function handleChatAction(action) {
   }
 }
 
-
-// AI chat navigation history for Back button
-window.__aiChatSectionHistory = window.__aiChatSectionHistory || [];
-window.__aiChatCurrentSection = window.__aiChatCurrentSection || null;
-
-function aiChatRememberSection(section) {
-  if (!section) return;
-
-  if (window.__aiChatCurrentSection && window.__aiChatCurrentSection !== section) {
-    window.__aiChatSectionHistory.push(window.__aiChatCurrentSection);
-  }
-
-  window.__aiChatCurrentSection = section;
-}
-
-function aiChatGoBack() {
-  const previous = window.__aiChatSectionHistory.pop();
-
-  if (previous) {
-    if (typeof showSection === 'function') {
-      showSection(previous);
-      window.__aiChatCurrentSection = previous;
-      return;
-    }
-
-    if (typeof navigateToSection === 'function') {
-      navigateToSection(previous);
-      window.__aiChatCurrentSection = previous;
-      return;
-    }
-
-    if (typeof openSection === 'function') {
-      openSection(previous);
-      window.__aiChatCurrentSection = previous;
-      return;
-    }
-  }
-
-  // fallback if no previous section exists
-  const input = document.querySelector('#ai-chat-input, #chat-input, .chat-input-area input, .chat-input-area textarea');
-  if (input) {
-    input.value = 'menu';
-  }
-
-  if (typeof sendChat === 'function') {
-    sendChat();
-  }
-}
-
-
-// Track manual section navigation for AI Back button
-(function () {
-  if (window.__aiChatBackWrapped) return;
-  window.__aiChatBackWrapped = true;
-
-  const wrap = (name) => {
-    if (typeof window[name] !== 'function') return;
-
-    const original = window[name];
-    window[name] = function(section) {
-      try {
-        aiChatRememberSection(section);
-      } catch (e) {}
-      return original.apply(this, arguments);
-    };
-  };
-
-  wrap('showSection');
-  wrap('navigateToSection');
-  wrap('openSection');
-})();
-
 function sendSuggestion(text) {
-  // Handle AI Back button
-  try {
-    const rawArg = arguments[0];
-    const isBackObject =
-      rawArg &&
-      typeof rawArg === 'object' &&
-      (
-        rawArg.action === 'back' ||
-        String(rawArg.label || '').includes('Back') ||
-        String(rawArg.label || '').includes('⬅')
-      );
-
-    const isBackText =
-      typeof rawArg === 'string' &&
-      (
-        rawArg.toLowerCase() === 'back' ||
-        rawArg.includes('Back') ||
-        rawArg.includes('⬅')
-      );
-
-    if (isBackObject || isBackText) {
-      aiChatGoBack();
-      return;
-    }
-  } catch (e) {
-    console.warn('Back button handler failed:', e);
-  }
-
-
   document.getElementById('chat-welcome')?.classList.add('hidden');
   var tgl = document.getElementById('ai-chat-window');
   if (tgl && !tgl.classList.contains('open')) tgl.classList.add('open');
@@ -3840,10 +3388,6 @@ function renderProjContent() {
     else if (s === 'fproj') renderFProj(c);
     else if (s === 'storage') renderStorage(c);
     else if (s === 'vocab') renderVocab(c);
-  else if (s === 'challenges') renderChallenges(c);
-  else if (s === 'exams') renderExams(c);
-  else if (s === 'knowledge') renderKnowledge(c);
-    else if (s === 'challenges') renderChallenges(c);
     else if (s === 'commands') renderCommands(c);
     else if (s === 'apps') renderApps(c);
     else renderGDDList(c);
@@ -3959,278 +3503,8 @@ async function newFolder() {
 }
 
 // ── VOCAB ──────────────────────────────────────────────────
-let VOCAB_EXPANDED = {};
-
-async function seedDevOpsVocab() {
-  const words = [
-    { word:'API', translation:'واجهة برمجة التطبيقات', example:'The REST API handles client requests.', source_lang:'en', target_lang:'ar', tags:'["devops","cs"]' },
-    { word:'Deployment', translation:'النشر', example:'We deploy to production every Friday.', source_lang:'en', target_lang:'ar', tags:'["devops"]' },
-    { word:'Pipeline', translation:'خط الأنابيب', example:'The CI/CD pipeline runs automated tests.', source_lang:'en', target_lang:'ar', tags:'["devops","cs"]' },
-    { word:'Repository', translation:'مستودع', example:'Clone the repository before making changes.', source_lang:'en', target_lang:'ar', tags:'["devops","cs"]' },
-    { word:'Container', translation:'حاوية', example:'Docker containers isolate application dependencies.', source_lang:'en', target_lang:'ar', tags:'["devops"]' },
-    { word:'Scaling', translation:'التوسع', example:'Horizontal scaling adds more servers.', source_lang:'en', target_lang:'ar', tags:'["devops"]' },
-    { word:'Latency', translation:'زمن الاستجابة', example:'Reducing latency improves user experience.', source_lang:'en', target_lang:'ar', tags:'["cs"]' },
-    { word:'Throughput', translation:'الإنتاجية', example:'The database throughput is 1000 queries per second.', source_lang:'en', target_lang:'ar', tags:'["cs","devops"]' },
-    { word:'Rollback', translation:'التراجع', example:'We performed a rollback after the failed deployment.', source_lang:'en', target_lang:'ar', tags:'["devops"]' },
-    { word:'Observability', translation:'المراقبة', example:'Good observability requires metrics, logs, and traces.', source_lang:'en', target_lang:'ar', tags:'["devops"]' }
-  ];
-  for (const w of words) {
-    try { await api('POST', '/api/vocab', w); } catch {}
-  }
-}
+let VOCAB_DATA = [];
 let VOCAB_FILTER = "";
-
-let VOCAB_READER_READY = false;
-let CURRENT_VOCAB_READER_ID = null;
-
-function ensureVocabReaderModal() {
-  if (VOCAB_READER_READY || document.getElementById('m-vocab-reader')) {
-    VOCAB_READER_READY = true;
-    return;
-  }
-
-  document.body.insertAdjacentHTML('beforeend', `
-    <div class="overlay" id="m-vocab-reader" onclick="overlayClick(event,'m-vocab-reader')" style="z-index:99999;align-items:center;justify-content:center;padding:16px;overflow:hidden">
-      <div class="modal" style="
-        width:min(640px, calc(100vw - 32px));
-        max-width:640px;
-        max-height:calc(100vh - 32px);
-        overflow-y:auto;
-        overflow-x:hidden;
-        box-sizing:border-box;
-        padding:0;
-        border-radius:22px;
-        background:#17100b;
-        border:1px solid rgba(255,170,90,.24);
-        box-shadow:0 24px 80px rgba(0,0,0,.55);
-        direction:rtl;
-      ">
-        <div style="
-          position:sticky;
-          top:0;
-          z-index:2;
-          background:#17100b;
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          gap:12px;
-          padding:16px 18px;
-          border-bottom:1px solid rgba(255,170,90,.16);
-        ">
-          <div style="min-width:0">
-            <div style="font-size:24px;font-weight:900;color:#f7efe6;line-height:1.2">📚 تفاصيل المفردة</div>
-            <div style="font-size:12px;color:#bfae9d;margin-top:4px;direction:ltr;text-align:right">Vocabulary details</div>
-          </div>
-          <button class="m-btn" onclick="closeModal('m-vocab-reader')" style="min-width:42px;height:42px;border-radius:14px;padding:0;font-size:20px;flex:0 0 auto">✕</button>
-        </div>
-
-        <div id="vocab-reader-body" style="padding:18px;box-sizing:border-box"></div>
-
-        <div style="
-          position:sticky;
-          bottom:0;
-          background:#17100b;
-          display:flex;
-          flex-wrap:wrap;
-          gap:10px;
-          justify-content:flex-end;
-          padding:14px 18px 18px;
-          border-top:1px solid rgba(255,170,90,.12);
-        ">
-          <button class="m-btn" onclick="copyCurrentVocab()">نسخ</button>
-          <button class="m-btn" onclick="speakCurrentVocab()">🔊 قراءة</button>
-          <button class="m-btn" onclick="editCurrentVocab()">تعديل</button>
-          <button class="m-btn primary" onclick="closeModal('m-vocab-reader')">تم</button>
-        </div>
-      </div>
-    </div>
-  `);
-
-  VOCAB_READER_READY = true;
-}
-
-function renderVocabReaderValue(value, fallback, opts = {}) {
-  const dir = opts.dir || 'rtl';
-  const align = opts.align || (dir === 'ltr' ? 'left' : 'right');
-  const size = opts.size || '17px';
-  const weight = opts.weight || '650';
-  const color = opts.color || '#f7efe6';
-  const isMuted = !value;
-
-  return `
-    <div style="
-      background:#22170f;
-      border:1px solid rgba(255,170,90,.18);
-      border-radius:16px;
-      padding:14px 16px;
-      min-height:${opts.minHeight || 'auto'};
-      max-width:100%;
-      box-sizing:border-box;
-      direction:${dir};
-      text-align:${align};
-      color:${isMuted ? '#b7a28f' : color};
-      font-size:${size};
-      font-weight:${weight};
-      line-height:1.75;
-      word-break:break-word;
-      overflow-wrap:anywhere;
-      white-space:pre-wrap;
-    ">
-      ${value ? esc(value) : fallback}
-    </div>
-  `;
-}
-
-function openVocabReader(id) {
-  const v = VOCAB_DATA.find(x => String(x.id) === String(id));
-  if (!v) return;
-
-  CURRENT_VOCAB_READER_ID = id;
-  ensureVocabReaderModal();
-
-  const word = (v.word || '').trim();
-  const translation = (v.translation || '').trim();
-  const example = (v.example || '').trim();
-  const sourceLang = (v.source_lang || 'en').trim();
-  const targetLang = (v.target_lang || 'ar').trim();
-  const tags = (() => {
-    try {
-      if (Array.isArray(v.tags)) return v.tags;
-      return JSON.parse(v.tags || '[]');
-    } catch (_) {
-      return [];
-    }
-  })();
-
-  const noArabicYet = !translation || translation.toLowerCase() === word.toLowerCase();
-
-  document.getElementById('vocab-reader-body').innerHTML = `
-    <div style="
-      background:#1b130d;
-      border:1px solid rgba(255,170,90,.18);
-      border-radius:20px;
-      padding:16px;
-      box-sizing:border-box;
-      max-width:100%;
-    ">
-      <div style="display:grid;gap:16px">
-        <div>
-          <div style="font-size:12px;color:#bfae9d;margin-bottom:7px;text-align:right">الكلمة / Word</div>
-          ${renderVocabReaderValue(word, 'لا توجد كلمة.', {
-            dir: sourceLang === 'ar' ? 'rtl' : 'ltr',
-            align: sourceLang === 'ar' ? 'right' : 'left',
-            size: '24px',
-            weight: '800',
-            color: '#fff7ee',
-            minHeight: '72px'
-          })}
-        </div>
-
-        <div>
-          <div style="font-size:12px;color:#bfae9d;margin-bottom:7px;text-align:right">الترجمة / Translation</div>
-          ${renderVocabReaderValue(
-            noArabicYet ? '' : translation,
-            'لم تتم إضافة ترجمة بعد. استخدم: #add word = الترجمة أو فعّل AI enrichment.',
-            {
-              dir: targetLang === 'ar' ? 'rtl' : 'ltr',
-              align: targetLang === 'ar' ? 'right' : 'left',
-              size: '20px',
-              weight: '750',
-              color: '#ffbf82',
-              minHeight: '72px'
-            }
-          )}
-        </div>
-
-        <div>
-          <div style="font-size:12px;color:#bfae9d;margin-bottom:7px;text-align:right">مثال / Example</div>
-          ${renderVocabReaderValue(example, 'لا يوجد مثال بعد.', {
-            dir: sourceLang === 'ar' ? 'rtl' : 'ltr',
-            align: sourceLang === 'ar' ? 'right' : 'left',
-            size: '16px',
-            weight: '500',
-            color: '#f2e5d8',
-            minHeight: '92px'
-          })}
-        </div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;direction:ltr">
-          <span style="font-size:11px;background:#24180f;border:1px solid rgba(255,170,90,.16);border-radius:999px;padding:7px 10px;color:#bfae9d">Source: ${esc(sourceLang)}</span>
-          <span style="font-size:11px;background:#24180f;border:1px solid rgba(255,170,90,.16);border-radius:999px;padding:7px 10px;color:#bfae9d">Target: ${esc(targetLang)}</span>
-          ${tags.map(t => `<span style="font-size:11px;background:#24180f;border:1px solid rgba(255,170,90,.16);border-radius:999px;padding:7px 10px;color:#bfae9d">${esc(String(t))}</span>`).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-
-  openModal('m-vocab-reader');
-}
-
-function copyCurrentVocab() {
-  const v = VOCAB_DATA.find(x => String(x.id) === String(CURRENT_VOCAB_READER_ID));
-  if (!v) return;
-
-  const text = [v.word || '', v.translation || '', v.example || ''].filter(Boolean).join('\n');
-
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      if (typeof showToast === 'function') showToast('تم نسخ المفردة');
-    }).catch(() => {});
-  }
-}
-
-function speakCurrentVocab() {
-  const v = VOCAB_DATA.find(x => String(x.id) === String(CURRENT_VOCAB_READER_ID));
-  if (!v || !window.speechSynthesis) return;
-
-  const text = [v.word, v.translation, v.example].filter(Boolean).join('. ');
-  if (!text) return;
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = (v.target_lang || 'ar') === 'ar' ? 'ar-SA' : 'en-US';
-  utterance.rate = 0.95;
-
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
-}
-
-function editCurrentVocab() {
-  if (!CURRENT_VOCAB_READER_ID) return;
-  closeModal('m-vocab-reader');
-  if (typeof editVocab === 'function') editVocab(CURRENT_VOCAB_READER_ID);
-}
-
-window.openVocabReader = openVocabReader;
-window.copyCurrentVocab = copyCurrentVocab;
-window.speakCurrentVocab = speakCurrentVocab;
-window.editCurrentVocab = editCurrentVocab;
-
-
-async function seedDevOpsVocab() {
-  try {
-    const existing = await fetch('/api/vocab?q=API', { headers: { 'Authorization': authHeader() } }).then(r => r.json());
-    if (Array.isArray(existing) && existing.length > 0) return;
-    const words = [
-      { word: 'API', translation: 'واجهة برمجة التطبيقات', example: 'The REST API handles client requests.', source_lang: 'en', target_lang: 'ar', tags: ['devops', 'cs'] },
-      { word: 'Deployment', translation: 'النشر', example: 'We deploy to production every Friday.', source_lang: 'en', target_lang: 'ar', tags: ['devops'] },
-      { word: 'Pipeline', translation: 'خط الأنابيب', example: 'The CI/CD pipeline runs automated tests.', source_lang: 'en', target_lang: 'ar', tags: ['devops', 'cs'] },
-      { word: 'Repository', translation: 'مستودع', example: 'Clone the repository before making changes.', source_lang: 'en', target_lang: 'ar', tags: ['devops', 'cs'] },
-      { word: 'Container', translation: 'حاوية', example: 'Docker containers isolate application dependencies.', source_lang: 'en', target_lang: 'ar', tags: ['devops'] },
-      { word: 'Scaling', translation: 'التوسع', example: 'Horizontal scaling adds more servers.', source_lang: 'en', target_lang: 'ar', tags: ['devops'] },
-      { word: 'Latency', translation: 'زمن الاستجابة', example: 'Reducing latency improves user experience.', source_lang: 'en', target_lang: 'ar', tags: ['cs'] },
-      { word: 'Throughput', translation: 'الإنتاجية', example: 'The database throughput is 1000 queries per second.', source_lang: 'en', target_lang: 'ar', tags: ['cs', 'devops'] },
-      { word: 'Rollback', translation: 'التراجع', example: 'We performed a rollback after the failed deployment.', source_lang: 'en', target_lang: 'ar', tags: ['devops'] },
-      { word: 'Observability', translation: 'المراقبة', example: 'Good observability requires metrics, logs, and traces.', source_lang: 'en', target_lang: 'ar', tags: ['devops'] }
-    ];
-    for (const w of words) {
-      await fetch('/api/vocab', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
-        body: JSON.stringify(w)
-      });
-    }
-  } catch {}
-}
 
 async function renderVocab(c) {
   let url = '/api/vocab'; if (VOCAB_FILTER) url += '?lang=' + VOCAB_FILTER;
@@ -4239,44 +3513,38 @@ async function renderVocab(c) {
     const data = await r.json();
     VOCAB_DATA = Array.isArray(data) ? data : [];
   } catch { VOCAB_DATA = []; }
-  if (!VOCAB_DATA.length && !VOCAB_FILTER) { await seedDevOpsVocab(); return renderVocab(c); }
   const langNames = { ar:'العربية',en:'English',es:'Español',tr:'Türkçe',fr:'Français',de:'Deutsch',ja:'日本語',ko:'한국어',zh:'中文',ru:'Русский' };
   const flag = { ar:'🇸🇦',en:'🇬🇧',es:'🇪🇸',tr:'🇹🇷',fr:'🇫🇷',de:'🇩🇪',ja:'🇯🇵',ko:'🇰🇷',zh:'🇨🇳',ru:'🇷🇺' };
   const langs = Object.keys(langNames);
-  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
     <div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px">Vocabulary</div>
-    <div style="font-size:13px;color:var(--text3);margin-top:2px">${VOCAB_DATA.length} words · click to expand</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <select onchange="VOCAB_FILTER=this.value;renderVocab(document.getElementById('content'))" style="background:var(--glass-soft);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-size:12px;padding:8px 12px;outline:none;font-family:IBM Plex Sans,sans-serif;cursor:pointer;backdrop-filter:blur(12px)">
+    <div style="font-size:13px;color:var(--text3);margin-top:2px">${VOCAB_DATA.length} words across languages</div></div>
+    <div style="display:flex;gap:8px">
+      <select onchange="VOCAB_FILTER=this.value;renderVocab(document.getElementById('content'))" style="background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-size:12px;padding:7px 12px;outline:none;font-family:IBM Plex Sans,sans-serif;cursor:pointer">
         <option value="">🌍 All Languages</option>${langs.map(l => `<option value="${l}" ${VOCAB_FILTER===l?'selected':''}>${flag[l]} ${langNames[l]}</option>`).join('')}
       </select>
       <button class="t-btn primary" onclick="openAddVocab()">+ Add Word</button></div></div>
-    ${VOCAB_DATA.length===0 ? `<div style="text-align:center;padding:60px 20px"><div style="font-size:56px;margin-bottom:12px">📖</div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--text2)">No words yet</div></div>`
-    : `<div class="vocab-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">${VOCAB_DATA.map(v => {
-      const isExpanded = VOCAB_EXPANDED[v.id];
-      const tags = (() => { try { return Array.isArray(v.tags) ? v.tags : JSON.parse(v.tags || '[]'); } catch { return []; } })();
-      return `<div class="fp-side-card" style="cursor:pointer;padding:0;overflow:hidden" onclick="VOCAB_EXPANDED['${v.id}']=!VOCAB_EXPANDED['${v.id}'];renderVocab(document.getElementById('content'))">
-        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px">
-          <span style="font-size:13px;color:var(--text3);min-width:16px">${flag[v.source_lang]||''}</span>
-          <span style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.word)}</span>
-          <span style="color:var(--text3);font-size:14px">→</span>
-          <span style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:var(--accent);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.translation)}</span>
-          <span style="font-size:13px;color:var(--text3);min-width:16px">${flag[v.target_lang]||''}</span>
-          <span style="font-size:16px;color:var(--text3);transition:transform .2s;transform:rotate(${isExpanded?'180deg':'0deg'})">▼</span>
-        </div>
-        ${isExpanded ? `<div style="padding:0 16px 16px;display:grid;gap:10px;border-top:1px solid var(--glass-border);padding-top:12px;margin:0 16px">
-          ${v.example ? `<div style="font-size:12px;color:var(--text2);font-style:italic;padding:8px 12px;background:var(--bg3);border-radius:8px">"${esc(v.example)}"</div>` : ''}
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <span class="fp-chip">${langNames[v.source_lang]||v.source_lang} → ${langNames[v.target_lang]||v.target_lang}</span>
-            ${tags.map(t => `<span class="fp-chip hot">${esc(t)}</span>`).join('')}
-            <span style="flex:1"></span>
-            <button class="m-btn" style="padding:4px 8px;font-size:10px" onclick="event.stopPropagation();pinItem('vocab','${v.id}','${esc(v.word)} = ${esc(v.translation)}','📝')">⭐</button>
-            <button class="m-btn" style="padding:4px 8px;font-size:10px" onclick="event.stopPropagation();editVocab('${v.id}')">Edit</button>
-            <button class="m-btn danger" style="padding:4px 8px;font-size:10px" onclick="event.stopPropagation();deleteVocab('${v.id}')">Delete</button>
+    ${VOCAB_DATA.length===0 ? `<div style="text-align:center;padding:60px 20px"><div style="font-size:56px;margin-bottom:12px">📖</div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--text2);margin-bottom:6px">No words yet</div><div style="font-size:13px;color:var(--text3)">Add your first word or use the Telegram bot (#add ...)</div></div>`
+    : `<div class="vocab-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">${VOCAB_DATA.map(v => `
+      <div class="vocab-card" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:16px;padding:20px;transition:all .15s;box-shadow:var(--shadow);display:flex;gap:14px" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:32px;flex-shrink:0;line-height:1">📝</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <span style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;color:var(--text)">${esc(v.word)}</span>
+            <span style="font-size:11px;color:var(--text3)">${flag[v.source_lang]||''}</span>
+            <span style="color:var(--text3)">→</span>
+            <span style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;color:var(--accent)">${esc(v.translation)}</span>
+            <span style="font-size:11px;color:var(--text3)">${flag[v.target_lang]||''}</span>
           </div>
-        </div>` : (v.example ? `<div style="padding:0 16px 12px;font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.example)}</div>` : '')}
-      </div>`;
-    }).join('')}</div>`}`;
+          ${v.example?`<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:8px">"${esc(v.example)}"</div>`:''}
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;font-size:9px;padding:2px 8px;font-family:Space Mono,monospace;color:var(--text3)">${langNames[v.source_lang]||v.source_lang} → ${langNames[v.target_lang]||v.target_lang}</span>
+            <span style="flex:1"></span>
+            <button style="background:none;border:none;font-size:14px;cursor:pointer;opacity:.4;transition:opacity .15s;color:var(--amber)" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.4'" onclick="event.stopPropagation();pinItem('vocab','${v.id}','${esc(v.word)} = ${esc(v.translation)}','📝')" class="${isPinned('vocab',v.id)?'pinned':''}">⭐</button>
+            <button style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:10px;padding:3px 8px;cursor:pointer" onclick="editVocab('${v.id}')">Edit</button>
+            <button style="background:var(--red-bg);border:1px solid var(--red);border-radius:6px;color:var(--red);font-size:10px;padding:3px 8px;cursor:pointer" onclick="deleteVocab('${v.id}')">×</button>
+          </div>
+        </div></div>`).join('')}</div>`}`;
 }
 
 function openAddVocab() {
@@ -4318,230 +3586,6 @@ async function deleteVocab(id){
   await api('DELETE', '/api/vocab/'+id);
   renderVocab(document.getElementById('content'));
 }
-
-// ── CHALLENGES ─────────────────────────────────────────
-async function renderChallenges(c) {
-  const levelColor = { foundation:'var(--green)', intermediate:'var(--amber)', advanced:'var(--accent)' };
-  const levelBg = { foundation:'var(--green-bg)', intermediate:'var(--amber-bg)', advanced:'var(--accent3)' };
-  let challenges = [];
-  try {
-    const r = await fetch(location.origin + '/api/trainer/challenges', { headers: { 'Authorization': authHeader() } });
-    const data = await r.json();
-    challenges = Array.isArray(data) ? data : [];
-  } catch { challenges = []; }
-  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
-    <div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px">Weekly Challenges</div>
-    <div style="font-size:13px;color:var(--text3);margin-top:2px">${challenges.length} active · AI-generated or curated</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <select id="challenge-cat" style="background:var(--glass-soft);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-size:12px;padding:8px 12px;outline:none;font-family:IBM Plex Sans,sans-serif;cursor:pointer;backdrop-filter:blur(12px)">
-        <option value="general">All Categories</option>
-        <option value="computer-science">Computer Science</option>
-        <option value="devops">DevOps</option>
-        <option value="english-career">English Career</option>
-        <option value="networking">Networking</option>
-      </select>
-      <button class="t-btn primary" onclick="generateChallenge()">+ Generate</button></div></div>
-    ${challenges.length === 0 ? `<div style="text-align:center;padding:60px 20px"><div style="font-size:56px;margin-bottom:12px">🏆</div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--text2);margin-bottom:6px">No challenges yet</div><div style="font-size:13px;color:var(--text3)">Click Generate to get started</div></div>`
-    : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px">${challenges.map(ch => `
-      <div class="fp-side-card" style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-          <h3 style="margin:0;flex:1">${esc(ch.title || 'Challenge')}</h3>
-          <span style="font-size:10px;color:${levelColor[ch.level]||'var(--text3)'};background:${levelBg[ch.level]||'var(--bg3)'};border-radius:999px;padding:3px 8px;font-family:Space Mono,monospace;white-space:nowrap">${esc(ch.level || 'foundation')}</span>
-        </div>
-        <p style="font-size:12px;color:var(--text2);line-height:1.5">${esc(ch.description || '')}</p>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="fp-chip hot">${esc(ch.category || 'general')}</span>
-          ${ch.goal ? `<span class="fp-chip">🎯 ${esc(ch.goal)}</span>` : ''}
-          <span class="fp-chip">⏱ ${ch.due_days || 7}d</span>
-        </div>
-      </div>`).join('')}</div>`}`;
-}
-
-async function generateChallenge() {
-  const cat = document.getElementById('challenge-cat')?.value || 'general';
-  try {
-    const r = await fetch(location.origin + '/api/trainer/challenges/generate', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': authHeader() },
-      body: JSON.stringify({ category: cat })
-    });
-    if (r.ok) notify('info', 'Challenge Generated', 'A new challenge has been added.');
-  } catch { notify('warning', 'Offline', 'Using local fallback.'); }
-  renderChallenges(document.getElementById('content'));
-}
-
-// ── CHALLENGES ──────────────────────────────────────────────
-const CHALLENGE_FALLBACKS = [
-  { title: 'Build a REST API endpoint', category: 'devops', level: 'intermediate', description: 'Create a working Express endpoint with validation and error handling', goal: 'Create a working Express endpoint with validation and error handling', due_days: 5 },
-  { title: 'Containerize an Application', category: 'devops', level: 'intermediate', description: 'Write a Dockerfile and docker-compose.yml for a Node.js app', goal: 'Write a Dockerfile and docker-compose.yml for a Node.js app', due_days: 5 },
-  { title: 'Set up CI/CD Pipeline', category: 'devops', level: 'advanced', description: 'Configure GitHub Actions to test, build, and deploy automatically', goal: 'Configure GitHub Actions to test, build, and deploy automatically', due_days: 7 },
-  { title: 'Write Unit Tests for API', category: 'computer-science', level: 'intermediate', description: 'Achieve 80% coverage on your Express routes', goal: 'Achieve 80% coverage on your Express routes', due_days: 4 },
-  { title: 'Database Migration Strategy', category: 'devops', level: 'advanced', description: 'Design a zero-downtime migration plan for PostgreSQL', goal: 'Design a zero-downtime migration plan for PostgreSQL', due_days: 7 },
-  { title: 'System Design: URL Shortener', category: 'computer-science', level: 'advanced', description: 'Design a scalable URL shortening service', goal: 'Design a scalable URL shortening service', due_days: 7 }
-];
-
-const CATEGORY_LABELS = {
-  'english-career': 'English Career', 'networking': 'Networking', 'computer-science': 'Computer Science',
-  'devops': 'DevOps', 'spanish': 'Spanish', 'turkish': 'Turkish', 'japanese': 'Japanese', 'general': 'General'
-};
-const LEVEL_COLORS = { foundation: 'var(--cyan)', intermediate: 'var(--amber)', advanced: 'var(--accent)', expert: 'var(--red)' };
-const LEVEL_LABELS = { foundation: 'Foundation', intermediate: 'Intermediate', advanced: 'Advanced', expert: 'Expert' };
-
-async function renderChallenges(c) {
-  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-    <div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px">Weekly Challenges</div>
-    <div style="font-size:13px;color:var(--text3);margin-top:2px">Skill-building tasks across domains</div></div>
-    <div style="display:flex;gap:8px">
-      <button class="t-btn primary" onclick="generateChallenge()">✨ Generate New</button></div></div>
-    <div id="challenges-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">
-      <div style="text-align:center;padding:40px;grid-column:1/-1"><div class="spinner"></div><div style="margin-top:8px;color:var(--text3)">Loading challenges...</div></div></div>`;
-
-  let challenges = [];
-  try {
-    const r = await fetch('/api/trainer/challenges', { headers: { 'Authorization': authHeader() } });
-    const data = await r.json();
-    challenges = Array.isArray(data) ? data : [];
-  } catch {}
-  if (!challenges.length) { challenges = CHALLENGE_FALLBACKS.map((fc, i) => ({ id: 'local_' + i, ...fc, status: 'active', created_at: Math.floor(Date.now() / 1000) })); }
-
-  const grid = document.getElementById('challenges-grid');
-  if (!grid) return;
-  if (!challenges.length) {
-    grid.innerHTML = `<div style="text-align:center;padding:60px 20px;grid-column:1/-1"><div style="font-size:56px;margin-bottom:12px">📋</div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--text2)">No challenges</div><div style="font-size:13px;color:var(--text3);margin-top:6px">Click Generate to create one</div></div>`;
-    return;
-  }
-  grid.innerHTML = challenges.map(ch => {
-    const catLabel = CATEGORY_LABELS[ch.category] || ch.category || 'General';
-    const lvlColor = LEVEL_COLORS[ch.level] || 'var(--text3)';
-    const lvlLabel = LEVEL_LABELS[ch.level] || ch.level;
-    const days = ch.due_days || 7;
-    return `<div class="fp-side-card" style="border-radius:16px;border:1.5px solid var(--border);padding:16px 18px;background:var(--bg2);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:all .15s" onmouseover="this.style.borderColor='${lvlColor}'" onmouseout="this.style.borderColor='var(--border)'">
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-          <span style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;font-size:9px;padding:2px 8px;color:var(--text3)">${esc(catLabel)}</span>
-          <span style="font-size:12px;font-weight:700;color:${lvlColor}">● ${esc(lvlLabel)}</span>
-        </div>
-        <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">${esc(ch.title)}</div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5">${esc(ch.description || ch.goal || '')}</div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto">
-        <span style="font-family:Space Mono,monospace;font-size:10px;color:var(--text3)">⏱ ${days}d</span>
-        <button class="m-btn primary" style="font-size:11px;padding:5px 14px" onclick="startChallenge('${esc(ch.id)}')">${ch.status==='active'?'Start':'View'}</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function generateChallenge() {
-  const grid = document.getElementById('challenges-grid');
-  if (grid) grid.innerHTML = `<div style="text-align:center;padding:40px;grid-column:1/-1"><div class="spinner"></div><div style="margin-top:8px;color:var(--text3)">Generating challenge...</div></div>`;
-  try {
-    await fetch('/api/trainer/challenges/generate', { method: 'POST', headers: { 'Authorization': authHeader(), 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
-  } catch {}
-  renderChallenges(document.getElementById('content'));
-}
-
-function startChallenge(id) {
-  notify('info', 'Challenge', 'Challenge started! Track your progress in this section.');
-}
-
-window.renderChallenges = renderChallenges;
-window.generateChallenge = generateChallenge;
-window.startChallenge = startChallenge;
-
-// ── TRAINER EXAMS ─────────────────────────────────────
-async function renderExams(c) {
-  let exams = [], overview = {};
-  try {
-    const [eRes, oRes] = await Promise.all([
-      fetch(location.origin + '/api/trainer/exams', { headers: { 'Authorization': authHeader() } }),
-      fetch(location.origin + '/api/trainer/overview', { headers: { 'Authorization': authHeader() } })
-    ]);
-    exams = await eRes.json(); exams = Array.isArray(exams) ? exams : [];
-    overview = await oRes.json();
-  } catch { exams = []; overview = {}; }
-  const levelColor = { advanced:'var(--green)', intermediate:'var(--amber)', foundation:'var(--accent)' };
-  let currentExam = null;
-  try { currentExam = exams[0]?.exam_json && !exams[0].score ? JSON.parse(exams[0].exam_json) : null; } catch {}
-
-  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
-    <div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px">Exams</div>
-    <div style="font-size:13px;color:var(--text3);margin-top:2px">Avg: ${overview.avgScore||0}% · ${overview.words||0} words · <span style="color:${levelColor[overview.level]||'var(--text3)'}">${overview.level||'new'}</span></div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <select id="exam-cat" style="background:var(--glass-soft);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-size:12px;padding:8px 12px;outline:none;font-family:IBM Plex Sans,sans-serif;cursor:pointer;backdrop-filter:blur(12px)">
-        <option value="computer-science">Computer Science</option><option value="devops">DevOps</option><option value="english-career">English Career</option><option value="networking">Networking</option>
-      </select>
-      <button class="t-btn primary" onclick="startExam()">Start New Exam</button></div></div>
-    ${currentExam ? `<div class="fp-side-card" style="margin-bottom:16px"><h3>${esc(currentExam.title || 'Exam')}</h3><p>${currentExam.questions?.length||0} questions · Write your answers below, then submit for AI grading.</p>
-      <div style="display:grid;gap:14px;margin-top:12px">${currentExam.questions.map((q, i) => `
-        <div><label style="font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Q${i+1}. ${esc(q.prompt)}</label>
-        <textarea class="fp-field" id="exam-a-${i}" rows="3" placeholder="Your answer..."></textarea></div>`).join('')}</div>
-      <button class="t-btn primary" style="margin-top:14px" onclick="submitExam('${currentExam.id}',${currentExam.questions.length})">Submit for Grading</button></div>` : ''}
-    <div class="fp-side-card"><h3>Previous Exams</h3>
-      ${exams.length ? exams.map(e => {
-        const hasGrade = e.score > 0;
-        return `<div style="padding:10px 0;border-top:1px solid var(--glass-border);display:flex;align-items:center;gap:10px">
-          <span style="font-size:11px;color:var(--text2);flex:1">${esc((e.category||'general').replace(/-/g,' '))} exam</span>
-          ${hasGrade ? `<span style="font-size:13px;font-weight:700;color:${e.score>=80?'var(--green)':e.score>=60?'var(--amber)':'var(--red)'}">${e.score}%</span><span class="fp-chip">${esc(e.level||'')}</span>` : '<span class="fp-chip hot">pending</span>'}
-          <span style="font-size:10px;color:var(--text3)">${new Date(e.created_at*1000).toLocaleDateString()}</span></div>`;
-      }).join('') : '<p style="color:var(--text3)">No exams taken yet. Start one above.</p>'}
-    </div>`;
-}
-
-async function startExam() {
-  const cat = document.getElementById('exam-cat')?.value || 'computer-science';
-  try {
-    const r = await fetch(location.origin + '/api/trainer/exams/generate', { method:'POST', headers:{'Content-Type':'application/json','Authorization':authHeader()}, body:JSON.stringify({category:cat}) });
-    if (r.ok) notify('info', 'Exam Ready', `${cat.replace(/-/g,' ')} exam generated.`);
-  } catch { notify('warning', 'Offline', 'Using local exam template.'); }
-  renderExams(document.getElementById('content'));
-}
-
-async function submitExam(examId, questionCount) {
-  const answers = {};
-  for (let i = 0; i < questionCount; i++) answers['q'+(i+1)] = document.getElementById('exam-a-'+i)?.value || '';
-  try {
-    const r = await fetch(location.origin + '/api/trainer/exams/submit', { method:'POST', headers:{'Content-Type':'application/json','Authorization':authHeader()}, body:JSON.stringify({examId, answers:JSON.stringify(answers)}) });
-    if (r.ok) { const data = await r.json(); notify('success', `Scored ${data.score}%`, `${data.summary}`); }
-  } catch { notify('warning', 'Grading unavailable', 'Try again later.'); }
-  renderExams(document.getElementById('content'));
-}
-window.renderExams = renderExams;
-
-async function renderKnowledge(c) {
-  let overview = {};
-  try {
-    const r = await fetch(location.origin + '/api/trainer/overview', { headers: { 'Authorization': authHeader() } });
-    overview = await r.json();
-  } catch { overview = {}; }
-  const areas = [
-    { name:'Computer Science', icon:'💻', key:'computer-science', level: overview.avgScore ? (overview.avgScore >= 80 ? 'advanced' : overview.avgScore >= 60 ? 'intermediate' : 'foundation') : 'new' },
-    { name:'DevOps', icon:'⚙️', key:'devops', level:'new' },
-    { name:'English Career', icon:'💬', key:'english-career', level:'new' },
-    { name:'Networking', icon:'🌐', key:'networking', level:'new' },
-    { name:'Spanish', icon:'🇪🇸', key:'spanish', level:'new' },
-    { name:'Turkish', icon:'🇹🇷', key:'turkish', level:'new' },
-    { name:'Japanese', icon:'🇯🇵', key:'japanese', level:'new' },
-  ];
-  const levelColor = { advanced:'var(--green)', intermediate:'var(--amber)', foundation:'var(--accent)', new:'var(--text3)' };
-  c.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
-    <div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px">Knowledge Map</div>
-    <div style="font-size:13px;color:var(--text3);margin-top:2px">${areas.length} knowledge areas · Track your learning</div></div></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
-    ${areas.map(a => `<div class="fp-side-card" style="display:flex;align-items:center;gap:14px">
-      <div style="font-size:32px;width:56px;height:56px;border-radius:16px;background:var(--accent3);display:flex;align-items:center;justify-content:center">${a.icon}</div>
-      <div style="flex:1"><div style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:var(--text)">${a.name}</div>
-        <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font-size:10px;color:${levelColor[a.level]};background:${a.level==='advanced'?'var(--green-bg)':a.level==='intermediate'?'var(--amber-bg)':a.level==='foundation'?'var(--accent3)':'var(--bg3)'};border-radius:999px;padding:2px 8px;font-family:Space Mono,monospace">${a.level}</span>
-        <span style="font-size:10px;color:var(--text3)">${a.level==='new'?'Start learning':'Keep practicing'}</span></div></div></div>`).join('')}
-    </div>
-    <div class="fp-side-card" style="margin-top:16px"><h3>CV Readiness</h3>
-      <div class="fp-side-stat"><span>Vocab words</span><b>${overview.words||0}</b></div>
-      <div class="fp-side-stat"><span>Exams taken</span><b>${overview.exams||0}</b></div>
-      <div class="fp-side-stat"><span>Avg score</span><b>${overview.avgScore||0}%</b></div>
-      <div class="fp-side-stat"><span>Active challenges</span><b>${overview.challenges||0}</b></div>
-      <div class="fp-side-stat"><span>Readiness</span><b style="color:${(overview.avgScore||0)>=70?'var(--green)':(overview.avgScore||0)>=50?'var(--amber)':'var(--red)'}">${(overview.avgScore||0)>=80?'Strong':(overview.avgScore||0)>=50?'Building':'Getting Started'}</b></div>
-    </div>`;
-}
-window.renderKnowledge = renderKnowledge;
 
 // ═══════════════════════════════════════════════════════════
 // ── GDD EDITOR ────────────────────────────────────────────
@@ -4931,31 +3975,17 @@ const STATUS_OPTIONS=[
 ];
 const PRIO_LABELS={high:'High',medium:'Medium',low:'Low'};
 const PRIO_CLRS={high:'#dc2626',medium:'#d97706',low:'#6b7280'};
+const FP_PAGES=[
+  {id:'board',label:'Board'},
+  {id:'overview',label:'Overview'},
+  {id:'phases',label:'Phases'},
+  {id:'tasks',label:'Tasks'},
+  {id:'pictures',label:'Pictures'}
+];
 let FP_CURRENT_ID = null;
 let FP_PAGE = 'board';
-let FP_CONTEXT_MODE = 'selection';
-let FP_CONTEXT_COLLAPSED = false;
-let FP_SELECTED_CANVAS_ID = null;
 let FP_SAVE_TIMER = null;
-let FP_DIAGRAM_ASSESS_TIMER = null;
-let FP_DIAGRAM_SELECTED_NODE_ID = null;
-let FP_DIAGRAM_SELECTED_LINK_ID = null;
-let FP_DIAGRAM_LINK_DRAFT = null;
 let FP_QUERY = '';
-
-const DIAGRAM_DOMAIN_OPTIONS = [
-  { key:'unity-classes', label:'Unity Classes' },
-  { key:'unity-systems', label:'Unity Systems' },
-  { key:'software-classes', label:'Software Classes' },
-  { key:'product-flow', label:'Product Flow' },
-  { key:'devops-flow', label:'DevOps Flow' }
-];
-const DIAGRAM_NODE_TYPES = [
-  'class','monobehaviour','manager','service','interface','system','scriptable-object','controller','repository','pipeline','scene','infra','observability'
-];
-const DIAGRAM_LINK_TYPES = [
-  'calls','owns','uses','injects','inherits','implements','publishes-to','subscribes-to','updates','reads-from','writes-to','triggers'
-];
 
 function parseJSON(value, fallback) {
   if (Array.isArray(value) || (value && typeof value === 'object')) return value;
@@ -4972,27 +4002,6 @@ function normalizeProject(p) {
   if (!Array.isArray(p.board.tasks)) p.board.tasks = [];
   if (!Array.isArray(p.board.pictures)) p.board.pictures = [];
   if (!Array.isArray(p.board.canvas)) p.board.canvas = [];
-  for (const item of p.board.canvas) { if (!Array.isArray(item.linkedNodeIds)) item.linkedNodeIds = []; }
-  if (!p.board.diagram || typeof p.board.diagram !== 'object' || Array.isArray(p.board.diagram)) p.board.diagram = {};
-  if (!Array.isArray(p.board.diagram.nodes)) p.board.diagram.nodes = [];
-  if (!Array.isArray(p.board.diagram.links)) p.board.diagram.links = [];
-  if (!p.board.diagram.assessment || typeof p.board.diagram.assessment !== 'object' || Array.isArray(p.board.diagram.assessment)) p.board.diagram.assessment = { source:'local', score:0, summary:'Add nodes and links, then run AI review.', hints:[], risks:[], suggestedNodes:[], suggestedLinks:[], suggestedFunctions:[], nextSteps:[] };
-  if (!p.board.diagram.ai || typeof p.board.diagram.ai !== 'object' || Array.isArray(p.board.diagram.ai)) p.board.diagram.ai = {};
-  if (!Array.isArray(p.board.diagram.ai.messages)) p.board.diagram.ai.messages = [];
-  if (!Array.isArray(p.board.diagram.ai.notifications)) p.board.diagram.ai.notifications = [];
-  if (!Array.isArray(p.board.diagram.ai.tasks)) p.board.diagram.ai.tasks = [];
-  if (!Array.isArray(p.board.diagram.ai.schedule)) p.board.diagram.ai.schedule = [];
-  if (!Array.isArray(p.board.diagram.ai.buttons)) p.board.diagram.ai.buttons = [];
-  if (!p.board.diagram.ai.edits || typeof p.board.diagram.ai.edits !== 'object' || Array.isArray(p.board.diagram.ai.edits)) p.board.diagram.ai.edits = { suggestedNodeEdits:[], suggestedLinkEdits:[], suggestedFunctionEdits:[] };
-  if (!p.board.diagram.ai.validation || typeof p.board.diagram.ai.validation !== 'object' || Array.isArray(p.board.diagram.ai.validation)) p.board.diagram.ai.validation = { status:'pending', whatPassed:[], whatFailed:[], nextFixes:[] };
-  if (!p.board.diagram.ai.scriptReview || typeof p.board.diagram.ai.scriptReview !== 'object' || Array.isArray(p.board.diagram.ai.scriptReview)) p.board.diagram.ai.scriptReview = { status:'pending', summary:'', matchesDiagram:false, issues:[], recommendedChanges:[] };
-  if (!p.board.diagram.ai.previousSuggestions || typeof p.board.diagram.ai.previousSuggestions !== 'object' || Array.isArray(p.board.diagram.ai.previousSuggestions)) p.board.diagram.ai.previousSuggestions = { suggestedNodeEdits:[], suggestedLinkEdits:[], suggestedFunctionEdits:[] };
-  p.board.diagram.ai.locale = p.board.diagram.ai.locale || 'en';
-  p.board.diagram.ai.preserveTerms = p.board.diagram.ai.preserveTerms || 'Player, Subject, MonoBehaviour, GameManager, API, CI/CD, DevOps';
-  p.board.diagram.ai.mission = p.board.diagram.ai.mission || '';
-  p.board.diagram.ai.scripts = p.board.diagram.ai.scripts || '';
-  p.board.diagram.ai.status = p.board.diagram.ai.status || 'ready';
-  p.board.diagram.domain = p.board.diagram.domain || ((p.tags || []).some(t => /unity/i.test(String(t))) ? 'unity-classes' : 'software-classes');
   p.board.notes = p.board.notes || '';
   return p;
 }
@@ -5106,154 +4115,11 @@ function renderFProj(c) {
   </div>`;
 }
 
-function currentProject() {
-  const p = PROJ.fproj.find(x => x.id === FP_CURRENT_ID);
-  return p ? normalizeProject(p) : null;
-}
-
-function currentProjectDiagram() {
-  const p = currentProject();
-  return p ? p.board.diagram : null;
-}
-
-function diagramStats(p) {
-  normalizeProject(p);
-  return {
-    nodes: p.board.diagram.nodes.length,
-    links: p.board.diagram.links.length,
-    classes: p.board.diagram.nodes.filter(n => ['class','monobehaviour','system','service','manager','controller'].includes(String(n.type || ''))).length
-  };
-}
-
-function ensureDiagramSelection(p) {
-  normalizeProject(p);
-  if (!FP_DIAGRAM_SELECTED_NODE_ID && p.board.diagram.nodes[0]) FP_DIAGRAM_SELECTED_NODE_ID = p.board.diagram.nodes[0].id;
-  if (FP_DIAGRAM_SELECTED_NODE_ID && !p.board.diagram.nodes.some(n => n.id === FP_DIAGRAM_SELECTED_NODE_ID)) FP_DIAGRAM_SELECTED_NODE_ID = p.board.diagram.nodes[0]?.id || null;
-  if (FP_DIAGRAM_SELECTED_LINK_ID && !p.board.diagram.links.some(l => l.id === FP_DIAGRAM_SELECTED_LINK_ID)) FP_DIAGRAM_SELECTED_LINK_ID = null;
-}
-
-function currentDiagramNode(p) {
-  ensureDiagramSelection(p);
-  return p.board.diagram.nodes.find(n => n.id === FP_DIAGRAM_SELECTED_NODE_ID) || null;
-}
-
-function currentDiagramLink(p) {
-  return p.board.diagram.links.find(l => l.id === FP_DIAGRAM_SELECTED_LINK_ID) || null;
-}
-
-function currentDiagramAi(p) {
-  normalizeProject(p);
-  return p.board.diagram.ai;
-}
-
-function currentDiagramPreviousSuggestions(p) {
-  normalizeProject(p);
-  return p.board.diagram.ai.previousSuggestions || { suggestedNodeEdits:[], suggestedLinkEdits:[], suggestedFunctionEdits:[] };
-}
-
-function diagramNodeTypeLabel(type) {
-  return String(type || 'class').replace(/-/g, ' ');
-}
-
-function diagramNodeStyle(node) {
-  const t = String(node.type || 'class').toLowerCase();
-  const base = 'position:absolute;padding:0;cursor:pointer;overflow:hidden;';
-  // Position set separately
-  const colors = {
-    border: t === 'interface' ? '1.5px dashed var(--border)' :
-      t === 'manager' ? '2.5px solid var(--border2)' :
-      t === 'monobehaviour' ? '1.5px solid var(--accent)' :
-      t === 'service' ? '1.5px solid var(--border)' :
-      t === 'infra' ? '2.5px solid var(--border2)' :
-      t === 'system' ? '1.5px solid var(--border2)' :
-      t === 'scriptable-object' ? '1.5px solid var(--pink)' :
-      t === 'controller' ? '1.5px solid var(--border)' :
-      t === 'repository' ? '1.5px solid var(--cyan)' :
-      t === 'observability' ? '1.5px solid var(--cyan)' :
-      t === 'pipeline' ? '1.5px solid var(--amber)' :
-      t === 'scene' ? '1.5px solid var(--border2)' :
-      '1.5px solid var(--border)',
-    radius: t === 'service' ? '24px' :
-      t === 'infra' ? '28px' :
-      t === 'pipeline' ? '12px 28px 28px 12px' :
-      t === 'scene' ? '14px' :
-      t === 'system' ? '20px' :
-      t === 'repository' ? '14px 14px 6px 6px' :
-      t === 'observability' ? '24px' :
-      t === 'scriptable-object' ? '10px 24px 10px 24px' :
-      '18px',
-    bg: t === 'monobehaviour' ? 'linear-gradient(180deg, rgba(174,75,41,.06), var(--bg2))' :
-      t === 'scriptable-object' ? 'linear-gradient(180deg, rgba(166,77,106,.06), var(--bg2))' :
-      t === 'system' ? 'linear-gradient(180deg, rgba(196,180,154,.08), var(--bg2))' :
-      'var(--bg2)',
-    scale: t === 'system' || t === 'scene' ? 'scaleX(1.04)' : 'none',
-    headerBg: t === 'monobehaviour' ? 'rgba(174,75,41,.14)' :
-      t === 'scriptable-object' ? 'rgba(166,77,106,.12)' :
-      t === 'system' ? 'rgba(196,180,154,.12)' :
-      t === 'infra' ? 'rgba(80,85,90,.14)' :
-      t === 'pipeline' ? 'rgba(184,134,11,.10)' :
-      t === 'repository' ? 'rgba(122,138,120,.12)' :
-      t === 'observability' ? 'rgba(89,146,163,.14)' :
-      'rgba(174,75,41,.08)'
-  };
-  return { ...colors, base };
-}
-
-function canvasItemLabel(type) {
-  const map = { note:'Note', block:'Block', checklist:'Checklist',
-    phases:'Phase List', tasks:'Task Table', diagram:'Diagram',
-    'execution-queue':'Execution Queue', 'architecture-summary':'Architecture Summary',
-    'ai-review':'AI Review Summary', 'validation-summary':'Validation Summary',
-    'script-review':'Script Review Summary', 'risks':'Risks & Assumptions',
-    'metrics':'Success Metrics', 'release-notes':'Release Notes',
-    'problem-statement':'Problem Statement', 'goal':'Project Goal',
-    'target-users':'Target Users', 'scope':'Scope',
-    'roadmap':'Roadmap', 'launch-checklist':'Launch Checklist' };
-  return map[String(type || '').toLowerCase()] || String(type || 'Block').replace(/-/g, ' ');
-}
-
-function currentCanvasItem(p, id) {
-  normalizeProject(p);
-  const targetId = id || FP_SELECTED_CANVAS_ID;
-  if (!targetId) return null;
-  return p.board.canvas.find(item => item.id === targetId) || null;
-}
-
-function diagramUiText(locale, english, arabic) {
-  return String(locale || 'en') === 'ar' ? arabic : english;
-}
-
-function suggestedDiagramMethods(node) {
-  const type = String(node?.type || 'class').toLowerCase();
-  const base = [];
-  if (type === 'monobehaviour') base.push('Awake()','Start()','BindReferences()');
-  else if (type === 'manager') base.push('Initialize()','Register()','Shutdown()');
-  else if (type === 'service') base.push('Execute()','Validate()','HandleRequest()');
-  else if (type === 'system') base.push('Initialize()','Tick()','Dispose()');
-  else if (type === 'controller') base.push('HandleInput()','RefreshView()','RouteAction()');
-  else if (type === 'repository') base.push('Load()','Save()','FindById()');
-  else if (type === 'pipeline') base.push('Run()','Rollback()','ReportStatus()');
-  else if (type === 'interface') base.push('Execute()');
-  else base.push('Initialize()','Execute()','Validate()');
-  const duty = String(node?.responsibility || '').toLowerCase();
-  if (/spawn/.test(duty)) base.push('Spawn()');
-  if (/save|persist/.test(duty)) base.push('Save()');
-  if (/load|read/.test(duty)) base.push('Load()');
-  if (/input/.test(duty)) base.push('HandleInput()');
-  return [...new Set(base)].slice(0, 6);
-}
-
 function openProjectBoard(id, page) {
   const p = PROJ.fproj.find(x => x.id === id);
   if (!p) return;
   FP_CURRENT_ID = id;
-  FP_PAGE = page === 'diagram' ? 'diagram' : 'board';
-  FP_CONTEXT_MODE = FP_PAGE === 'diagram' ? 'diagram' : 'selection';
-  FP_CONTEXT_COLLAPSED = false;
-  FP_SELECTED_CANVAS_ID = null;
-  FP_DIAGRAM_SELECTED_NODE_ID = null;
-  FP_DIAGRAM_SELECTED_LINK_ID = null;
-  FP_DIAGRAM_LINK_DRAFT = null;
+  FP_PAGE = page || 'board';
   renderProjectBoard(document.getElementById('content'));
 }
 
@@ -5267,291 +4133,118 @@ function renderProjectBoard(c) {
   if (!p) return renderFProj(c);
   const progress = projectProgress(p);
   const tasks = taskStats(p);
-  const shellClass = FP_CONTEXT_COLLAPSED ? 'fp-workspace context-collapsed' : 'fp-workspace';
-  c.innerHTML = `<div class="${shellClass}">${renderProjectRail(p)}<main class="fp-work-main"><section class="fp-work-hero"><div class="fp-work-title">${esc(p.title || 'Untitled Project')}</div><div class="fp-work-meta"><span class="fp-kicker">${esc(statusLabel(p.status))} · ${esc(PRIO_LABELS[p.priority] || p.priority || 'Medium')} priority</span><span class="fp-chip hot">${progress}% phases</span><span class="fp-chip">${tasks.done}/${tasks.total} tasks</span><span class="fp-save-pill" id="fp-save-state">Saved</span></div></section>${FP_PAGE === 'diagram' ? renderDiagramFocusSurface(p) : renderBoardFocusSurface(p)}</main><aside class="fp-board-side">${renderProjectContextPanel(p)}</aside></div>`;
-  requestAnimationFrame(initProjectWorkspaceInteractions);
-}
-
-function renderProjectRail(p) {
-  const diagram = diagramStats(p);
-  return `<aside class="fp-work-rail">
-    <button class="t-btn fp-work-back" onclick="FP_CURRENT_ID=null;renderFProj(document.getElementById('content'))">← Project OS</button>
-    <div class="fp-work-brand"><div class="fp-work-brand-kicker">Active project</div><div class="fp-work-brand-title">${esc(p.title || 'Untitled Project')}</div></div>
-    <div class="fp-rail-section">
-      <div class="fp-rail-section-title">Create</div>
-      <button class="fp-rail-button" onclick="addCanvasItem('note')"><i>＋</i><span>Note</span></button>
-      <button class="fp-rail-button" onclick="addProjectTask('New task')"><i>＋</i><span>Task</span></button>
-      <button class="fp-rail-button" onclick="addProjectPhase('New phase')"><i>＋</i><span>Phase</span></button>
-      <button class="fp-rail-button" onclick="addCanvasItem('block')"><i>＋</i><span>Block</span></button>
-      <button class="fp-rail-button" onclick="addProjectDiagramNodeFromRail()"><i>＋</i><span>Diagram Node</span></button>
-    </div>
-    <div class="fp-rail-divider"></div>
-    <div class="fp-rail-section">
-      <div class="fp-rail-section-title">AI</div>
-      <button class="fp-rail-button" onclick="runProjectAiReview()"><i>◌</i><span>AI Review</span></button>
-      <button class="fp-rail-button" onclick="runProjectValidateEdits()"><i>✓</i><span>Validate</span></button>
-      <button class="fp-rail-button" onclick="runProjectScriptReview()"><i>≋</i><span>Review Scripts</span></button>
-    </div>
-    <div class="fp-rail-divider"></div>
-    <div class="fp-rail-section">
-      <div class="fp-rail-section-title">Navigate</div>
-      <button class="fp-rail-button" onclick="projNav('vocab');FP_CURRENT_ID=null;renderFProj(document.getElementById('content'))"><i>📖</i><span>Vocab</span></button>
-      <button class="fp-rail-button" onclick="projNav('challenges');FP_CURRENT_ID=null;renderFProj(document.getElementById('content'))"><i>📋</i><span>Challenges</span></button>
-    </div>
-    <div class="fp-rail-divider"></div>
-    <div class="fp-rail-section">
-      <div class="fp-rail-section-title">System</div>
-      <button class="fp-rail-button" onclick="openProjectExportPanel()"><i>⇩</i><span>Export</span></button>
-      <button class="fp-rail-button" onclick="openProjectSettingsPanel()"><i>⚙</i><span>Settings</span></button>
-      <div class="fp-rail-button" style="cursor:default"><i>●</i><span>${diagram.nodes} nodes / ${diagram.links} links</span></div>
-    </div>
-  </aside>`;
-}
-
-function renderBoardFocusSurface(p) {
-  const progress = projectProgress(p);
-  const tasks = taskStats(p);
-  const diagram = diagramStats(p);
-  return `<div class="fp-page">
-    <div class="fp-page-title">
-      <div><h2>Board</h2><p>One surface for notes, tasks, phases, and architecture widgets.</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <span class="fp-chip hot">${progress}% phases</span>
-        <span class="fp-chip">${tasks.done}/${tasks.total} tasks</span>
-        <span class="fp-chip">${p.board.canvas.length} blocks</span>
-        <span class="fp-chip">${diagram.nodes} nodes</span>
-        <button class="m-btn" onclick="focusProjectDiagram()">Focus Diagram</button>
-      </div>
-    </div>
-    <div class="fp-board-command">
-      <div><h2>Project Board</h2><p>Middle mouse pans the surface. Click a block to edit it in the context panel.</p></div>
-      <div class="fp-board-actions">
-        <select class="fp-field" id="fp-canvas-type" style="max-width:150px"><option value="note">Note</option><option value="checklist">Checklist</option><option value="execution-queue">Execution Queue</option><option value="phases">Phase List</option><option value="tasks">Task Table</option><option value="diagram">Architecture Diagram</option><option value="architecture-summary">Arch Summary</option><option value="ai-review">AI Review</option><option value="validation-summary">Validation</option><option value="script-review">Script Review</option><option value="risks">Risks & Assumptions</option><option value="metrics">Metrics</option><option value="release-notes">Release Notes</option><option value="block">Custom Block</option></select>
-        <button class="m-btn" onclick="addCanvasItem(document.getElementById('fp-canvas-type')?.value)">+ Add Widget</button>
-        <button class="m-btn" onclick="clearProjectSelection()">Clear Selection</button>
-        <button class="m-btn" onclick="openProjectContext('ai')">AI Panel</button>
-      </div>
-    </div>
-    <div class="fp-canvas-wrap">
-      <div class="fp-canvas" id="fp-canvas">${renderCanvasItems(p)}</div>
-    </div>
+  const nextPhase = p.phases.find(ph => !ph.done)?.title || (p.phases.length ? 'All phases complete' : 'Create the first phase');
+  c.innerHTML = `<div class="fp-workspace">
+    <aside class="fp-work-rail">
+      <button class="t-btn fp-work-back" onclick="FP_CURRENT_ID=null;renderFProj(document.getElementById('content'))">← Project OS</button>
+      <div class="fp-work-brand"><div class="fp-work-brand-kicker">Active project</div><div class="fp-work-brand-title">${esc(p.title || 'Untitled Project')}</div></div>
+      <div class="fp-work-nav">${FP_PAGES.map((pg, i) => `<button data-num="${String(i + 1).padStart(2,'0')}" class="${FP_PAGE===pg.id?'active':''}" onclick="switchProjectPage('${pg.id}')"><b>${esc(pg.label)}</b></button>`).join('')}</div>
+    </aside>
+    <main class="fp-work-main">
+      <section class="fp-work-hero">
+        <div class="fp-work-title">${esc(p.title || 'Untitled Project')}</div>
+        <div class="fp-work-meta">
+          <span class="fp-kicker">${esc(statusLabel(p.status))} · ${esc(PRIO_LABELS[p.priority] || p.priority || 'Medium')} priority</span>
+          <span class="fp-chip hot">${progress}% phases</span>
+          <span class="fp-chip">${tasks.done}/${tasks.total} tasks</span>
+          <span class="fp-save-pill" id="fp-save-state">Saved</span>
+        </div>
+      </section>
+      ${renderProjectPage(p)}
+    </main>
   </div>`;
 }
 
-function renderDiagramFocusSurface(p) {
-  normalizeProject(p);
-  ensureDiagramSelection(p);
-  const diagram = p.board.diagram;
-  const stats = diagramStats(p);
-  const quickRelation = FP_DIAGRAM_LINK_DRAFT?.relation || 'calls';
-  const quickNote = FP_DIAGRAM_LINK_DRAFT?.note || '';
-  const linksSvg = diagram.links.map((link) => {
-    const from = diagram.nodes.find(n => n.id === link.from);
-    const to = diagram.nodes.find(n => n.id === link.to);
-    if (!from || !to) return '';
-    const x1 = (Number(from.x)||0) + (Number(from.w)||210) / 2;
-    const y1 = (Number(from.y)||0) + (Number(from.h)||110) / 2;
-    const x2 = (Number(to.x)||0) + (Number(to.w)||210) / 2;
-    const y2 = (Number(to.y)||0) + (Number(to.h)||110) / 2;
-    const mx = Math.round((x1 + x2) / 2);
-    const my = Math.round((y1 + y2) / 2);
-    return `<g><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(174,75,41,.55)" stroke-width="2.2"></line><rect x="${mx - 44}" y="${my - 12}" width="88" height="22" rx="11" fill="rgba(20,15,11,.92)"></rect><text x="${mx}" y="${my + 4}" text-anchor="middle" fill="#d7cbb8" font-size="10" font-family="Space Mono">${esc(link.relation || 'calls')}</text></g>`;
-  }).join('');
-  const nodeCards = diagram.nodes.map((node) => {
-    const selected = node.id === FP_DIAGRAM_SELECTED_NODE_ID;
-    const linking = FP_DIAGRAM_LINK_DRAFT?.from === node.id;
-    const linkCount = diagram.links.filter(l => l.from === node.id || l.to === node.id).length;
-    const style = diagramNodeStyle(node);
-    const selBorder = linking ? 'var(--amber)' : selected ? 'var(--accent)' : style.border;
-    const selBorderWidth = linking || selected ? '2.5px' : 'auto';
-    return `<div id="diagram-node-${escA(node.id)}" onclick="selectDiagramNode('${escA(node.id)}')" style="position:absolute;left:${Number(node.x)||0}px;top:${Number(node.y)||0}px;width:${Number(node.w)||210}px;min-height:${Number(node.h)||110}px;background:${selBorder === style.border ? style.bg : (selected ? 'linear-gradient(180deg,var(--bg2),var(--bg3))' : style.bg)};border:${selBorder};border-radius:${style.radius};box-shadow:var(--shadow);cursor:pointer;overflow:hidden;transform:${style.scale};${linking || selected ? 'border-width:' + selBorderWidth + ';' : ''}">
-      <div onpointerdown="startDiagramNodeDrag(event,'${escA(node.id)}')" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);background:${style.headerBg}">
-        <span style="font-size:10px;font-family:Space Mono,monospace;color:${node.type === 'monobehaviour' ? 'var(--accent)' : node.type === 'scriptable-object' ? 'var(--pink)' : node.type === 'pipeline' ? 'var(--amber)' : node.type === 'repository' ? 'var(--cyan)' : 'var(--accent)'}">${esc(diagramNodeTypeLabel(node.type).toUpperCase())}</span>
-        <div style="display:flex;gap:6px"><button class="m-btn" style="padding:2px 7px;font-size:10px" onclick="event.stopPropagation();setDiagramLinkDraft('${escA(node.id)}')">🔗</button><button class="m-btn danger" style="padding:2px 7px;font-size:10px" onclick="event.stopPropagation();deleteDiagramNode('${escA(node.id)}')">×</button></div>
-      </div>
-      <div style="padding:12px">
-        <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:var(--text)">${esc(node.name || 'Unnamed')}</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.45">${esc((node.responsibility || 'Set one clear responsibility for this class.')).slice(0, 130)}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><span class="fp-chip">${String(node.methods || '').split('\\n').map(x=>x.trim()).filter(Boolean).length} methods</span><span class="fp-chip">${linkCount} links</span></div>
+function renderProjectPage(p) {
+  const tasks = taskStats(p);
+  if (FP_PAGE === 'phases') return `<div class="fp-page"><div class="fp-page-title"><div><h2>Progress Ladder</h2><p>Each phase contributes directly to the project percentage.</p></div><span class="fp-chip hot">${p.phases.filter(ph=>ph.done).length}/${p.phases.length} complete</span></div>
+    ${p.phases.map((ph, i) => `<div class="fp-phase-row"><input type="checkbox" ${ph.done?'checked':''} onchange="toggleProjectPhase('${ph.id}',this.checked)"><div><div style="font-family:Syne,sans-serif;font-weight:800;color:var(--text);margin-bottom:4px">Phase ${i + 1}</div><input class="fp-field" value="${escA(ph.title)}" oninput="updateProjectPhaseTitle('${ph.id}',this.value)"></div><div class="fp-row-actions"><button class="m-btn danger" onclick="deleteProjectPhase('${ph.id}')">Remove</button></div></div>`).join('') || '<div class="fp-panel full" style="color:var(--text3)">No phases yet. Add the first phase below.</div>'}
+    <div style="display:flex;gap:8px;margin-top:14px"><input class="fp-field" id="fp-new-phase" placeholder="New phase name"><button class="m-btn primary" onclick="addProjectPhase()">Add Phase</button></div></div>`;
+  if (FP_PAGE === 'tasks') return `<div class="fp-page"><div class="fp-page-title"><div><h2>Execution Queue</h2><p>Task rows are lightweight and synced into the board canvas table.</p></div><span class="fp-chip hot">${tasks.percent}% done</span></div>
+    ${p.board.tasks.map((t, i) => `<div class="fp-task-row"><input type="checkbox" ${t.done?'checked':''} onchange="toggleProjectTask('${t.id}',this.checked)"><div><div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text3);margin-bottom:4px">TASK ${String(i+1).padStart(2,'0')}</div><input class="fp-field" value="${escA(t.title)}" oninput="updateProjectTaskTitle('${t.id}',this.value)"></div><div class="fp-row-actions"><button class="m-btn danger" onclick="deleteProjectTask('${t.id}')">Remove</button></div></div>`).join('') || '<div class="fp-panel full" style="color:var(--text3)">No tasks yet. Add execution tasks below.</div>'}
+    <div style="display:flex;gap:8px;margin-top:14px"><input class="fp-field" id="fp-new-task" placeholder="New task"><button class="m-btn primary" onclick="addProjectTask()">Add Task</button></div></div>`;
+  if (FP_PAGE === 'board') {
+    const nextPhase = p.phases.find(ph => !ph.done)?.title || (p.phases.length ? 'All phases complete' : 'Create a phase');
+    return `<div class="fp-page">
+      <div class="fp-board-layout">
+        <div class="fp-canvas-wrap">
+          <div class="fp-board-command">
+            <h2>Board</h2>
+            <div class="fp-board-actions">
+              <button class="m-btn" onclick="addCanvasItem('note')">+ Note</button>
+              <button class="m-btn" onclick="addCanvasItem('checklist')">+ Checklist</button>
+              <button class="m-btn" onclick="addCanvasItem('phases')">+ Phases</button>
+              <button class="m-btn" onclick="addCanvasItem('tasks')">+ Tasks</button>
+            </div>
+          </div>
+          <div class="fp-canvas" id="fp-canvas">${renderCanvasItems(p)}</div>
+        </div>
+        <aside class="fp-board-side">
+          <div class="fp-side-card"><h3>Pulse</h3>
+            <div class="fp-side-stat"><span>Phase progress</span><b>${projectProgress(p)}%</b></div>
+            <div class="fp-side-stat"><span>Tasks complete</span><b>${tasks.done}/${tasks.total}</b></div>
+            <div class="fp-side-stat"><span>Canvas blocks</span><b>${p.board.canvas.length}</b></div>
+          </div>
+          <div class="fp-side-card"><h3>Next Move</h3><p>${esc(nextPhase)}</p></div>
+          <div class="fp-side-card"><h3>Quick Add</h3><div style="display:flex;gap:6px"><input class="fp-field" id="fp-new-task-board" placeholder="Task title"><button class="m-btn" onclick="addProjectTaskFrom('fp-new-task-board')">Add</button></div></div>
+          <div class="fp-side-card"><h3>Autosave</h3><p>D1 saves automatically. R2 backup runs in background.</p></div>
+        </aside>
       </div>
     </div>`;
-  }).join('');
-  return `<div class="fp-page">
-    <div class="fp-page-title">
-      <div><h2>Diagram</h2><p>Build architecture links without leaving the project shell.</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <select class="fp-field" style="max-width:220px" onchange="updateProjectDiagramDomain(this.value)">${DIAGRAM_DOMAIN_OPTIONS.map(o => `<option value="${o.key}" ${diagram.domain===o.key?'selected':''}>${esc(o.label)}</option>`).join('')}</select>
-        <button class="m-btn" onclick="focusProjectBoard()">Back to Board</button>
-        <button class="m-btn" onclick="addDiagramNode('class')">+ Class</button>
-        <button class="m-btn" onclick="addDiagramNode('monobehaviour')">+ Mono</button>
-        <button class="m-btn" onclick="addDiagramNode('service')">+ Service</button>
-        <select class="fp-field" id="diagram-node-type" style="max-width:140px">${DIAGRAM_NODE_TYPES.map(t => `<option value="${t}" ${t==='class'?'selected':''}>${esc(diagramNodeTypeLabel(t))}</option>`).join('')}</select>
-        <button class="m-btn" onclick="addDiagramNode(document.getElementById('diagram-node-type')?.value)">+ Node</button>
-        <button class="m-btn primary" onclick="scheduleProjectDiagramAssessment(true)">Assess Diagram</button>
-      </div>
-    </div>
-    <div class="fp-board-command"><h2>Link Map</h2><div class="fp-board-actions"><span class="fp-chip hot">${stats.nodes} nodes</span><span class="fp-chip">${stats.links} links</span><span class="fp-chip">${stats.classes} code blocks</span></div></div>
-    <div class="fp-panel full" style="margin:12px 0 12px;display:grid;gap:10px"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><b style="color:var(--text)">Direct Link Flow</b><div style="font-size:12px;color:var(--text3);margin-top:4px">Pick a source class with the link button, then click the target class in the diagram.</div></div>${FP_DIAGRAM_LINK_DRAFT ? `<div class="fp-chip hot">Linking from ${esc(diagram.nodes.find(n => n.id === FP_DIAGRAM_LINK_DRAFT.from)?.name || 'node')}</div>` : `<div class="fp-chip">No active link draft</div>`}</div><div style="display:grid;grid-template-columns:180px 1fr auto;gap:8px"><select class="fp-field" id="diagram-quick-link-relation">${DIAGRAM_LINK_TYPES.map(t => `<option value="${t}" ${quickRelation===t?'selected':''}>${esc(t)}</option>`).join('')}</select><input class="fp-field" id="diagram-quick-link-note" value="${escA(quickNote)}" placeholder="What this dependency means"><button class="m-btn" onclick="cancelDiagramLinkDraft()">Cancel Link</button></div></div>
-    <div id="fp-diagram-map" style="position:relative;min-height:580px;background:radial-gradient(circle at top left, rgba(174,75,41,.08), transparent 35%), var(--bg3);border:1.5px solid var(--border);border-radius:20px;overflow:auto">
-      <svg width="100%" height="100%" viewBox="0 0 1200 800" preserveAspectRatio="none" style="position:absolute;inset:0;pointer-events:none">${linksSvg}</svg>
-      ${nodeCards || `<div style="padding:26px;color:var(--text3)">No diagram nodes yet. Add your first class, MonoBehaviour, service, or manager.</div>`}
-    </div>
-  </div>`;
-}
-
-function renderBoardSelectionPanel(p) {
-  const item = currentCanvasItem(p);
-  const progress = projectProgress(p);
-  const tasks = taskStats(p);
-  const diagram = diagramStats(p);
-  const summaryCard = `<div class="fp-side-card"><h3>Project</h3><label class="form-lbl">Title</label><input class="fp-field" value="${escA(p.title || '')}" oninput="updateProjectField('title',this.value)"><label class="form-lbl" style="margin-top:10px">Status</label><select class="fp-field" onchange="updateProjectField('status',this.value)">${STATUS_OPTIONS.map(s=>`<option value="${s.key}" ${p.status===s.key?'selected':''}>${s.label}</option>`).join('')}</select><label class="form-lbl" style="margin-top:10px">Priority</label><select class="fp-field" onchange="updateProjectField('priority',this.value)"><option value="low" ${p.priority==='low'?'selected':''}>Low</option><option value="medium" ${p.priority==='medium'?'selected':''}>Medium</option><option value="high" ${p.priority==='high'?'selected':''}>High</option></select><label class="form-lbl" style="margin-top:10px">Tags</label><input class="fp-field" value="${escA(p.tags.join(', '))}" oninput="updateProjectTags(this.value)"><label class="form-lbl" style="margin-top:10px">Description</label><textarea class="fp-field" rows="5" oninput="updateProjectField('description',this.value)">${esc(p.description || '')}</textarea></div><div class="fp-side-card"><h3>Board Notes</h3><textarea class="fp-field" rows="5" oninput="updateProjectBoardNotes(this.value)">${esc(p.board.notes || '')}</textarea></div><div class="fp-side-card"><h3>Snapshot</h3><div class="fp-side-stat"><span>Progress</span><b>${progress}%</b></div><div class="fp-side-stat"><span>Tasks</span><b>${tasks.done}/${tasks.total}</b></div><div class="fp-side-stat"><span>Blocks</span><b>${p.board.canvas.length}</b></div><div class="fp-side-stat"><span>Diagram nodes</span><b>${diagram.nodes}</b></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn" onclick="openProjectContext('ai')">AI</button><button class="m-btn" onclick="openProjectExportPanel()">Export</button><button class="m-btn" onclick="openProjectSettingsPanel()">Settings</button></div></div>`;
-  if (!item) return `<div class="fp-context-body">${summaryCard}</div>`;
-  if (item.type === 'tasks') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>Execution Queue</h3>${p.board.tasks.map((t, i) => `<div style="padding:10px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" ${t.done?'checked':''} onchange="toggleProjectTask('${t.id}',this.checked)"><input class="fp-field" style="flex:1" value="${escA(t.title)}" oninput="updateProjectTaskTitle('${t.id}',this.value)"></label></div>`).join('') || '<div style="color:var(--text3)">No tasks yet.</div>'}<div style="display:flex;gap:8px;margin-top:10px"><input class="fp-field" id="fp-new-task-context" placeholder="New task"><button class="m-btn primary" onclick="addProjectTask(document.getElementById('fp-new-task-context')?.value)">Add Task</button></div></div></div>`;
   }
-  if (item.type === 'phases') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>Phases</h3>${p.phases.map((ph, i) => `<div style="padding:10px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" ${ph.done?'checked':''} onchange="toggleProjectPhase('${ph.id}',this.checked)"><input class="fp-field" style="flex:1" value="${escA(ph.title)}" oninput="updateProjectPhaseTitle('${ph.id}',this.value)"></label></div>`).join('') || '<div style="color:var(--text3)">No phases yet.</div>'}<div style="display:flex;gap:8px;margin-top:10px"><input class="fp-field" id="fp-new-phase-context" placeholder="New phase"><button class="m-btn primary" onclick="addProjectPhase(document.getElementById('fp-new-phase-context')?.value)">Add Phase</button></div></div></div>`;
-  }
-  if (item.type === 'diagram') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>Architecture Widget</h3><div class="fp-side-stat"><span>Nodes</span><b>${diagram.nodes}</b></div><div class="fp-side-stat"><span>Links</span><b>${diagram.links}</b></div><div class="fp-side-stat"><span>Review</span><b>${esc(String(p.board.diagram.assessment?.score ?? 0))}%</b></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn primary" onclick="focusProjectDiagram()">Focus Diagram</button><button class="m-btn" onclick="openProjectContext('diagram')">Inspect</button></div></div>${renderDiagramAssessment(p)}</div>`;
-  }
-  if (item.type === 'note' || item.type === 'block' || item.type === 'checklist' || item.type === 'execution-queue' || item.type === 'risks' || item.type === 'metrics' || item.type === 'release-notes' || item.type === 'architecture-summary' || item.type === 'problem-statement' || item.type === 'goal' || item.type === 'target-users' || item.type === 'scope' || item.type === 'roadmap' || item.type === 'launch-checklist') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>${canvasItemLabel(item.type)}</h3><label class="form-lbl">Title</label><input class="fp-field" value="${escA(item.title || '')}" oninput="updateCanvasTitle('${escA(item.id)}',this.value)"><label class="form-lbl" style="margin-top:10px">Content</label><textarea class="fp-field" rows="8" oninput="updateCanvasContent('${escA(item.id)}',this.value)">${esc(item.content || '')}</textarea><div class="fp-side-stat"><span>Linked nodes</span><b>${Array.isArray(item.linkedNodeIds) ? item.linkedNodeIds.length : 0}</b></div>${(item.linkedNodeIds || []).length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${item.linkedNodeIds.map(nodeId => `<span class="fp-chip">${esc(nodeId)}</span>`).join('')}</div>` : '<p style="margin-top:8px;color:var(--text3)">No linked diagram nodes yet.</p>'}<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn" onclick="focusProjectDiagram()">Link in Diagram</button><button class="m-btn danger" onclick="deleteCanvasItem('${escA(item.id)}')">Delete</button></div></div></div>`;
-  }
-  if (item.type === 'ai-review' || item.type === 'validation-summary' || item.type === 'script-review') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>${canvasItemLabel(item.type)}</h3><p>This widget auto-displays data from the AI system. Run the corresponding action from the rail to populate it.</p><label class="form-lbl" style="margin-top:10px">Title</label><input class="fp-field" value="${escA(item.title || '')}" oninput="updateCanvasTitle('${escA(item.id)}',this.value)"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn danger" onclick="deleteCanvasItem('${escA(item.id)}')">Delete</button></div></div></div>`;
-  }
+  if (FP_PAGE === 'pictures') return `<div class="fp-page"><div class="fp-page-title"><div><h2>Reference Wall</h2><p>Collect screenshots, R2 files, inspiration, mockups, and visual targets.</p></div></div>
+    <div class="fp-picture-grid">${p.board.pictures.map(pic => `<div><img src="${escA(pic.url)}" onerror="this.style.display='none'"><button class="m-btn danger" style="margin-top:6px;width:100%" onclick="deleteProjectPicture('${pic.id}')">Remove</button></div>`).join('')}</div>
+    <div style="display:flex;gap:8px;margin-top:16px"><input class="fp-field" id="fp-new-picture" placeholder="Image URL or R2 download URL"><button class="m-btn primary" onclick="addProjectPicture()">Add Picture</button></div></div>`;
+  return `<div class="fp-page"><div class="fp-page-title"><div><h2>Mission Brief</h2><p>Define the project identity and operating context.</p></div></div><div class="fp-overview-grid">
+    <div class="fp-panel"><label class="form-lbl">Title</label><input class="fp-field" value="${escA(p.title)}" oninput="updateProjectField('title',this.value)"></div>
+    <div class="fp-panel"><label class="form-lbl">Status</label><select class="fp-field" onchange="updateProjectField('status',this.value)">${STATUS_OPTIONS.map(s=>`<option value="${s.key}" ${p.status===s.key?'selected':''}>${s.label}</option>`).join('')}</select></div>
+    <div class="fp-panel"><label class="form-lbl">Priority</label><select class="fp-field" onchange="updateProjectField('priority',this.value)"><option value="low" ${p.priority==='low'?'selected':''}>Low</option><option value="medium" ${p.priority==='medium'?'selected':''}>Medium</option><option value="high" ${p.priority==='high'?'selected':''}>High</option></select></div>
+    <div class="fp-panel"><label class="form-lbl">Tags</label><input class="fp-field" value="${escA(p.tags.join(', '))}" oninput="updateProjectTags(this.value)"></div>
+    <div class="fp-panel full"><label class="form-lbl">Description</label><textarea class="fp-field" rows="6" oninput="updateProjectField('description',this.value)">${esc(p.description || '')}</textarea></div>
+    <div class="fp-panel"><b style="font-family:Space Mono,monospace;font-size:24px;color:var(--accent)">${projectProgress(p)}%</b><div style="color:var(--text3);font-size:12px;margin-top:6px">Phase progress</div></div>
+    <div class="fp-panel"><b style="font-family:Space Mono,monospace;font-size:24px;color:var(--accent)">${tasks.done}/${tasks.total}</b><div style="color:var(--text3);font-size:12px;margin-top:6px">Tasks complete</div></div>
+    <div class="fp-panel full" style="display:flex;justify-content:flex-end"><button class="m-btn danger" onclick="deleteProject('${p.id}')">Delete Project</button></div>
+  </div></div>`;
 }
 
 function renderCanvasItems(p) {
   normalizeProject(p);
-  const bootstrapped = !p.board.canvas.length;
-  if (bootstrapped) {
+  if (!p.board.canvas.length) {
     p.board.canvas = [
       { id:'cv_'+Date.now(), type:'note', title:'Project Direction', content:p.board.notes || 'Use this canvas to arrange project ideas, phase lists, task tables, references, and checklists.', x:34, y:34, w:280, h:190 },
       { id:'cv_'+(Date.now()+1), type:'phases', title:'Live Phases', x:350, y:34, w:260, h:240 },
-      { id:'cv_'+(Date.now()+2), type:'tasks', title:'Live Task Table', x:34, y:260, w:420, h:260 },
-      { id:'cv_'+(Date.now()+3), type:'diagram', title:'Architecture Snapshot', x:500, y:260, w:360, h:240 }
+      { id:'cv_'+(Date.now()+2), type:'tasks', title:'Live Task Table', x:34, y:260, w:420, h:260 }
     ];
-    requestAnimationFrame(() => scheduleProjectSave());
   }
   return p.board.canvas.map((item) => renderCanvasItem(p, item)).join('');
 }
 
 function renderCanvasItem(p, item) {
   const style = `left:${Number(item.x)||30}px;top:${Number(item.y)||30}px;width:${Number(item.w)||260}px;min-height:${Number(item.h)||150}px`;
-  const selected = FP_SELECTED_CANVAS_ID === item.id;
   let body = '';
   if (item.type === 'phases') {
-    body = p.phases.length ? `<div class="fp-canvas-body">${p.phases.map(ph => `<label class="fp-canvas-checkline"><input type="checkbox" ${ph.done?'checked':''} onchange="toggleProjectPhase('${ph.id}',this.checked)"><span>${esc(ph.title)}</span></label>`).join('')}</div>` : '<div class="fp-canvas-body">No phases yet. Add phases from the rail or context panel.</div>';
+    body = p.phases.length ? `<div class="fp-canvas-body">${p.phases.map(ph => `<label class="fp-canvas-checkline"><input type="checkbox" ${ph.done?'checked':''} onchange="toggleProjectPhase('${ph.id}',this.checked)"><span>${esc(ph.title)}</span></label>`).join('')}</div>` : '<div class="fp-canvas-body">No phases yet. Add phases from the Phases page.</div>';
   } else if (item.type === 'tasks') {
-    body = `<div class="fp-canvas-body"><table class="fp-canvas-table"><thead><tr><th>Done</th><th>Task</th></tr></thead><tbody>${p.board.tasks.map(t => `<tr><td><input type="checkbox" ${t.done?'checked':''} onchange="toggleProjectTask('${t.id}',this.checked)"></td><td>${esc(t.title)}</td></tr>`).join('') || '<tr><td colspan="2">No tasks yet. Add tasks from the rail or context panel.</td></tr>'}</tbody></table></div>`;
-  } else if (item.type === 'diagram') {
-    const stats = diagramStats(p);
-    body = `<div class="fp-canvas-body"><div style="display:grid;gap:8px"><div style="font-size:12px;color:var(--text2)">Nodes: <b>${stats.nodes}</b></div><div style="font-size:12px;color:var(--text2)">Links: <b>${stats.links}</b></div><div style="font-size:12px;color:var(--text2)">Review: <b>${esc(String(p.board.diagram.assessment?.score ?? 0))}%</b></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="m-btn" onclick="openProjectContext('diagram')">Inspect</button><button class="m-btn primary" onclick="focusProjectDiagram()">Focus Diagram</button></div></div></div>`;
+    body = `<div class="fp-canvas-body"><table class="fp-canvas-table"><thead><tr><th>Done</th><th>Task</th></tr></thead><tbody>${p.board.tasks.map(t => `<tr><td><input type="checkbox" ${t.done?'checked':''} onchange="toggleProjectTask('${t.id}',this.checked)"></td><td>${esc(t.title)}</td></tr>`).join('') || '<tr><td colspan="2">No tasks yet. Add tasks from the Tasks page.</td></tr>'}</tbody></table></div>`;
   } else if (item.type === 'checklist') {
     const lines = String(item.content || '').split('\n').filter(Boolean);
     body = `<div class="fp-canvas-body">${lines.map((line, i) => `<label class="fp-canvas-checkline"><input type="checkbox" ${line.startsWith('[x]')?'checked':''} onchange="toggleCanvasChecklist('${item.id}',${i},this.checked)"><span>${esc(line.replace(/^\[[x ]\]\s*/i,''))}</span></label>`).join('') || '<div style="color:var(--text3);margin-bottom:8px">Add checklist lines below.</div>'}<textarea class="fp-canvas-note" style="min-height:70px;margin-top:8px" placeholder="One checklist item per line" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'execution-queue') {
-    const lines = String(item.content || '').split('\n').filter(Boolean);
-    body = `<div class="fp-canvas-body"><table class="fp-canvas-table"><thead><tr><th>Status</th><th>Item</th></tr></thead><tbody>${lines.length ? lines.map(line => { const isDone = line.startsWith('[x]') || line.startsWith('[✓]'); const clean = line.replace(/^\[[x✓ ]\]\s*/i,''); return `<tr><td><span class="fp-chip ${isDone ? '' : 'hot'}" style="font-size:9px;min-width:48px;text-align:center;display:inline-block">${isDone ? 'Done' : 'Next'}</span></td><td>${esc(clean)}</td></tr>`; }).join('') : '<tr><td colspan="2">No queue items yet.</td></tr>'}</tbody></table><textarea class="fp-canvas-note" style="min-height:60px;margin-top:8px" placeholder="One queue item per line" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'architecture-summary') {
-    const stats = diagramStats(p);
-    body = `<div class="fp-canvas-body"><div class="fp-side-stat"><span>Domain</span><b>${esc(diagramNodeTypeLabel(p.board.diagram.domain || ''))}</b></div><div class="fp-side-stat"><span>Nodes</span><b>${stats.nodes}</b></div><div class="fp-side-stat"><span>Links</span><b>${stats.links}</b></div><div class="fp-side-stat"><span>Score</span><b>${esc(String(p.board.diagram.assessment?.score ?? 0))}%</b></div><textarea class="fp-canvas-note" style="min-height:50px;margin-top:8px" placeholder="Architecture notes..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'ai-review') {
-    const a = p.board.diagram.assessment || {};
-    body = `<div class="fp-canvas-body"><div class="fp-side-stat"><span>Score</span><b>${esc(String(a.score ?? 0))}%</b></div><div class="fp-side-stat"><span>Source</span><b>${esc(String(a.source || 'local'))}</b></div><div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.45">${esc(String(a.summary || 'No review yet. Run AI Review from the rail.')).slice(0, 200)}</div>${(a.risks || []).length ? `<div style="margin-top:8px;font-size:10px;color:var(--red)">${a.risks.slice(0,3).map(r => `<div>⚠ ${esc(r)}</div>`).join('')}</div>` : ''}</div>`;
-  } else if (item.type === 'validation-summary') {
-    const v = p.board.diagram.ai?.validation || {};
-    const passed = (v.whatPassed || []).length;
-    const failed = (v.whatFailed || []).length;
-    body = `<div class="fp-canvas-body"><div class="fp-side-stat"><span>Status</span><b>${esc(String(v.status || 'pending'))}</b></div><div class="fp-side-stat"><span>Passed</span><b style="color:var(--green)">${passed}</b></div><div class="fp-side-stat"><span>Failed</span><b style="color:var(--red)">${failed}</b></div>${(v.nextFixes || []).length ? `<div style="margin-top:8px;font-size:11px;color:var(--text2)"><b>Next fixes:</b>${v.nextFixes.map(f => `<div style="margin-top:4px">→ ${esc(f)}</div>`).join('')}</div>` : '<div style="margin-top:8px;font-size:11px;color:var(--text3)">Run Validate from the rail to check your edits.</div>'}</div>`;
-  } else if (item.type === 'script-review') {
-    const sr = p.board.diagram.ai?.scriptReview || {};
-    body = `<div class="fp-canvas-body"><div class="fp-side-stat"><span>Status</span><b>${esc(String(sr.status || 'pending'))}</b></div><div class="fp-side-stat"><span>Matches Diagram</span><b style="color:${sr.matchesDiagram ? 'var(--green)' : 'var(--red)'}">${sr.matchesDiagram ? 'Yes' : 'No'}</b></div><div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.45">${esc(String(sr.summary || 'No script review yet. Paste scripts and run Review Scripts from the rail.')).slice(0, 200)}</div>${(sr.issues || []).length ? `<div style="margin-top:8px;font-size:10px;color:var(--red)">${sr.issues.slice(0,5).map(issue => `<div>⚠ ${esc(issue)}</div>`).join('')}</div>` : ''}</div>`;
-  } else if (item.type === 'risks') {
-    const lines = String(item.content || '').split('\n');
-    const risks = [], assumptions = [];
-    let current = 'risks';
-    for (const line of lines) {
-      if (/^assumptions?:?\s*$/i.test(line.trim())) { current = 'assumptions'; continue; }
-      if (line.trim()) { if (current === 'risks') risks.push(line); else assumptions.push(line); }
-    }
-    body = `<div class="fp-canvas-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><b style="font-size:10px;color:var(--red);text-transform:uppercase">Risks</b>${risks.length ? risks.map(r => `<div style="margin-top:4px;font-size:11px;color:var(--text2)">⚠ ${esc(r)}</div>`).join('') : '<div style="color:var(--text3);font-size:10px">None listed</div>'}</div><div><b style="font-size:10px;color:var(--amber);text-transform:uppercase">Assumptions</b>${assumptions.length ? assumptions.map(a => `<div style="margin-top:4px;font-size:11px;color:var(--text2)">◉ ${esc(a)}</div>`).join('') : '<div style="color:var(--text3);font-size:10px">None listed</div>'}</div></div><textarea class="fp-canvas-note" style="min-height:60px;margin-top:8px" placeholder="One risk or assumption per line. Use &quot;Assumptions:&quot; as separator." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'metrics') {
-    const lines = String(item.content || '').split('\n').filter(Boolean);
-    body = `<div class="fp-canvas-body">${lines.length ? `<table class="fp-canvas-table"><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>${lines.map(line => { const [key, ...rest] = line.split(':').map(s=>s.trim()); const val = rest.join(':'); return `<tr><td style="font-weight:600">${esc(key || '')}</td><td>${esc(val || '—')}</td></tr>`; }).join('')}</tbody></table>` : '<div style="color:var(--text3)">Add metrics as key: value lines.</div>'}<textarea class="fp-canvas-note" style="min-height:50px;margin-top:8px" placeholder="metric: value (one per line)" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'release-notes') {
-    const entries = String(item.content || '').split(/\n{2,}/).filter(Boolean);
-    body = `<div class="fp-canvas-body">${entries.length ? entries.map((entry, i) => { const lines = entry.split('\n'); const version = lines[0].replace(/^##?\s*/,''); const notes = lines.slice(1).join('\n'); return `<div style="padding:6px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><b style="font-size:11px;color:var(--accent)">${esc(version || 'Unnamed')}</b><div style="font-size:11px;color:var(--text2);margin-top:4px;line-height:1.45">${esc(notes || '')}</div></div>`; }).join('') : '<div style="color:var(--text3)">Add release entries separated by blank lines. First line of each is the version.</div>'}<textarea class="fp-canvas-note" style="min-height:60px;margin-top:8px" placeholder="## v1.0\nRelease notes here...\n\n## v0.9\nEarlier notes..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'problem-statement') {
-    body = `<div class="fp-canvas-body"><b style="font-size:11px;color:var(--accent)">What problem are we solving?</b><textarea class="fp-canvas-note" style="min-height:80px;margin-top:8px" placeholder="Describe the problem..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'goal') {
-    body = `<div class="fp-canvas-body"><b style="font-size:11px;color:var(--accent)">The outcome we want</b><textarea class="fp-canvas-note" style="min-height:80px;margin-top:8px" placeholder="Define the desired outcome..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'target-users') {
-    body = `<div class="fp-canvas-body"><b style="font-size:11px;color:var(--accent)">Who this is for</b><textarea class="fp-canvas-note" style="min-height:80px;margin-top:8px" placeholder="Describe target users..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'scope') {
-    const lines = String(item.content || '').split('\n');
-    const inScope = [], outScope = [];
-    let current = 'in';
-    for (const line of lines) {
-      if (/^out\s*(of)?\s*scope:?\s*$/i.test(line.trim())) { current = 'out'; continue; }
-      if (/^in\s*scope:?\s*$/i.test(line.trim())) { current = 'in'; continue; }
-      if (line.trim()) { if (current === 'in') inScope.push(line); else outScope.push(line); }
-    }
-    body = `<div class="fp-canvas-body"><b style="font-size:11px;color:var(--accent)">What's in / out</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><div><b style="font-size:10px;color:var(--green);text-transform:uppercase">In Scope</b>${inScope.length ? inScope.map(s => `<div style="margin-top:4px;font-size:11px;color:var(--text2)">✓ ${esc(s)}</div>`).join('') : '<div style="color:var(--text3);font-size:10px">None listed</div>'}</div><div><b style="font-size:10px;color:var(--red);text-transform:uppercase">Out of Scope</b>${outScope.length ? outScope.map(s => `<div style="margin-top:4px;font-size:11px;color:var(--text2)">✗ ${esc(s)}</div>`).join('') : '<div style="color:var(--text3);font-size:10px">None listed</div>'}</div></div><textarea class="fp-canvas-note" style="min-height:60px;margin-top:8px" placeholder="In Scope:\nFeature A\nFeature B\n\nOut of Scope:\nFeature X" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'roadmap') {
-    const phases = String(item.content || '').split(/^##/m).filter(Boolean);
-    body = `<div class="fp-canvas-body">${phases.length ? phases.map(ph => { const lines = ph.split('\n'); const title = lines[0].replace(/^#\s*/,'').trim(); const items = lines.slice(1).filter(Boolean); return `<div style="padding:6px 0;border-top:1px solid var(--border)"><b style="font-size:11px;color:var(--accent)">${esc(title || 'Phase')}</b>${items.length ? items.map(it => `<div style="font-size:11px;color:var(--text2);margin-top:3px">◉ ${esc(it.replace(/^[-\*]\s*/,''))}</div>`).join('') : ''}</div>`; }).join('') : '<div style="color:var(--text3)">Add roadmap phases as ## Phase headers.</div>'}<textarea class="fp-canvas-note" style="min-height:60px;margin-top:8px" placeholder="## Q1 2025\n- Milestone A\n- Milestone B" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
-  } else if (item.type === 'launch-checklist') {
-    const lines = String(item.content || '').split('\n').filter(Boolean);
-    body = `<div class="fp-canvas-body">${lines.map((line, i) => `<label class="fp-canvas-checkline"><input type="checkbox" ${line.startsWith('[x]')?'checked':''} onchange="toggleCanvasChecklist('${item.id}',${i},this.checked)"><span>${esc(line.replace(/^\[[x ]\]\s*/i,''))}</span></label>`).join('') || '<div style="color:var(--text3);margin-bottom:8px">Add launch checklist items below.</div>'}<textarea class="fp-canvas-note" style="min-height:70px;margin-top:8px" placeholder="One checklist item per line" oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
   } else {
     body = `<div class="fp-canvas-body"><textarea class="fp-canvas-note" placeholder="Write or paste anything here..." oninput="updateCanvasContent('${item.id}',this.value)">${esc(item.content || '')}</textarea></div>`;
   }
-  return `<div class="fp-canvas-item ${selected ? 'selected' : ''}" id="canvas-${escA(item.id)}" style="${style}" onclick="if(!event.target.closest('input,textarea,button,select,a')) selectCanvasItem('${escA(item.id)}')">
+  return `<div class="fp-canvas-item" id="canvas-${escA(item.id)}" style="${style}">
     <div class="fp-canvas-handle" onpointerdown="startCanvasDrag(event,'${escA(item.id)}')">
       <input class="fp-canvas-title" value="${escA(item.title || item.type)}" oninput="updateCanvasTitle('${escA(item.id)}',this.value)" onpointerdown="event.stopPropagation()">
       <button class="m-btn danger" style="padding:2px 7px;font-size:10px" onpointerdown="event.stopPropagation()" onclick="deleteCanvasItem('${escA(item.id)}')">×</button>
-    </div>${body}
-    ${(item.linkedNodeIds || []).length ? `<div class="fp-canvas-links">${item.linkedNodeIds.map(nodeId => `<span class="fp-canvas-link-pill" onpointerdown="event.stopPropagation()" onclick="focusDiagramNode('${escA(nodeId)}')" title="Linked to ${esc(nodeId)}">◎</span>`).join('')}</div>` : ''}
-    <div class="fp-canvas-actions">
-      <button class="m-btn" style="padding:3px 7px;font-size:10px" onpointerdown="event.stopPropagation()" onclick="selectCanvasItem('${escA(item.id)}')" title="Edit">✎</button>
-      <button class="m-btn" style="padding:3px 7px;font-size:10px" onpointerdown="event.stopPropagation()" onclick="duplicateCanvasItem('${escA(item.id)}')" title="Duplicate">⧉</button>
-      <button class="m-btn" style="padding:3px 7px;font-size:10px" onpointerdown="event.stopPropagation()" onclick="focusProjectDiagram();linkCanvasItemFrom('${escA(item.id)}')" title="Link to Diagram">⊕</button>
-      <button class="m-btn danger" style="padding:3px 7px;font-size:10px" onpointerdown="event.stopPropagation()" onclick="deleteCanvasItem('${escA(item.id)}')" title="Delete">✕</button>
-    </div>
-  </div>`;
+    </div>${body}</div>`;
 }
 
 function addCanvasItem(type) {
   const p = currentProject(); if (!p) return;
   normalizeProject(p);
   const count = p.board.canvas.length;
-  const titles = { note:'Note', block:'Block', checklist:'Checklist',
-    phases:'Phase List', tasks:'Task Table', diagram:'Architecture Diagram',
-    'execution-queue':'Execution Queue', 'architecture-summary':'Architecture Summary',
-    'ai-review':'AI Review', 'validation-summary':'Validation Results',
-    'script-review':'Script Review', 'risks':'Risks & Assumptions',
-    'metrics':'Success Metrics', 'release-notes':'Release Notes',
-    'problem-statement':'Problem Statement', 'goal':'Project Goal',
-    'target-users':'Target Users', 'scope':'Scope',
-    'roadmap':'Roadmap', 'launch-checklist':'Launch Checklist' };
-  const defaults = { 'execution-queue':'[ ] Define execution order\n[ ] Identify dependencies\n[ ] Set milestones',
-    'risks':'Tech debt accumulation\nScope creep\nKey person risk\nAssumptions:\nTeam has required skills\nInfrastructure is stable\nStakeholders are aligned',
-    'metrics':'Velocity: —\nCoverage: —\nUptime: —\nResponse time: —',
-    'release-notes':'## v1.0\nInitial release with core features\n\n## Future\nUpcoming improvements and fixes',
-    'problem-statement':'Describe the problem this project aims to solve.',
-    'goal':'Define the key outcome or success criteria.',
-    'target-users':'List the primary user personas and their needs.',
-    'scope':'In Scope:\nCore feature set\nMVP functionality\n\nOut of Scope:\nFuture enhancements\nNice-to-have features',
-    'roadmap':'## Q1 2025\n- Initial planning\n- Team assembly\n\n## Q2 2025\n- Development start\n- Alpha release',
-    'launch-checklist':'[ ] Finalize feature set\n[ ] Complete QA testing\n[ ] Prepare release notes\n[ ] Deploy to production' };
-  const h = type === 'tasks' ? 260 : type === 'diagram' ? 200 : type === 'risks' ? 270 : type === 'metrics' ? 230 : type === 'release-notes' ? 250 : type === 'execution-queue' ? 240 : type === 'ai-review' ? 170 : type === 'validation-summary' ? 160 : type === 'script-review' ? 160 : 180;
-  const w = type === 'tasks' ? 440 : type === 'diagram' ? 300 : type === 'risks' ? 340 : type === 'release-notes' ? 300 : type === 'execution-queue' ? 340 : 280;
-  p.board.canvas.push({ id:'cv_'+Date.now(), type, title:titles[type] || 'Block', content:type === 'checklist' ? '[ ] First item' : (defaults[type] || ''), linkedNodeIds:[], x:40 + (count % 3) * 44, y:40 + count * 32, w, h });
-  FP_SELECTED_CANVAS_ID = p.board.canvas[p.board.canvas.length - 1].id;
-  FP_CONTEXT_MODE = type === 'diagram' ? 'diagram' : 'selection';
+  const titles = { note:'Note', checklist:'Checklist', phases:'Phase List', tasks:'Task Table' };
+  p.board.canvas.push({ id:'cv_'+Date.now(), type, title:titles[type] || 'Block', content:type === 'checklist' ? '[ ] First item' : '', x:40 + (count % 3) * 44, y:40 + count * 32, w:type === 'tasks' ? 440 : 280, h:type === 'tasks' ? 260 : 180 });
   renderProjectBoard(document.getElementById('content'));
   scheduleProjectSave();
 }
@@ -5559,9 +4252,6 @@ function addCanvasItem(type) {
 function updateCanvasTitle(id, title) { const item = currentProject()?.board.canvas.find(x=>x.id===id); if (!item) return; item.title = title; scheduleProjectSave(); }
 function updateCanvasContent(id, content) { const item = currentProject()?.board.canvas.find(x=>x.id===id); if (!item) return; item.content = content; if (item.type === 'note') currentProject().board.notes = content; scheduleProjectSave(); }
 function deleteCanvasItem(id) { const p = currentProject(); if (!p) return; p.board.canvas = p.board.canvas.filter(x=>x.id!==id); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); }
-function duplicateCanvasItem(id) { const p = currentProject(); if (!p) return; const src = p.board.canvas.find(x=>x.id===id); if (!src) return; const copy = { ...src, id:'cv_'+Date.now(), title:(src.title||src.type)+' (copy)', x:(Number(src.x)||0)+34, y:(Number(src.y)||0)+34 }; p.board.canvas.push(copy); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); }
-function linkCanvasItemFrom(id) { const p = currentProject(); if (!p) return; FP_SELECTED_CANVAS_ID = id; notify('info', 'Link Mode', 'Select a diagram node to link this block, or press Escape to cancel.'); }
-function resetCanvasLayout() { const p = currentProject(); if (!p) return; p.board.canvas.forEach((item, i) => { const col = i % 3; const row = Math.floor(i / 3); item.x = 34 + col * 320; item.y = 34 + row * 270; }); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); notify('info', 'Layout Reset', 'All blocks snapped to a clean grid arrangement.'); }
 
 function toggleCanvasChecklist(id, index, done) {
   const item = currentProject()?.board.canvas.find(x=>x.id===id); if (!item) return;
@@ -5591,184 +4281,7 @@ function startCanvasDrag(event, id) {
   window.addEventListener('pointerup', up, { once:true });
 }
 
-function renderDiagramContextPanel(p) {
-  ensureDiagramSelection(p);
-  const diagram = p.board.diagram;
-  const selectedNode = currentDiagramNode(p);
-  const selectedLink = currentDiagramLink(p);
-  if (FP_PAGE !== 'diagram') {
-    return `<div class="fp-context-body"><div class="fp-side-card"><h3>Diagram</h3><div class="fp-side-stat"><span>Nodes</span><b>${diagram.nodes.length}</b></div><div class="fp-side-stat"><span>Links</span><b>${diagram.links.length}</b></div><div class="fp-side-stat"><span>Review</span><b>${esc(String(diagram.assessment?.score ?? 0))}%</b></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn primary" onclick="focusProjectDiagram()">Focus Diagram</button><button class="m-btn" onclick="scheduleProjectDiagramAssessment(true)">Assess</button><button class="m-btn" onclick="openProjectContext('ai')">AI</button></div></div>${renderDiagramAssessment(p)}</div>`;
-  }
-  const nodeSection = selectedNode ? `<label class="form-lbl">Name</label><input class="fp-field" value="${escA(selectedNode.name || '')}" oninput="updateDiagramNodeField('${escA(selectedNode.id)}','name',this.value)"><label class="form-lbl" style="margin-top:10px">Type</label><select class="fp-field" onchange="updateDiagramNodeField('${escA(selectedNode.id)}','type',this.value)">${DIAGRAM_NODE_TYPES.map(t => `<option value="${t}" ${selectedNode.type===t?'selected':''}>${esc(diagramNodeTypeLabel(t))}</option>`).join('')}</select><label class="form-lbl" style="margin-top:10px">Responsibility</label><textarea class="fp-field" rows="3" oninput="updateDiagramNodeField('${escA(selectedNode.id)}','responsibility',this.value)">${esc(selectedNode.responsibility || '')}</textarea><label class="form-lbl" style="margin-top:10px">Fields</label><textarea class="fp-field" rows="3" oninput="updateDiagramNodeField('${escA(selectedNode.id)}','fields',this.value)">${esc(selectedNode.fields || '')}</textarea><label class="form-lbl" style="margin-top:10px">Methods</label><textarea class="fp-field" rows="5" oninput="updateDiagramNodeField('${escA(selectedNode.id)}','methods',this.value)">${esc(selectedNode.methods || '')}</textarea><div style="display:flex;gap:8px;margin-top:10px"><button class="m-btn" onclick="autofillDiagramNodeFunctions('${escA(selectedNode.id)}')">Auto Functions</button><button class="m-btn" onclick="setDiagramLinkDraft('${escA(selectedNode.id)}')">Start Link</button><button class="m-btn danger" onclick="deleteDiagramNode('${escA(selectedNode.id)}')">Delete</button></div><label class="form-lbl" style="margin-top:10px">Notes</label><textarea class="fp-field" rows="3" oninput="updateDiagramNodeField('${escA(selectedNode.id)}','notes',this.value)">${esc(selectedNode.notes || '')}</textarea>` : '<p style="color:var(--text3)">Select a node to edit its class details, functions, and notes.</p>';
-  const linkSection = selectedLink ? `<label class="form-lbl">Relation</label><select class="fp-field" onchange="updateDiagramLinkField('${escA(selectedLink.id)}','relation',this.value)">${DIAGRAM_LINK_TYPES.map(t => `<option value="${t}" ${selectedLink.relation===t?'selected':''}>${esc(t)}</option>`).join('')}</select><label class="form-lbl" style="margin-top:10px">Note</label><input class="fp-field" value="${escA(selectedLink.note || '')}" oninput="updateDiagramLinkField('${escA(selectedLink.id)}','note',this.value)"><button class="m-btn danger" style="margin-top:10px" onclick="deleteDiagramLink('${escA(selectedLink.id)}')">Remove Link</button>` : '<p style="color:var(--text3)">Select a link by clicking its label in the diagram.</p>';
-  return `<div class="fp-context-body"><div class="fp-side-card"><h3>Selected Node</h3>${nodeSection}</div><div class="fp-side-card"><h3>Selected Link</h3>${linkSection}</div><div class="fp-side-card"><h3>Create Link</h3><select class="fp-field" id="diagram-link-from">${diagram.nodes.map(n => `<option value="${escA(n.id)}" ${selectedNode?.id===n.id?'selected':''}>${esc(n.name || 'Unnamed')}</option>`).join('')}</select><select class="fp-field" id="diagram-link-relation" style="margin-top:8px">${DIAGRAM_LINK_TYPES.map(t => `<option value="${t}">${esc(t)}</option>`).join('')}</select><select class="fp-field" id="diagram-link-to" style="margin-top:8px">${diagram.nodes.map(n => `<option value="${escA(n.id)}">${esc(n.name || 'Unnamed')}</option>`).join('')}</select><input class="fp-field" id="diagram-link-note" placeholder="Why this dependency exists" style="margin-top:8px"><button class="m-btn primary" style="margin-top:8px" onclick="addDiagramLink()">Add Link</button></div><div class="fp-side-card"><h3>Link List</h3>${diagram.links.length ? diagram.links.map(link => { const from = diagram.nodes.find(n => n.id === link.from); const to = diagram.nodes.find(n => n.id === link.to); return `<div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--text)">${esc(from?.name || '?')} -> ${esc(to?.name || '?')}</div><select class="fp-field" style="margin-top:6px" onchange="updateDiagramLinkField('${escA(link.id)}','relation',this.value)">${DIAGRAM_LINK_TYPES.map(t => `<option value="${t}" ${link.relation===t?'selected':''}>${esc(t)}</option>`).join('')}</select><input class="fp-field" value="${escA(link.note || '')}" placeholder="Link note" style="margin-top:6px" oninput="updateDiagramLinkField('${escA(link.id)}','note',this.value)"><button class="m-btn danger" style="margin-top:6px" onclick="deleteDiagramLink('${escA(link.id)}')">Remove Link</button></div>`; }).join('') : '<p style="color:var(--text3)">No links yet.</p>'}</div></div>`;
-}
-
-function renderProjectExportPanel(p) {
-  return `<div class="fp-context-body"><div class="fp-side-card"><h3>Export</h3><p>Download a JSON snapshot of the current project state.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn primary" onclick="exportProjectSnapshot()">Download JSON</button></div></div></div>`;
-}
-
-function renderProjectSettingsPanel(p) {
-  return `<div class="fp-context-body"><div class="fp-side-card"><h3>Settings</h3><div class="fp-side-stat"><span>Shell focus</span><b>${FP_PAGE === 'diagram' ? 'Diagram' : 'Board'}</b></div><div class="fp-side-stat"><span>Context panel</span><b>${FP_CONTEXT_COLLAPSED ? 'Collapsed' : 'Open'}</b></div><div class="fp-side-stat"><span>Save</span><b id="fp-save-state-local">${document.getElementById('fp-save-state')?.textContent || 'Saved'}</b></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="m-btn" onclick="toggleProjectContextPanel()">${FP_CONTEXT_COLLAPSED ? 'Expand Panel' : 'Collapse Panel'}</button><button class="m-btn" onclick="clearProjectSelection()">Clear Selection</button><button class="m-btn" onclick="focusProjectBoard()">Board Focus</button><button class="m-btn" onclick="resetCanvasLayout()">Reset Layout</button></div></div></div>`;
-}
-
-function renderProjectContextPanel(p) {
-  if (FP_CONTEXT_COLLAPSED) {
-    return `<div class="fp-side-card" style="height:100%;padding:6px 4px;display:flex;align-items:center;justify-content:center"><button class="m-btn" style="padding:6px 8px" onclick="toggleProjectContextPanel(false)" title="Expand context panel">⟨</button></div>`;
-  }
-  const title = FP_CONTEXT_MODE === 'ai' ? 'AI Mission Panel' : FP_CONTEXT_MODE === 'diagram' ? 'Architecture' : FP_CONTEXT_MODE === 'export' ? 'Export' : FP_CONTEXT_MODE === 'settings' ? 'Settings' : 'Project Context';
-  const subtitle = FP_CONTEXT_MODE === 'ai' ? 'Ask the AI to review dependencies, suggest code structure, or inspect scripts against the diagram.' : FP_CONTEXT_MODE === 'diagram' ? 'Select a node or link to edit the architecture details.' : FP_CONTEXT_MODE === 'export' ? 'Create a clean JSON snapshot of the project state.' : FP_CONTEXT_MODE === 'settings' ? 'Shell-level controls and workspace view options.' : 'Edit the selected block or use the board summary to shape the project.';
-  let section = renderBoardSelectionPanel(p);
-  if (FP_CONTEXT_MODE === 'ai') section = `<div class="fp-context-body">${renderDiagramAiPanel(p)}</div>`;
-  else if (FP_CONTEXT_MODE === 'diagram') section = renderDiagramContextPanel(p);
-  else if (FP_CONTEXT_MODE === 'export') section = renderProjectExportPanel(p);
-  else if (FP_CONTEXT_MODE === 'settings') section = renderProjectSettingsPanel(p);
-  return `<div class="fp-context-body"><div class="fp-side-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><h3>${title}</h3><p>${subtitle}</p></div><div style="display:flex;gap:6px"><button class="m-btn" onclick="toggleProjectContextPanel()">${FP_CONTEXT_COLLAPSED ? '⟩' : '⟨'}</button></div></div></div>${section}</div>`;
-}
-
-function renderDiagramAssessment(p) {
-  const a = p.board.diagram.assessment || buildLocalProjectDiagramAssessment(p);
-  const score = Number(a.score || 0);
-  return `<div class="fp-side-card"><h3>AI Architecture Review</h3>
-    <div class="fp-side-stat"><span>Review source</span><b>${esc(a.source || 'local')}</b></div>
-    <div class="fp-side-stat"><span>Confidence</span><b>${score}%</b></div>
-    <p style="margin:10px 0 0;color:var(--text2)">${esc(a.summary || 'Review pending.')}</p>
-    ${a.hints?.length ? `<div style="margin-top:10px"><b style="font-size:11px;color:var(--text)">Hints</b>${a.hints.map(h => `<div style="font-size:12px;color:var(--text2);margin-top:6px">• ${esc(h)}</div>`).join('')}</div>` : ''}
-    ${a.risks?.length ? `<div style="margin-top:10px"><b style="font-size:11px;color:var(--text)">Risks</b>${a.risks.map(h => `<div style="font-size:12px;color:var(--red);margin-top:6px">• ${esc(h)}</div>`).join('')}</div>` : ''}
-    ${a.nextSteps?.length ? `<div style="margin-top:10px"><b style="font-size:11px;color:var(--text)">Next steps</b>${a.nextSteps.map(h => `<div style="font-size:12px;color:var(--text2);margin-top:6px">• ${esc(h)}</div>`).join('')}</div>` : ''}
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="m-btn" onclick="scheduleProjectDiagramAssessment(true)">Assess With AI</button></div>
-  </div>
-  ${(a.suggestedNodes || []).length ? `<div class="fp-side-card"><h3>Suggested Nodes</h3>${a.suggestedNodes.map((s, i) => `<div style="padding:10px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><b style="color:var(--text)">${esc(s.name || 'Node')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(s.type || 'class')} · ${esc(s.responsibility || '')}</div><button class="m-btn" style="margin-top:8px" onclick="applyDiagramSuggestedNode(${i})">Add Node</button></div>`).join('')}</div>` : ''}
-  ${(a.suggestedLinks || []).length ? `<div class="fp-side-card"><h3>Suggested Links</h3>${a.suggestedLinks.map((s, i) => `<div style="padding:10px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><b style="color:var(--text)">${esc(s.from || '?')} -> ${esc(s.to || '?')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(s.relation || 'calls')} ${s.note ? '· ' + esc(s.note) : ''}</div><button class="m-btn" style="margin-top:8px" onclick="applyDiagramSuggestedLink(${i})">Add Link</button></div>`).join('')}</div>` : ''}
-  ${(a.suggestedFunctions || []).length ? `<div class="fp-side-card"><h3>Suggested Functions</h3>${a.suggestedFunctions.map((s, i) => `<div style="padding:10px 0;border-top:${i ? '1px solid var(--border)' : '0'}"><b style="color:var(--text)">${esc(s.node || 'Node')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px">${Array.isArray(s.methods) ? s.methods.map(esc).join(', ') : esc(String(s.methods || ''))}</div><button class="m-btn" style="margin-top:8px" onclick="applyDiagramSuggestedFunctions(${i})">Apply Methods</button></div>`).join('')}</div>` : ''}`;
-}
-
-function renderDiagramAiPanel(p) {
-  const ai = currentDiagramAi(p);
-  return `<div class="fp-panel full" style="display:grid;gap:14px">
-    <div><label class="form-lbl">Mission</label><textarea class="fp-field" id="diagram-ai-mission" rows="3" placeholder="Review the architecture, suggest improvements, or validate changes...">${esc(ai.mission || '')}</textarea></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
-      <div style="flex:1"><label class="form-lbl">Response Language</label><select class="fp-field" id="diagram-ai-locale" onchange="currentProject().board.diagram.ai.locale=this.value;scheduleProjectSave()"><option value="en" ${ai.locale==='en'?'selected':''}>English</option><option value="ar" ${ai.locale==='ar'?'selected':''}>Arabic</option></select></div>
-      <button class="m-btn primary" onclick="sendProjectDiagramMission()">${diagramUiText(ai.locale,'Send Mission','إرسال المهمة')}</button>
-    </div>
-    <div><label class="form-lbl">Scripts (paste C# code, JSON, or other output to review against the diagram)</label><textarea class="fp-field" id="diagram-ai-scripts" rows="4" placeholder="Paste scripts to review against the architecture...">${esc(ai.scripts || '')}</textarea></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="fp-save-pill">Status: ${esc(ai.status || 'ready')}</span><span class="fp-save-pill">Messages: ${ai.messages.length}</span></div>
-    ${ai.messages.map((m, i) => `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:12px;margin-top:${i ? '8px' : '0'};background:var(--bg2)"><b style="color:var(--text)">${esc(m.role || 'ai')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px;white-space:pre-wrap">${esc(m.content || m.message || '')}</div></div>`).join('')}
-    ${(ai.notifications || []).length ? `<div><h4 style="margin:0 0 8px;color:var(--text)">AI Notifications</h4>${ai.notifications.map((n, i) => `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:12px;margin-top:${i ? '8px' : '0'};background:var(--bg2);font-size:12px;color:var(--text2)">${esc(typeof n === 'string' ? n : (n.message || n.title || JSON.stringify(n)))}</div>`).join('')}</div>` : ''}
-    ${(ai.tasks || []).length ? `<div><h4 style="margin:0 0 8px;color:var(--text)">AI Tasks</h4>${ai.tasks.map((task, i) => `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:12px;margin-top:${i ? '8px' : '0'};background:var(--bg2)"><b style="color:var(--text)">${esc(task.title || task.name || 'Task')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(task.description || task.note || '')}</div></div>`).join('')}</div>` : ''}
-    ${(ai.schedule || []).length ? `<div><h4 style="margin:0 0 8px;color:var(--text)">AI Schedule</h4>${ai.schedule.map((task, i) => `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:12px;margin-top:${i ? '8px' : '0'};background:var(--bg2)"><b style="color:var(--text)">${esc(task.title || task.name || 'Step')}</b><div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(task.description || task.when || '')}</div></div>`).join('')}</div>` : ''}
-    ${(ai.buttons || []).length ? `<div style="display:flex;gap:8px;flex-wrap:wrap">${ai.buttons.map((button, i) => `<button class="m-btn" onclick="applyDiagramAiButton(${i})">${esc(button.label || button.command || 'Action')}</button>`).join('')}</div>` : ''}
-  </div>`;
-}
-
-// ── DIAGRAM CRUD ──────────────────────────────────────────
-function addDiagramNode(type) { const p = currentProject(); if (!p) return; normalizeProject(p); const count = p.board.diagram.nodes.length; const domain = p.board.diagram.domain || 'software-classes'; const baseName = type === 'monobehaviour' ? 'GameplayController' : type === 'manager' ? 'GameManager' : type === 'service' ? 'SaveService' : type === 'pipeline' ? 'DeployPipeline' : 'NewClass'; const node = { id:'dg_' + Date.now(), name: count ? `${baseName}${count + 1}` : baseName, type: type || (domain.startsWith('unity') ? 'class' : 'service'), responsibility:'', fields:'', methods: suggestedDiagramMethods({ type }).join('\\n'), notes:'', x:36 + (count % 3) * 230, y:34 + Math.floor(count / 3) * 150, w:210, h:110 }; p.board.diagram.nodes.push(node); FP_DIAGRAM_SELECTED_NODE_ID = node.id; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function updateDiagramNodeField(id, field, value) { const node = currentProjectDiagram()?.nodes.find(x=>x.id===id); if (!node) return; node[field] = value; scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function deleteDiagramNode(id) { const p = currentProject(); if (!p) return; p.board.diagram.nodes = p.board.diagram.nodes.filter(x=>x.id!==id); p.board.diagram.links = p.board.diagram.links.filter(l=>l.from!==id && l.to!==id); if (FP_DIAGRAM_SELECTED_NODE_ID === id) FP_DIAGRAM_SELECTED_NODE_ID = null; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function autofillDiagramNodeFunctions(id) { const node = currentProjectDiagram()?.nodes.find(x=>x.id===id); if (!node) return; node.methods = suggestedDiagramMethods(node).join('\\n'); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function selectDiagramNode(id) {
-  // Handle canvas block linking
-  if (FP_SELECTED_CANVAS_ID) {
-    const p = currentProject(); if (!p) return;
-    const item = p.board.canvas.find(x => x.id === FP_SELECTED_CANVAS_ID);
-    if (item) {
-      if (!Array.isArray(item.linkedNodeIds)) item.linkedNodeIds = [];
-      if (!item.linkedNodeIds.includes(id)) { item.linkedNodeIds.push(id); notify('info', 'Block Linked', `Linked block to diagram node.`); }
-      else { item.linkedNodeIds = item.linkedNodeIds.filter(x => x !== id); notify('info', 'Link Removed', `Unlinked block from diagram node.`); }
-      FP_SELECTED_CANVAS_ID = null;
-      renderProjectBoard(document.getElementById('content'));
-      scheduleProjectSave();
-      return;
-    }
-  }
-  // Handle diagram link draft
-  if (FP_DIAGRAM_LINK_DRAFT) { if (createDiagramLinkFromDraft(id)) return; }
-  FP_DIAGRAM_SELECTED_NODE_ID = id;
-  renderProjectBoard(document.getElementById('content'));
-}
-
-function focusDiagramNode(nodeId) { focusProjectDiagram(); FP_DIAGRAM_SELECTED_NODE_ID = nodeId; renderProjectBoard(document.getElementById('content')); }
-function updateDiagramLinkField(id, field, value) { const link = currentProjectDiagram()?.links.find(x=>x.id===id); if (!link) return; link[field] = value; scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function deleteDiagramLink(id) { const p = currentProject(); if (!p) return; p.board.diagram.links = p.board.diagram.links.filter(x=>x.id!==id); if (FP_DIAGRAM_SELECTED_LINK_ID === id) FP_DIAGRAM_SELECTED_LINK_ID = null; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function setDiagramLinkDraft(fromId) { const p = currentProject(); if (!p) return; FP_DIAGRAM_SELECTED_NODE_ID = fromId; FP_DIAGRAM_LINK_DRAFT = { from: fromId, relation: document.getElementById('diagram-quick-link-relation')?.value || 'calls', note: document.getElementById('diagram-quick-link-note')?.value || '' }; renderProjectBoard(document.getElementById('content')); }
-function cancelDiagramLinkDraft() { FP_DIAGRAM_LINK_DRAFT = null; renderProjectBoard(document.getElementById('content')); }
-function createDiagramLinkFromDraft(targetId) { const p = currentProject(); if (!p || !FP_DIAGRAM_LINK_DRAFT || !targetId || FP_DIAGRAM_LINK_DRAFT.from === targetId) return false; const relation = document.getElementById('diagram-quick-link-relation')?.value || FP_DIAGRAM_LINK_DRAFT.relation || 'calls'; const note = document.getElementById('diagram-quick-link-note')?.value || FP_DIAGRAM_LINK_DRAFT.note || ''; const exists = p.board.diagram.links.some(link => link.from === FP_DIAGRAM_LINK_DRAFT.from && link.to === targetId && link.relation === relation); if (!exists) p.board.diagram.links.push({ id:'dl_' + Date.now(), from: FP_DIAGRAM_LINK_DRAFT.from, to: targetId, relation, note }); FP_DIAGRAM_LINK_DRAFT = null; FP_DIAGRAM_SELECTED_LINK_ID = p.board.diagram.links[p.board.diagram.links.length - 1]?.id || null; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); return true; }
-function addDiagramLink() { const p = currentProject(); if (!p) return; const from = document.getElementById('diagram-link-from')?.value; const to = document.getElementById('diagram-link-to')?.value; const relation = document.getElementById('diagram-link-relation')?.value || 'calls'; const note = document.getElementById('diagram-link-note')?.value || ''; if (!from || !to || from === to) return; p.board.diagram.links.push({ id:'dl_' + Date.now(), from, to, relation, note }); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function updateProjectDiagramDomain(value) { const p = currentProject(); if (!p) return; p.board.diagram.domain = value || 'software-classes'; scheduleProjectSave(); scheduleProjectDiagramAssessment(true); renderProjectBoard(document.getElementById('content')); }
-function startDiagramNodeDrag(event, id) { if (event.button !== 0) return; const p = currentProject(); const node = p?.board.diagram.nodes.find(x=>x.id===id); const el = document.getElementById('diagram-node-' + id); const map = document.getElementById('fp-diagram-map'); if (!node || !el || !map) return; event.preventDefault(); el.setPointerCapture?.(event.pointerId); const startX = event.clientX, startY = event.clientY, baseX = Number(node.x)||0, baseY = Number(node.y)||0; const move = (e) => { node.x = Math.max(0, baseX + e.clientX - startX); node.y = Math.max(0, baseY + e.clientY - startY); el.style.left = node.x + 'px'; el.style.top = node.y + 'px'; }; const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); scheduleProjectSave(); scheduleProjectDiagramAssessment(); renderProjectBoard(document.getElementById('content')); }; window.addEventListener('pointermove', move); window.addEventListener('pointerup', up, { once:true }); }
-
-// ── AI ASSESSMENT ──────────────────────────────────────────
-function buildLocalProjectDiagramAssessment(p) {
-  normalizeProject(p); const diagram = p.board.diagram; const nodes = diagram.nodes || []; const links = diagram.links || []; let score = 100; const hints = []; const risks = []; const nextSteps = []; const suggestedNodes = []; const suggestedLinks = []; const suggestedFunctions = [];
-  if (!nodes.length) return { source:'local', reviewed_at:new Date().toISOString(), score:5, summary:'Add your first classes or systems to start the architecture diagram.', hints:['Start with core runtime classes, services, or Unity MonoBehaviours.'], risks:['No diagram nodes yet.'], suggestedNodes:[{ name:diagram.domain.startsWith('unity')?'GameManager':'AppService', type:diagram.domain.startsWith('unity')?'manager':'service', responsibility:'Core orchestration entry point.', methods:['Initialize()','Execute()'] }], suggestedLinks:[], suggestedFunctions:[], nextSteps:['Add 3-5 nodes, then link ownership and call relations.'] };
-  const byId = Object.fromEntries(nodes.map(n => [n.id, n])); const names = new Map();
-  for (const node of nodes) { const key = String(node.name || '').trim().toLowerCase(); if (!key) { score -= 12; risks.push('A node is missing a name.'); continue; } names.set(key, (names.get(key) || 0) + 1); if (!String(node.responsibility || '').trim()) { score -= 7; hints.push(`${node.name} needs a clear responsibility.`); } const methods = String(node.methods || '').split('\\n').map(x => x.trim()).filter(Boolean); if (!methods.length && ['class','monobehaviour','manager','service','system','controller'].includes(String(node.type || ''))) { score -= 6; suggestedFunctions.push({ node:node.name, methods:suggestedDiagramMethods(node), note:'Add operational methods so the class is easier to implement.' }); } }
-  [...names.entries()].forEach(([name, count]) => { if (count > 1) { score -= 8; risks.push(`Duplicate node name: ${name}`); } });
-  if (nodes.length > 1 && !links.length) { score -= 16; risks.push('Multiple nodes exist without any links.'); suggestedLinks.push({ from:nodes[0].name, to:nodes[1].name, relation:'calls', note:'Start by showing the main runtime dependency.' }); }
-  for (const link of links) { if (!byId[link.from] || !byId[link.to]) { score -= 10; risks.push('A link points to a missing node.'); continue; } if (!String(link.relation || '').trim()) { score -= 4; hints.push(`Link ${byId[link.from].name} -> ${byId[link.to].name} needs a relation type.`); } }
-  const devopsNodes = nodes.filter(n => ['infra','observability','pipeline','service'].includes(String(n.type)));
-  if (diagram.domain === 'devops-flow' && !devopsNodes.length) {
-    suggestedNodes.push({ name:'DeployPipeline', type:'pipeline', responsibility:'Build, validate, and deploy the service.', methods:['Run()','Rollback()','ReportStatus()'] });
-    suggestedNodes.push({ name:'MonitoringStack', type:'observability', responsibility:'Collect metrics, logs, and traces.', methods:['Track()','Alert()'] });
-    risks.push('DevOps domain selected but no DevOps nodes exist.');
-    nextSteps.push('Add pipeline, infra, observability, and service nodes to model your DevOps architecture.');
-  }
-  if (devopsNodes.length || diagram.domain === 'devops-flow') {
-    const hasPipeline = nodes.some(n => String(n.type) === 'pipeline');
-    const hasObs = nodes.some(n => String(n.type) === 'observability');
-    const hasInfra = nodes.some(n => String(n.type) === 'infra');
-    const hasRollback = links.some(l => l.relation === 'triggers' && /rollback/i.test(String(l.note || '')));
-    if (hasPipeline && !links.some(l => String(l.from || '').includes('pipeline') || String(l.to || '').includes('pipeline'))) { score -= 12; risks.push('Pipeline is isolated. Connect it to build targets and deployment infrastructure.'); nextSteps.push('Link the pipeline to services, infra nodes, or deployment stages.'); }
-    if (!hasObs) { score -= 10; risks.push('No observability node. Without monitoring, you cannot detect failures in production.'); suggestedNodes.push({ name:'MonitoringStack', type:'observability', responsibility:'Collect metrics, logs, and traces from all services.', methods:['Track()','Alert()','Dashboard()'] }); nextSteps.push('Add an observability node and connect it to every running service.'); }
-    else if (!links.some(l => String(l.to || '').includes('observability'))) { score -= 7; hints.push('Observability node needs connections from services to collect their metrics.'); }
-    if (!hasRollback && hasPipeline) { score -= 8; risks.push('No rollback path defined. If deployment fails, recovery is manual.'); nextSteps.push('Add a triggers link from pipeline to a rollback stage.'); }
-    if (hasInfra && !links.some(l => String(l.from || '').includes('infra') || String(l.to || '').includes('infra'))) { score -= 6; hints.push('Infrastructure node should be linked to the services it hosts.'); }
-    const opsLinks = links.filter(l => String(l.from || '').includes('infra') || String(l.to || '').includes('infra') || String(l.from || '').includes('service') || String(l.to || '').includes('service'));
-    if (devopsNodes.length > 2 && opsLinks.length < devopsNodes.length - 1) { score -= 8; risks.push('DevOps nodes have weak connectivity. Map how deployment, infrastructure, services, and monitoring interact.'); }
-    const missing = [];
-    if (!hasPipeline) missing.push('pipeline');
-    if (!hasObs) missing.push('observability');
-    if (!hasInfra) missing.push('infrastructure');
-    if (missing.length >= 2) { score -= 8; risks.push(`Missing operational layers: ${missing.join(', ')}. A complete DevOps model needs pipeline, infra, observability, and rollback.`); }
-    nextSteps.push('Ensure deployment pipeline → infrastructure → services → observability form a complete ops chain.');
-  }
-  nextSteps.push('Keep classes focused on one responsibility and link by behavior, not by vague ownership.');
-  return { source:'local', reviewed_at:new Date().toISOString(), score:Math.max(5, Math.min(99, score)), summary:risks.length ? 'Architecture needs refinement before coding.' : 'Diagram is structurally usable and ready for deeper implementation.', hints:[...new Set(hints)].slice(0, 6), risks:[...new Set(risks)].slice(0, 6), suggestedNodes:suggestedNodes.slice(0, 6), suggestedLinks:suggestedLinks.slice(0, 6), suggestedFunctions:suggestedFunctions.slice(0, 6), nextSteps:[...new Set(nextSteps)].slice(0, 6) };
-}
-
-async function requestProjectDiagramAssessment(p) { normalizeProject(p); const fallback = buildLocalProjectDiagramAssessment(p); if (!API || !p?.id) return fallback; try { const r = await fetchWithTimeout(API + '/api/projects/' + encodeURIComponent(p.id) + '/diagram-assess', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':authHeader() }, body:JSON.stringify({ diagram:p.board.diagram, project:{ title:p.title, description:p.description, tags:p.tags || [], status:p.status, priority:p.priority } }) }, 25000); const text = await r.text(); if (!r.ok || text.startsWith('<')) throw new Error('diagram assess endpoint unavailable'); const data = text ? JSON.parse(text) : {}; return data.assessment && typeof data.assessment === 'object' ? data.assessment : fallback; } catch { return fallback; } }
-
-function scheduleProjectDiagramAssessment(immediate) { const p = currentProject(); if (!p) return; normalizeProject(p); clearTimeout(FP_DIAGRAM_ASSESS_TIMER); const run = async () => { p.board.diagram.assessment = { ...(p.board.diagram.assessment || {}), summary:'Reviewing architecture...', source:'pending' }; renderProjectBoard(document.getElementById('content')); const assessment = await requestProjectDiagramAssessment(p); p.board.diagram.assessment = assessment; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); }; if (immediate) run(); else FP_DIAGRAM_ASSESS_TIMER = setTimeout(run, 1400); }
-
-function sendProjectDiagramMission() { const p = currentProject(); if (!p) return; const ai = currentDiagramAi(p); ai.mission = document.getElementById('diagram-ai-mission')?.value || ''; ai.scripts = document.getElementById('diagram-ai-scripts')?.value || ''; ai.status = 'sending'; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); if (API) { fetchWithTimeout(API + '/api/projects/' + encodeURIComponent(p.id) + '/diagram-ai', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':authHeader() }, body:JSON.stringify({ diagram:p.board.diagram, mission:ai.mission, scripts:ai.scripts, locale:ai.locale || 'en', preserveTerms:ai.preserveTerms || 'Player, Subject, MonoBehaviour, GameManager, API, CI/CD, DevOps', project:{ title:p.title, description:p.description } }) }, 60000).then(async r => { const text = await r.text(); if (r.ok && text && !text.startsWith('<')) { const d = JSON.parse(text); if (d.response) { ai.messages.push({ role:'ai', content:d.response }); ai.status = 'ready'; } if (d.notifications) ai.notifications = d.notifications; if (d.tasks) ai.tasks = d.tasks; if (d.schedule) ai.schedule = d.schedule; if (d.buttons) ai.buttons = d.buttons; if (d.edits) { ai.edits = d.edits; ai.previousSuggestions = { suggestedNodeEdits:d.edits.suggestedNodeEdits || [], suggestedLinkEdits:d.edits.suggestedLinkEdits || [], suggestedFunctionEdits:d.edits.suggestedFunctionEdits || [] }; } if (d.validation) ai.validation = d.validation; if (d.scriptReview) ai.scriptReview = d.scriptReview; if (d.assessment) p.board.diagram.assessment = d.assessment; renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); } else { ai.status = 'error'; renderProjectBoard(document.getElementById('content')); } }).catch(() => { ai.status = 'error'; renderProjectBoard(document.getElementById('content')); }); } }
-
-// ── AI ACTIONS ─────────────────────────────────────────────
-function focusProjectBoard() { FP_PAGE = 'board'; FP_CONTEXT_MODE = 'selection'; FP_CONTEXT_COLLAPSED = false; FP_DIAGRAM_SELECTED_NODE_ID = null; FP_DIAGRAM_SELECTED_LINK_ID = null; FP_DIAGRAM_LINK_DRAFT = null; renderProjectBoard(document.getElementById('content')); }
-function focusProjectDiagram() { FP_PAGE = 'diagram'; FP_CONTEXT_MODE = 'diagram'; FP_CONTEXT_COLLAPSED = false; renderProjectBoard(document.getElementById('content')); scheduleProjectDiagramAssessment(); }
-function addProjectDiagramNodeFromRail() { focusProjectDiagram(); requestAnimationFrame(() => addDiagramNode('class')); }
-function runProjectDiagramMission(mission) { openProjectContext('ai'); requestAnimationFrame(() => { const input = document.getElementById('diagram-ai-mission'); if (input && mission) input.value = mission; sendProjectDiagramMission(); }); }
-function runProjectAiReview() { runProjectDiagramMission('Review the current architecture and suggest the single most important fix.'); }
-function runProjectValidateEdits() { const p = currentProject(); if (!p) return; const previous = currentDiagramPreviousSuggestions(p); const count = (previous.suggestedNodeEdits?.length || 0) + (previous.suggestedLinkEdits?.length || 0) + (previous.suggestedFunctionEdits?.length || 0); if (!count) { openProjectContext('ai'); notify('warning', 'Validation needs Step 1', 'Run an architecture review first so validation can compare against saved suggestions.'); return; } runProjectDiagramMission('Validate my current edited diagram against your previous suggestions.'); }
-function runProjectScriptReview() { const p = currentProject(); if (!p) return; const previous = currentDiagramPreviousSuggestions(p); const count = (previous.suggestedNodeEdits?.length || 0) + (previous.suggestedLinkEdits?.length || 0) + (previous.suggestedFunctionEdits?.length || 0); if (!count) { openProjectContext('ai'); notify('warning', 'Script review needs saved suggestions', 'Run an architecture review first so script review can compare code against it.'); return; } runProjectDiagramMission('Review these updated scripts against the saved diagram suggestions.'); }
-function openProjectExportPanel() { openProjectContext('export'); }
-function openProjectSettingsPanel() { openProjectContext('settings'); }
-function selectCanvasItem(id) { const p = currentProject(); if (!p) return; FP_SELECTED_CANVAS_ID = id || null; FP_CONTEXT_COLLAPSED = false; const item = currentCanvasItem(p, id); FP_CONTEXT_MODE = item?.type === 'diagram' ? 'diagram' : 'selection'; renderProjectBoard(document.getElementById('content')); }
-function clearProjectSelection() { FP_SELECTED_CANVAS_ID = null; FP_DIAGRAM_SELECTED_NODE_ID = null; FP_DIAGRAM_SELECTED_LINK_ID = null; FP_CONTEXT_MODE = 'selection'; renderProjectBoard(document.getElementById('content')); }
-function openProjectContext(mode) { FP_CONTEXT_MODE = mode || 'selection'; FP_CONTEXT_COLLAPSED = false; renderProjectBoard(document.getElementById('content')); if (FP_CONTEXT_MODE === 'ai') { requestAnimationFrame(() => document.getElementById('diagram-ai-mission')?.focus()); } }
-function toggleProjectContextPanel(force) { FP_CONTEXT_COLLAPSED = typeof force === 'boolean' ? force : !FP_CONTEXT_COLLAPSED; renderProjectBoard(document.getElementById('content')); }
-function exportProjectSnapshot() { const p = currentProject(); if (!p) return; triggerProjectDownload(`project-${p.id || 'snapshot'}.json`, JSON.stringify(p, null, 2)); }
-function triggerProjectDownload(filename, content, mime = 'application/json') { const blob = new Blob([content], { type:mime }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-function applyDiagramSuggestedNode(i) { const p = currentProject(); if (!p) return; const a = p.board.diagram.assessment; const s = a?.suggestedNodes?.[i]; if (!s) return; const count = p.board.diagram.nodes.length; p.board.diagram.nodes.push({ id:'dg_' + Date.now(), name:s.name || 'Node', type:s.type || 'class', responsibility:s.responsibility || '', fields:'', methods:Array.isArray(s.methods) ? s.methods.join('\\n') : '', notes:'', x:36 + (count % 3) * 230, y:34 + Math.floor(count / 3) * 150, w:210, h:110 }); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); }
-function applyDiagramSuggestedLink(i) { const p = currentProject(); if (!p) return; const a = p.board.diagram.assessment; const s = a?.suggestedLinks?.[i]; if (!s) return; const fromNode = p.board.diagram.nodes.find(n => (n.name || '').toLowerCase() === (s.from || '').toLowerCase()); const toNode = p.board.diagram.nodes.find(n => (n.name || '').toLowerCase() === (s.to || '').toLowerCase()); if (fromNode && toNode) { p.board.diagram.links.push({ id:'dl_' + Date.now(), from:fromNode.id, to:toNode.id, relation:s.relation || 'calls', note:s.note || '' }); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); } }
-function applyDiagramSuggestedFunctions(i) { const p = currentProject(); if (!p) return; const a = p.board.diagram.assessment; const s = a?.suggestedFunctions?.[i]; if (!s) return; const node = p.board.diagram.nodes.find(n => (n.name || '').toLowerCase() === (s.node || '').toLowerCase()); if (node) { node.methods = Array.isArray(s.methods) ? s.methods.join('\\n') : String(s.methods || ''); renderProjectBoard(document.getElementById('content')); scheduleProjectSave(); scheduleProjectDiagramAssessment(); } }
-function applyDiagramAiButton(i) { const p = currentProject(); if (!p) return; const ai = currentDiagramAi(p); const button = ai.buttons?.[i]; if (!button) return; if (button.action === 'command' || button.command) { const cmd = button.command || button.label || ''; document.getElementById('diagram-ai-mission').value = cmd; sendProjectDiagramMission(); } }
-
-// ── MIDDLE MOUSE PANNING ──────────────────────────────────
-function attachMiddleMousePan(el) { if (!el || el.dataset.middlePanReady === '1') return; el.dataset.middlePanReady = '1'; el.addEventListener('mousedown', (event) => { if (event.button !== 1) return; event.preventDefault(); const startX = event.clientX; const startY = event.clientY; const baseLeft = el.scrollLeft; const baseTop = el.scrollTop; const prevCursor = el.style.cursor; el.style.cursor = 'grabbing'; const move = (e) => { el.scrollLeft = baseLeft - (e.clientX - startX); el.scrollTop = baseTop - (e.clientY - startY); }; const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); el.style.cursor = prevCursor; }; window.addEventListener('mousemove', move); window.addEventListener('mouseup', up, { once:true }); }); el.addEventListener('auxclick', (event) => { if (event.button === 1) event.preventDefault(); }); }
-function initProjectWorkspaceInteractions() { attachMiddleMousePan(document.getElementById('fp-canvas')); attachMiddleMousePan(document.getElementById('fp-diagram-map')); }
-
-// ── FETCH TIMEOUT HELPER ──────────────────────────────────
-function fetchWithTimeout(url, options, timeout = 30000) { return Promise.race([fetch(url, options), new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))]); }
+function switchProjectPage(page) { FP_PAGE = page; renderProjectBoard(document.getElementById('content')); }
 
 function markProjectSaving(text, color) {
   const el = document.getElementById('fp-save-state');
@@ -5785,10 +4298,9 @@ function scheduleProjectSave() {
   FP_SAVE_TIMER = setTimeout(async () => {
     try {
       const result = await apiProj('PUT', '/api/projects/' + p.id, projectPayload(p), { label: 'Project board saved to D1.' });
-      const localOnly = !API || result?._queued;
-      markProjectSaving(localOnly ? 'Offline — saved locally' : 'Saved to D1', localOnly ? 'var(--amber)' : 'var(--text3)');
+      markProjectSaving(result?._queued ? 'Saved locally; retry available' : 'Saved to D1', result?._queued ? 'var(--amber)' : 'var(--text3)');
     } catch (e) {
-      markProjectSaving('Offline — saved locally', 'var(--amber)');
+      markProjectSaving('Saved locally; retry available', 'var(--amber)');
     }
   }, 650);
 }
@@ -5796,11 +4308,11 @@ function scheduleProjectSave() {
 function updateProjectField(field, value) { const p = currentProject(); if (!p) return; p[field] = value; scheduleProjectSave(); }
 function updateProjectTags(value) { const p = currentProject(); if (!p) return; p.tags = value.split(',').map(x=>x.trim()).filter(Boolean); scheduleProjectSave(); }
 function updateProjectBoardNotes(value) { const p = currentProject(); if (!p) return; p.board.notes = value; scheduleProjectSave(); }
-function addProjectPhase(title){const p=currentProject();const input=typeof title === 'string' ? { value:title } : document.getElementById('fp-new-phase');const nextTitle=String(input?.value || '').trim() || 'New phase';if(!p||!nextTitle)return;p.phases.push({id:'ph_'+Date.now(),title:nextTitle,done:false});FP_SELECTED_CANVAS_ID = p.board.canvas.find(x=>x.type==='phases')?.id || FP_SELECTED_CANVAS_ID;FP_CONTEXT_MODE='selection';renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
+function addProjectPhase(){const p=currentProject();const input=document.getElementById('fp-new-phase');const title=input?.value.trim();if(!p||!title)return;p.phases.push({id:'ph_'+Date.now(),title,done:false});renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
 function toggleProjectPhase(id, done){const p=currentProject();const ph=p?.phases.find(x=>x.id===id);if(!ph)return;ph.done=done;scheduleProjectSave();}
 function updateProjectPhaseTitle(id, title){const p=currentProject();const ph=p?.phases.find(x=>x.id===id);if(!ph)return;ph.title=title;scheduleProjectSave();}
 function deleteProjectPhase(id){const p=currentProject();if(!p)return;p.phases=p.phases.filter(x=>x.id!==id);renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
-function addProjectTask(title){const p=currentProject();const input=typeof title === 'string' ? { value:title } : document.getElementById('fp-new-task');const nextTitle=String(input?.value || '').trim() || 'New task';if(!p||!nextTitle)return;p.board.tasks.push({id:'task_'+Date.now(),title:nextTitle,done:false});FP_SELECTED_CANVAS_ID = p.board.canvas.find(x=>x.type==='tasks')?.id || FP_SELECTED_CANVAS_ID;FP_CONTEXT_MODE='selection';renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
+function addProjectTask(){const p=currentProject();const input=document.getElementById('fp-new-task');const title=input?.value.trim();if(!p||!title)return;p.board.tasks.push({id:'task_'+Date.now(),title,done:false});renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
 function toggleProjectTask(id, done){const p=currentProject();const task=p?.board.tasks.find(x=>x.id===id);if(!task)return;task.done=done;scheduleProjectSave();}
 function updateProjectTaskTitle(id, title){const p=currentProject();const task=p?.board.tasks.find(x=>x.id===id);if(!task)return;task.title=title;scheduleProjectSave();}
 function deleteProjectTask(id){const p=currentProject();if(!p)return;p.board.tasks=p.board.tasks.filter(x=>x.id!==id);renderProjectBoard(document.getElementById('content'));scheduleProjectSave();}
@@ -5825,7 +4337,7 @@ function openAddProj() {
 async function submitProj(){const t=document.getElementById('fp-title').value.trim();if(!t)return;const obj=await apiProj('POST','/api/projects',{title:t,description:document.getElementById('fp-desc').value.trim(),status:document.getElementById('fp-status').value,priority:document.getElementById('fp-priority').value,tags:JSON.stringify(document.getElementById('fp-tags').value.split(',').map(x=>x.trim()).filter(Boolean)),phases:'[]',board:'{}'});PROJ.fproj.push(normalizeProject(obj));closeModal('m-add-proj');openProjectBoard(obj.id);}
 function editProj(id){openProjectBoard(id);}
 async function submitEditProj(){const id=document.getElementById('m-edit-proj').dataset.id;const p=PROJ.fproj.find(x=>x.id===id);if(!p)return;normalizeProject(p);p.title=document.getElementById('ep-title').value.trim();p.description=document.getElementById('ep-desc').value.trim();p.status=document.getElementById('ep-status').value;p.priority=document.getElementById('ep-priority').value;p.tags=document.getElementById('ep-tags').value.split(',').map(x=>x.trim()).filter(Boolean);await apiProj('PUT','/api/projects/'+id,projectPayload(p));closeModal('m-edit-proj');renderFProj(document.getElementById('content'));}
-async function deleteProject(id){const p=PROJ.fproj.find(x=>x.id===id);if(!await showConfirm('Delete project?', `Delete "${p?.title || 'this project'}"? A backup will be saved to R2 first.`, { danger: true, confirmText: 'Delete Project' }))return;await apiProj('DELETE','/api/projects/'+id);PROJ.fproj=PROJ.fproj.filter(p=>p.id!==id);FP_CURRENT_ID=null;FP_PAGE='board';FP_CONTEXT_MODE='selection';FP_CONTEXT_COLLAPSED=false;FP_SELECTED_CANVAS_ID=null;FP_DIAGRAM_SELECTED_NODE_ID=null;FP_DIAGRAM_SELECTED_LINK_ID=null;FP_DIAGRAM_LINK_DRAFT=null;renderFProj(document.getElementById('content'));}
+async function deleteProject(id){const p=PROJ.fproj.find(x=>x.id===id);if(!await showConfirm('Delete project?', `Delete "${p?.title || 'this project'}"? A backup will be saved to R2 first.`, { danger: true, confirmText: 'Delete Project' }))return;await apiProj('DELETE','/api/projects/'+id);PROJ.fproj=PROJ.fproj.filter(p=>p.id!==id);FP_CURRENT_ID=null;renderFProj(document.getElementById('content'));}
 async function deleteProj(){const id=document.getElementById('m-edit-proj').dataset.id;if(!id)return;await deleteProject(id);closeModal('m-edit-proj');}
 
 // ── GRAPH VIEW ────────────────────────────────────────────
@@ -6380,34 +4892,6 @@ window.renderStorage = renderStorage;
 window.renderVocab = renderVocab;
 window.renderGraph = renderGraph;
 window.doSearch = doSearch;
-
-
-
-function handleSafeSidebarProjectNav(e) {
-  const el = e.target.closest && e.target.closest('[data-section], [data-page], .side-link, .sidebar a, nav a, nav button');
-  if (!el) return;
-
-  const section = el.dataset?.section || el.dataset?.page || '';
-  const text = String(el.textContent || '').trim().toLowerCase();
-
-  const isProjectNav =
-    normalizeSectionName(section) === 'fproj' ||
-    text === 'future projects' ||
-    text === 'projects' ||
-    text.includes('future projects') ||
-    text.includes('مشاريع');
-
-  if (!isProjectNav) return;
-
-  e.preventDefault();
-  goToSectionSafe('fproj');
-}
-
-if (!window.__DEVHUB_PROJECT_NAV_SAFE_PATCHED__) {
-  window.__DEVHUB_PROJECT_NAV_SAFE_PATCHED__ = true;
-  document.addEventListener('click', handleSafeSidebarProjectNav, false);
-}
-
 </script>
 
 <!-- Add Custom Site -->

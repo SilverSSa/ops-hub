@@ -1,0 +1,93 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@10.9.8
+2 info using node@v21.7.3
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/container/.npmrc
+5 silly config load:file:/usr/local/etc/npmrc
+6 verbose title npm install
+7 verbose argv "install"
+8 verbose logfile logs-max:10 dir:/home/container/.npm/_logs/2026-05-10T03_40_17_967Z-
+9 verbose logfile /home/container/.npm/_logs/2026-05-10T03_40_17_967Z-debug-0.log
+10 silly logfile start cleaning logs, removing 1 files
+11 silly packumentCache heap:271581184 maxSize:67895296 maxEntrySize:33947648
+12 silly logfile done cleaning log files
+13 silly idealTree buildDeps
+14 silly reify moves {}
+15 silly audit bulk request {
+15 silly audit   accepts: [ '1.3.8' ],
+15 silly audit   'array-flatten': [ '1.1.1' ],
+15 silly audit   'body-parser': [ '1.20.5' ],
+15 silly audit   qs: [ '6.15.1', '6.14.2' ],
+15 silly audit   bytes: [ '3.1.2' ],
+15 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+15 silly audit   'call-bound': [ '1.0.4' ],
+15 silly audit   'content-disposition': [ '0.5.4' ],
+15 silly audit   'content-type': [ '1.0.5' ],
+15 silly audit   cookie: [ '0.7.2' ],
+15 silly audit   'cookie-signature': [ '1.0.7' ],
+15 silly audit   debug: [ '2.6.9' ],
+15 silly audit   depd: [ '2.0.0' ],
+15 silly audit   destroy: [ '1.2.0' ],
+15 silly audit   dotenv: [ '16.6.1' ],
+15 silly audit   'dunder-proto': [ '1.0.1' ],
+15 silly audit   'ee-first': [ '1.1.1' ],
+15 silly audit   encodeurl: [ '2.0.0' ],
+15 silly audit   'es-define-property': [ '1.0.1' ],
+15 silly audit   'es-errors': [ '1.3.0' ],
+15 silly audit   'es-object-atoms': [ '1.1.1' ],
+15 silly audit   'escape-html': [ '1.0.3' ],
+15 silly audit   etag: [ '1.8.1' ],
+15 silly audit   express: [ '4.22.1' ],
+15 silly audit   finalhandler: [ '1.3.2' ],
+15 silly audit   forwarded: [ '0.2.0' ],
+15 silly audit   fresh: [ '0.5.2' ],
+15 silly audit   'function-bind': [ '1.1.2' ],
+15 silly audit   'get-intrinsic': [ '1.3.0' ],
+15 silly audit   'get-proto': [ '1.0.1' ],
+15 silly audit   gopd: [ '1.2.0' ],
+15 silly audit   'has-symbols': [ '1.1.0' ],
+15 silly audit   hasown: [ '2.0.3' ],
+15 silly audit   'http-errors': [ '2.0.1' ],
+15 silly audit   'iconv-lite': [ '0.4.24' ],
+15 silly audit   inherits: [ '2.0.4' ],
+15 silly audit   'ipaddr.js': [ '1.9.1' ],
+15 silly audit   'math-intrinsics': [ '1.1.0' ],
+15 silly audit   'media-typer': [ '0.3.0' ],
+15 silly audit   'merge-descriptors': [ '1.0.3' ],
+15 silly audit   methods: [ '1.1.2' ],
+15 silly audit   mime: [ '1.6.0' ],
+15 silly audit   'mime-db': [ '1.52.0' ],
+15 silly audit   'mime-types': [ '2.1.35' ],
+15 silly audit   ms: [ '2.0.0', '2.1.3' ],
+15 silly audit   negotiator: [ '0.6.3' ],
+15 silly audit   'object-inspect': [ '1.13.4' ],
+15 silly audit   'on-finished': [ '2.4.1' ],
+15 silly audit   parseurl: [ '1.3.3' ],
+15 silly audit   'path-to-regexp': [ '0.1.13' ],
+15 silly audit   'proxy-addr': [ '2.0.7' ],
+15 silly audit   'range-parser': [ '1.2.1' ],
+15 silly audit   'raw-body': [ '2.5.3' ],
+15 silly audit   'safe-buffer': [ '5.2.1' ],
+15 silly audit   'safer-buffer': [ '2.1.2' ],
+15 silly audit   send: [ '0.19.2' ],
+15 silly audit   'serve-static': [ '1.16.3' ],
+15 silly audit   setprototypeof: [ '1.2.0' ],
+15 silly audit   'side-channel': [ '1.1.0' ],
+15 silly audit   'side-channel-list': [ '1.0.1' ],
+15 silly audit   'side-channel-map': [ '1.0.1' ],
+15 silly audit   'side-channel-weakmap': [ '1.0.2' ],
+15 silly audit   statuses: [ '2.0.2' ],
+15 silly audit   toidentifier: [ '1.0.1' ],
+15 silly audit   'type-is': [ '1.6.18' ],
+15 silly audit   unpipe: [ '1.0.0' ],
+15 silly audit   'utils-merge': [ '1.0.1' ],
+15 silly audit   vary: [ '1.1.2' ]
+15 silly audit }
+16 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 272ms
+17 silly audit report {}
+18 verbose cwd /home/container
+19 verbose os Linux 6.8.0-90-generic
+20 verbose node v21.7.3
+21 verbose npm  v10.9.8
+22 verbose exit 0
+23 info ok
