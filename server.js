@@ -117,7 +117,6 @@ app.get('/favicon.ico', (_req, res) => res.status(204).end());
 
 // In-memory store for pending confirmations
 const PENDING_ACTIONS = new Map();
-const PENDING_VOCAB = new Map();
 
 // ── PUBLIC CHAT ROUTES (before auth) ──────────────
 app.get("/api/ai/chat/poll", async (req, res) => {
@@ -148,134 +147,6 @@ app.post("/api/ai/chat", async (req, res) => {
       return res.json({ response: "Cancelled. What else can I help with?" });
     }
 
-
-    // Vocab pending flow: handles "#add" -> word -> yes/no
-    const pendingVocab = PENDING_VOCAB.get(sessionId);
-
-    if (/^#add\s*$/i.test(message.trim())) {
-      PENDING_VOCAB.set(sessionId, { mode: "await_word" });
-      const vocabResult = await runVocabCommand("#add");
-      return res.json(vocabResult);
-    }
-
-    if (pendingVocab && pendingVocab.mode === "await_word") {
-      const word = message.trim();
-
-      if (/^(no|cancel|stop|n)$/i.test(word)) {
-        PENDING_VOCAB.delete(sessionId);
-        return res.json({
-          response: "Cancelled. No vocabulary word was added.",
-          action: null,
-          buttons: vocabButtons(),
-          needsConfirm: false,
-          confirmAction: null
-        });
-      }
-
-      if (!word || /^#/.test(word)) {
-        return res.json({
-          response: "Send the word you want to add, or type cancel.",
-          action: null,
-          buttons: vocabButtons(),
-          needsConfirm: false,
-          confirmAction: null
-        });
-      }
-
-      PENDING_VOCAB.set(sessionId, { mode: "confirm_add", word });
-
-      return res.json({
-        response: `Do you want me to add "${word}" as a vocabulary item?`,
-        action: null,
-        buttons: [
-          { label: `✅ Add ${word}`, action: "command", command: `#add ${word}` },
-          { label: `🔎 Search ${word}`, action: "command", command: `#search ${word}` },
-          { label: "❌ Cancel", action: "command", command: "no" },
-          { label: "📋 List Vocab", action: "command", command: "#list" },
-          { label: "📚 Open Vocab", action: "navigate", section: "vocab" }
-        ],
-        needsConfirm: false,
-        confirmAction: null
-      });
-    }
-
-    if (pendingVocab && pendingVocab.mode === "confirm_add") {
-      const word = pendingVocab.word;
-
-      if (/^(yes|y|yup|yeah|ok|okay|confirm|add|sure)$/i.test(message.trim())) {
-        PENDING_VOCAB.delete(sessionId);
-        const vocabResult = await runVocabCommand("#add " + word);
-        return res.json(vocabResult);
-      }
-
-      if (/^(no|cancel|stop|n)$/i.test(message.trim())) {
-        PENDING_VOCAB.delete(sessionId);
-        return res.json({
-          response: "Cancelled. No vocabulary word was added.",
-          action: null,
-          buttons: vocabButtons(),
-          needsConfirm: false,
-          confirmAction: null
-        });
-      }
-    }
-
-    // Direct vocab commands from website chat
-    // Safe mode: try n8n/Groq enrichment for #add WORD.
-    // If n8n fails, times out, or returns weak data without translation/example, fall back safely.
-    if (/^#(add|list|search)\b/i.test(message.trim())) {
-      const cmd = message.trim();
-
-      if (/^#add\s*$/i.test(cmd)) {
-        PENDING_VOCAB.set(sessionId, { mode: "await_word" });
-        const vocabResult = await runVocabCommand("#add");
-        return res.json(vocabResult);
-      }
-
-      if (/^#add\s+.+/i.test(cmd) && process.env.N8N_AI_WEBHOOK_URL) {
-        try {
-          const wordOnly = cmd.replace(/^#add\s+/i, "").trim();
-          const enriched = await Promise.race([
-            callN8N(
-              "Enrich and add this vocabulary item. Return vocab_add with word, Arabic translation, one useful example, source_lang, target_lang, and tags. Item: " + wordOnly,
-              sessionId
-            ),
-            new Promise(resolve => setTimeout(() => resolve(null), 12000))
-          ]);
-
-          const params = enriched && enriched.action && enriched.action.params ? enriched.action.params : {};
-          const hasUsefulEnrichment =
-            enriched &&
-            enriched.action &&
-            enriched.action.type === "vocab_add" &&
-            params.translation &&
-            params.example &&
-            String(params.translation).trim().toLowerCase() !== String(params.word || params.text || wordOnly).trim().toLowerCase();
-
-          if (hasUsefulEnrichment) {
-            const vocabResult = await runVocabAction(enriched.action);
-            return res.json(vocabResult);
-          }
-        } catch (e) {
-          console.error("vocab enrichment failed, using fallback:", e.message || e);
-        }
-      }
-
-      const vocabResult = await runVocabCommand(cmd);
-      return res.json(vocabResult);
-    }
-
-    // Direct vocab menu command
-    if (/^(vocab|vocabulary)$/i.test(message.trim())) {
-      return res.json({
-        response: "Vocabulary tools are ready. What do you want to do?",
-        action: null,
-        buttons: vocabButtons(),
-        needsConfirm: false,
-        confirmAction: null
-      });
-    }
-
     // Try n8n first — return response pass-through
     if (process.env.N8N_AI_WEBHOOK_URL) {
       const n8n = await callN8N(message);
@@ -288,15 +159,7 @@ app.post("/api/ai/chat", async (req, res) => {
           return res.json({ response: n8n.response, needsConfirm: true, action: null, buttons: n8n.buttons || undefined });
         }
 
-        // Execute vocab actions server-side and return the real result
-        if (n8n.action && (n8n.action.type === "vocab_add" || n8n.action.type === "vocab_command")) {
-          const vocabResult = await runVocabAction(n8n.action);
-          if (vocabResult) {
-            return res.json(vocabResult);
-          }
-        }
-
-        // Execute other DevHub action server-side if present
+        // Execute DevHub action server-side if present
         if (n8n.action && n8n.action.type) {
           await executeToolAction(n8n.action).catch(() => {});
         }
@@ -310,24 +173,6 @@ app.post("/api/ai/chat", async (req, res) => {
           confirmAction: n8n.confirmAction || undefined
         });
       }
-    }
-
-    // If n8n failed for vocab, do not use old fallback.
-    if (/^(vocab|vocabulary)$/i.test(message.trim())) {
-      return res.json({
-        response: "Vocabulary tools are ready. What do you want to do?",
-        action: null,
-        buttons: [
-          { label: "⬅️ Back", action: "back" },
-          { label: "📋 List Vocab", action: "command", command: "#list" },
-          { label: "➕ Add Vocab", action: "command", command: "#add " },
-          { label: "🔎 Search Vocab", action: "command", command: "#search " },
-          { label: "📚 Open Vocab", action: "navigate", section: "vocab" },
-          { label: "📋 Menu", action: "menu" }
-        ],
-        needsConfirm: false,
-        confirmAction: null
-      });
     }
 
     // Fallback only if n8n is unreachable
@@ -525,57 +370,19 @@ app.delete("/api/projects/:id", async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// ── Diagram Assessment ──────────────────────────────
-function normalizeProjectDiagramForAssessment(diagram) {
-  const d = typeof diagram === 'object' && diagram !== null && !Array.isArray(diagram) ? diagram : {};
-  return {
-    nodes: Array.isArray(d.nodes) ? d.nodes : [],
-    links: Array.isArray(d.links) ? d.links : [],
-    domain: d.domain || 'software-classes',
-    assessment: d.assessment || null,
-    ai: d.ai || null
-  };
-}
+// ── DIAGRAM & TRAINER ROUTES ────────────────────────
+function normalizeProjectDiagramForAssessment(d) { const o = d && typeof d==='object' && !Array.isArray(d) ? d : {}; return { nodes:Array.isArray(o.nodes)?o.nodes:[], links:Array.isArray(o.links)?o.links:[], domain:o.domain||'software-classes', assessment:o.assessment||null, ai:o.ai||null }; }
 
 app.post("/api/projects/:id/diagram-assess", async (req, res) => {
   try {
     await ensureFutureProjectsTable();
     const row = d1Rows(await d1Query("SELECT * FROM future_projects WHERE id = ?", [req.params.id]))[0];
     if (!row) return res.status(404).json({ error: "Project not found" });
-    let board = {};
-    try { board = JSON.parse(row.board || "{}"); } catch {}
-    const project = {
-      id: row.id, title: row.title, description: row.description,
-      status: row.status, priority: row.priority,
-      tags: JSON.parse(row.tags || "[]"), phases: JSON.parse(row.phases || "[]"),
-      board: board && typeof board === "object" ? board : {}
-    };
+    let board = {}; try { board = JSON.parse(row.board || "{}"); } catch {}
+    const project = { id:row.id, title:row.title, description:row.description, status:row.status, priority:row.priority, tags:JSON.parse(row.tags||"[]"), phases:JSON.parse(row.phases||"[]"), board };
     const diagram = normalizeProjectDiagramForAssessment(req.body?.diagram || project.board.diagram || {});
-    if (process.env.N8N_AI_WEBHOOK_URL) {
-      try {
-        const n8nRes = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: `Assess this architecture diagram. Return assessment with score, summary, hints, risks, suggestedNodes, suggestedLinks, suggestedFunctions, and nextSteps.`,
-            sessionId: `diagram-${req.params.id}`,
-            diagram, project: { title: project.title, description: project.description, tags: project.tags, status: project.status }
-          })
-        });
-        const text = await n8nRes.text();
-        if (n8nRes.ok && text && !text.startsWith('<')) {
-          const data = JSON.parse(text);
-          if (data.assessment) return res.json({ assessment: data.assessment });
-        }
-      } catch {}
-    }
-    return res.json({ assessment: {
-      source: 'local', reviewed_at: new Date().toISOString(), score: 60,
-      summary: 'Add classes, assign responsibilities, and link them by behavior.',
-      hints: ['Start by linking classes that call each other.'],
-      risks: ['No automated assessment available.'],
-      suggestedNodes: [], suggestedLinks: [], suggestedFunctions: [],
-      nextSteps: ['Link API to enable AI-driven architecture review.']
-    }});
+    if (process.env.N8N_AI_WEBHOOK_URL) { try { const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ message:'Assess this architecture diagram.', sessionId:`diag-${req.params.id}`, diagram, project:{ title:project.title, tags:project.tags, status:project.status } }) }); const t = await r.text(); if (r.ok && t && !t.startsWith('<')) { const d = JSON.parse(t); if (d.assessment) return res.json({ assessment:d.assessment }); } } catch {} }
+    return res.json({ assessment:{ source:'local', reviewed_at:new Date().toISOString(), score:60, summary:'Add classes, assign responsibilities, and link them by behavior.', hints:[], risks:[], suggestedNodes:[], suggestedLinks:[], suggestedFunctions:[], nextSteps:[] }});
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -584,230 +391,82 @@ app.post("/api/projects/:id/diagram-ai", async (req, res) => {
     await ensureFutureProjectsTable();
     const row = d1Rows(await d1Query("SELECT * FROM future_projects WHERE id = ?", [req.params.id]))[0];
     if (!row) return res.status(404).json({ error: "Project not found" });
-    let board = {};
-    try { board = JSON.parse(row.board || "{}"); } catch {}
-    const project = {
-      id: row.id, title: row.title, description: row.description,
-      status: row.status, priority: row.priority,
-      tags: JSON.parse(row.tags || "[]"), phases: JSON.parse(row.phases || "[]"),
-      board: board && typeof board === "object" ? board : {}
-    };
+    let board = {}; try { board = JSON.parse(row.board || "{}"); } catch {}
+    const project = { id:row.id, title:row.title, description:row.description, status:row.status, priority:row.priority, tags:JSON.parse(row.tags||"[]"), phases:JSON.parse(row.phases||"[]"), board };
     const diagram = normalizeProjectDiagramForAssessment(req.body?.diagram || project.board.diagram || {});
-    const mission = String(req.body?.mission || 'Review the architecture and suggest improvements.');
-    const scripts = String(req.body?.scripts || '');
-    const locale = String(req.body?.locale || 'en');
-    const preserveTerms = String(req.body?.preserveTerms || '');
-
-    const systemMessage = locale === 'ar'
-      ? `أنت مراجع معماري خبير. راجع الرسم البياني.${preserveTerms ? ` لا تترجم أبدًا: ${preserveTerms}` : ''} قدم ردًا منظمًا مع response, edits,評估 (assessment), notifications, tasks, schedule, و buttons.`
-      : `You are an expert architecture reviewer. Review the diagram.${preserveTerms ? ` NEVER translate these terms: ${preserveTerms}` : ''} Respond with structured output: response, edits (suggestedNodeEdits, suggestedLinkEdits, suggestedFunctionEdits), assessment (score, summary, hints, risks, suggestedNodes, suggestedLinks, suggestedFunctions, nextSteps), notifications, tasks, schedule, and buttons.`;
-
-    let fullMessage = `${mission}\n\nDiagram: ${JSON.stringify({ nodes: diagram.nodes.map(n => ({ id:n.id, name:n.name, type:n.type, responsibility:n.responsibility, methods:n.methods })), links: diagram.links, domain: diagram.domain })}\n\nProject: ${project.title} - ${project.description || 'No description'}`;
-    if (scripts) fullMessage += `\n\nScripts to review:\n${scripts}`;
-
-    if (process.env.N8N_AI_WEBHOOK_URL) {
-      try {
-        const n8nRes = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: fullMessage, sessionId: `diagram-${req.params.id}`, diagram, project, mission, scripts, locale, preserveTerms, systemMessage })
-        });
-        const text = await n8nRes.text();
-        if (n8nRes.ok && text && !text.startsWith('<')) {
-          return res.json(JSON.parse(text));
-        }
-      } catch {}
-    }
-
-    return res.json({
-      response: `Diagram has ${diagram.nodes.length} nodes and ${diagram.links.length} links. Configure n8n webhook for AI analysis.`,
-      notifications: [{ type: 'info', message: 'AI analysis unavailable. Enable n8n webhook for full review.' }],
-      buttons: [{ label: 'Add Class Node', action: 'notify' }]
-    });
+    const { mission='Review', scripts='', locale='en', preserveTerms='' } = req.body||{};
+    if (process.env.N8N_AI_WEBHOOK_URL) { try { const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ message:`${mission}\nDiagram:${JSON.stringify({ nodes:diagram.nodes.map(n=>({ id:n.id, name:n.name, type:n.type })), links:diagram.links, domain:diagram.domain })}\nScripts:${scripts}`, sessionId:`diagai-${req.params.id}`, diagram, project, mission, locale, preserveTerms }) }); const t = await r.text(); if (r.ok && t && !t.startsWith('<')) return res.json(JSON.parse(t)); } catch {} }
+    return res.json({ response:`${diagram.nodes.length} nodes, ${diagram.links.length} links.`, notifications:[{ type:'info', message:'AI unavailable. Enable n8n for full review.' }] });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// ── TRAINER CHALLENGES ──────────────────────────────
 const LOCAL_CHALLENGES = [
-  { id:'lc_1', title:'Build a REST API Endpoint', description:'Create a working Express endpoint with validation and error handling. Write tests for edge cases.', category:'devops', goal:'Ship a production-quality API route', level:'intermediate', due_days:7 },
-  { id:'lc_2', title:'Containerize an Application', description:'Write a Dockerfile and docker-compose.yml for a Node.js app. Ensure it runs identically on any machine.', category:'devops', goal:'One-command deployment with Docker', level:'intermediate', due_days:7 },
-  { id:'lc_3', title:'Set up CI/CD Pipeline', description:'Configure GitHub Actions to test, build, and deploy automatically on push to main.', category:'devops', goal:'Fully automated deployment pipeline', level:'advanced', due_days:10 },
-  { id:'lc_4', title:'Write Unit Tests for API', description:'Achieve 80% test coverage on your Express routes using Jest or Mocha.', category:'computer-science', goal:'Well-tested backend codebase', level:'intermediate', due_days:5 },
-  { id:'lc_5', title:'Database Migration Strategy', description:'Design a zero-downtime migration plan for PostgreSQL. Include rollback procedures.', category:'devops', goal:'Safe schema evolution plan', level:'advanced', due_days:7 },
-  { id:'lc_6', title:'System Design: URL Shortener', description:'Design a scalable URL shortening service. Cover: API, database schema, caching, rate limiting.', category:'computer-science', goal:'Complete system design document', level:'advanced', due_days:7 }
+  { id:'lc_1', title:'Build a REST API Endpoint', description:'Express endpoint with validation and error handling.', category:'devops', goal:'Production API route', level:'intermediate', due_days:7 },
+  { id:'lc_2', title:'Containerize an Application', description:'Dockerfile and compose for Node.js app.', category:'devops', goal:'One-command deploy', level:'intermediate', due_days:7 },
+  { id:'lc_3', title:'Set up CI/CD Pipeline', description:'GitHub Actions to test/build/deploy.', category:'devops', goal:'Automated pipeline', level:'advanced', due_days:10 },
+  { id:'lc_4', title:'Write Unit Tests', description:'80% coverage on Express routes.', category:'cs', goal:'Tested backend', level:'intermediate', due_days:5 },
+  { id:'lc_5', title:'Database Migration Strategy', description:'Zero-downtime PostgreSQL migration.', category:'devops', goal:'Safe schema evolution', level:'advanced', due_days:7 },
+  { id:'lc_6', title:'System Design: URL Shortener', description:'Scalable URL shortener design doc.', category:'cs', goal:'Design document', level:'advanced', due_days:7 }
 ];
+const EXAM_TEMPLATES = {
+  'cs': [{ prompt:'Stack vs queue — real-world examples?', category:'ds' },{ prompt:'Big O: O(n) vs O(log n)?', category:'algo' },{ prompt:'REST vs GraphQL — 3 differences?', category:'api' },{ prompt:'SOLID: explain 2 principles.', category:'arch' },{ prompt:'CAP theorem impact on distributed systems?', category:'systems' }],
+  'devops': [{ prompt:'CI vs CD difference?', category:'cicd' },{ prompt:'What is IaC? Give example.', category:'iac' },{ prompt:'Docker vs VMs — 3 advantages.', category:'containers' },{ prompt:'5 essential production metrics?', category:'obs' },{ prompt:'Blue-green vs canary deployment?', category:'deploy' }],
+  'english-career': [{ prompt:'Write email explaining a project delay.', category:'writing' },{ prompt:'Describe your most challenging project.', category:'speaking' },{ prompt:'Explain DNS to non-technical person.', category:'comm' },{ prompt:'Disagree with senior — 2-3 sentences.', category:'soft' },{ prompt:'Define 5 technical terms simply.', category:'vocab' }],
+  'networking': [{ prompt:'OSI model layers?', category:'fund' },{ prompt:'TCP vs UDP — 3 examples each.', category:'proto' },{ prompt:'DNS resolution step by step?', category:'dns' },{ prompt:'Hosts in /24 network?', category:'addr' },{ prompt:'How does HTTPS provide security?', category:'sec' }]
+};
 
 app.get("/api/trainer/challenges", async (_req, res) => {
-  try {
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_challenges (id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT DEFAULT '', category TEXT DEFAULT 'general', goal TEXT DEFAULT '', level TEXT DEFAULT 'foundation', status TEXT DEFAULT 'active', due_days INTEGER DEFAULT 7, created_at INTEGER DEFAULT (unixepoch()))`);
-    const rows = d1Rows(await d1Query("SELECT * FROM trainer_challenges WHERE status = 'active' ORDER BY created_at DESC"));
-    if (rows.length) return res.json(rows);
-    return res.json(LOCAL_CHALLENGES.map(c => ({ ...c, created_at: Math.floor(Date.now()/1000) })));
-  } catch { res.json(LOCAL_CHALLENGES.map(c => ({ ...c, created_at: Math.floor(Date.now()/1000) }))); }
+  try { await d1Query("CREATE TABLE IF NOT EXISTS trainer_challenges (id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT DEFAULT '', category TEXT DEFAULT 'general', goal TEXT DEFAULT '', level TEXT DEFAULT 'foundation', status TEXT DEFAULT 'active', due_days INTEGER DEFAULT 7, created_at INTEGER DEFAULT (unixepoch()))"); const rows = d1Rows(await d1Query("SELECT * FROM trainer_challenges WHERE status='active' ORDER BY created_at DESC")); if (rows.length) return res.json(rows); } catch {}
+  res.json(LOCAL_CHALLENGES.map(c=>({...c,created_at:Math.floor(Date.now()/1000)})));
 });
 
 app.post("/api/trainer/challenges/generate", async (req, res) => {
   try {
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_challenges (id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT DEFAULT '', category TEXT DEFAULT 'general', goal TEXT DEFAULT '', level TEXT DEFAULT 'foundation', status TEXT DEFAULT 'active', due_days INTEGER DEFAULT 7, created_at INTEGER DEFAULT (unixepoch()))`);
-    const category = req.body?.category || 'general';
-    let generated = null;
-
-    if (process.env.N8N_AI_WEBHOOK_URL) {
-      try {
-        const n8nRes = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'weekly_challenges', category, overview: {}, sessionId: 'trainer-challenges' })
-        });
-        const text = await n8nRes.text();
-        if (n8nRes.ok && text && !text.startsWith('<')) {
-          const data = JSON.parse(text);
-          if (data.challenges?.length) {
-            generated = data.challenges[0];
-          } else if (data.response) {
-            generated = { title: 'AI-Generated Challenge', description: String(data.response).slice(0, 500), category, goal: 'Complete this challenge', level: 'intermediate', due_days: 7 };
-          }
-        }
-      } catch {}
-    }
-
-    if (!generated) {
-      const filtered = LOCAL_CHALLENGES.filter(c => c.category === category);
-      generated = filtered.length ? filtered[Math.floor(Math.random() * filtered.length)] : LOCAL_CHALLENGES[Math.floor(Math.random() * LOCAL_CHALLENGES.length)];
-    }
-
-    const id = 'ch_' + Date.now();
-    await d1Query("INSERT INTO trainer_challenges (id, title, description, category, goal, level, status, due_days) VALUES (?,?,?,?,?,?,?,?)", [id, generated.title, generated.description, generated.category, generated.goal || '', generated.level || 'intermediate', 'active', generated.due_days || 7]);
-    res.json({ id, ...generated, status: 'active', created_at: Math.floor(Date.now()/1000) });
+    await d1Query("CREATE TABLE IF NOT EXISTS trainer_challenges (id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT DEFAULT '', category TEXT DEFAULT 'general', goal TEXT DEFAULT '', level TEXT DEFAULT 'foundation', status TEXT DEFAULT 'active', due_days INTEGER DEFAULT 7, created_at INTEGER DEFAULT (unixepoch()))");
+    const cat = req.body?.category || 'general'; let g = null;
+    if (process.env.N8N_AI_WEBHOOK_URL) { try { const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ type:'weekly_challenges', category:cat }) }); const t = await r.text(); if (r.ok && t && !t.startsWith('<')) { const d = JSON.parse(t); g = d.challenges?.[0] || (d.response?{ title:'AI Challenge', description:String(d.response).slice(0,500), category:cat, goal:'Complete', level:'intermediate', due_days:7 }:null); } } catch {} }
+    if (!g) { const f = LOCAL_CHALLENGES.filter(c=>c.category===cat); g = f.length ? f[Math.floor(Math.random()*f.length)] : LOCAL_CHALLENGES[Math.floor(Math.random()*LOCAL_CHALLENGES.length)]; }
+    const id = 'ch_'+Date.now(); await d1Query("INSERT INTO trainer_challenges (id,title,description,category,goal,level,status,due_days) VALUES (?,?,?,?,?,?,?,?)", [id,g.title,g.description,g.category,g.goal||'',g.level||'intermediate','active',g.due_days||7]);
+    res.json({ id,...g, status:'active', created_at:Math.floor(Date.now()/1000) });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// ── TRAINER EXAMS ────────────────────────────────────
-const EXAM_TEMPLATES = {
-  'computer-science': [
-    { prompt: 'What is the difference between a stack and a queue? Give a real-world example of each.', category: 'data-structures' },
-    { prompt: 'Explain the concept of Big O notation. What is O(n) vs O(log n) with examples?', category: 'algorithms' },
-    { prompt: 'What is REST and how does it differ from GraphQL? List 3 key differences.', category: 'api-design' },
-    { prompt: 'Explain the SOLID principles. Pick two and give code examples.', category: 'architecture' },
-    { prompt: 'What is the CAP theorem? How does it affect distributed system design?', category: 'systems' }
-  ],
-  'devops': [
-    { prompt: 'Explain the difference between continuous integration and continuous delivery.', category: 'ci-cd' },
-    { prompt: 'What is infrastructure as code? Give an example using Terraform or CloudFormation.', category: 'iac' },
-    { prompt: 'Describe how Docker containers differ from virtual machines. List 3 advantages of containers.', category: 'containers' },
-    { prompt: 'What monitoring metrics are essential for a production web service? Name 5.', category: 'observability' },
-    { prompt: 'Explain blue-green deployment vs canary deployment. When would you use each?', category: 'deployment' }
-  ],
-  'english-career': [
-    { prompt: 'Write a professional email to a client explaining a project delay. Include: apology, reason, new timeline, next steps.', category: 'writing' },
-    { prompt: 'Describe your most challenging technical project in 3-5 sentences. Use precise technical vocabulary.', category: 'speaking' },
-    { prompt: 'How would you explain DNS to a non-technical stakeholder? Write your explanation.', category: 'communication' },
-    { prompt: 'You are in a meeting and disagree with a senior engineer. Write 2-3 sentences expressing your view respectfully.', category: 'soft-skills' },
-    { prompt: 'List 5 technical terms and write a simple English definition for each that a junior developer would understand.', category: 'vocabulary' }
-  ],
-  'networking': [
-    { prompt: 'Explain the OSI model layers. Which layer does TCP operate at and why?', category: 'fundamentals' },
-    { prompt: 'What is the difference between TCP and UDP? Give 3 examples of protocols that use each.', category: 'protocols' },
-    { prompt: 'Explain how DNS resolution works from browser to IP address, step by step.', category: 'dns' },
-    { prompt: 'What is a subnet mask? How would you calculate the number of hosts in a /24 network?', category: 'addressing' },
-    { prompt: 'Describe how HTTPS provides security. What roles do TLS certificates play?', category: 'security' }
-  ]
-};
-
 app.post("/api/trainer/exams/generate", async (req, res) => {
   try {
-    const category = req.body?.category || 'computer-science';
-    const template = EXAM_TEMPLATES[category] || EXAM_TEMPLATES['computer-science'];
-    const questions = template.map((q, i) => ({ id: 'q' + (i + 1), prompt: q.prompt, category: q.category }));
-    const exam = { id: 'ex_' + Date.now(), title: `${category.replace(/-/g, ' ')} Exam`, category, questions, created_at: Math.floor(Date.now()/1000) };
-
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_exams (id TEXT PRIMARY KEY, exam_json TEXT NOT NULL, answers TEXT DEFAULT '', score INTEGER DEFAULT 0, level TEXT DEFAULT '', summary TEXT DEFAULT '', category TEXT DEFAULT 'general', created_at INTEGER DEFAULT (unixepoch()))`);
-    await d1Query("INSERT INTO trainer_exams (id, exam_json, category) VALUES (?,?,?)", [exam.id, JSON.stringify(exam), category]);
-
-    if (process.env.N8N_AI_WEBHOOK_URL) {
-      try {
-        const n8nRes = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'start_exam', category, overview: {}, sessionId: 'trainer-exams' })
-        });
-        const text = await n8nRes.text();
-        if (n8nRes.ok && text && !text.startsWith('<')) {
-          const data = JSON.parse(text);
-          if (data.questions?.length) {
-            exam.title = data.title || exam.title;
-            exam.questions = data.questions;
-            await d1Query("UPDATE trainer_exams SET exam_json = ? WHERE id = ?", [JSON.stringify(exam), exam.id]);
-          }
-        }
-      } catch {}
-    }
-
+    const cat = req.body?.category || 'cs'; const tmpl = EXAM_TEMPLATES[cat] || EXAM_TEMPLATES['cs'];
+    const questions = tmpl.map((q,i)=>({ id:'q'+(i+1), prompt:q.prompt, category:q.category }));
+    const exam = { id:'ex_'+Date.now(), title:`${cat.replace(/-/g,' ')} Exam`, category:cat, questions, created_at:Math.floor(Date.now()/1000) };
+    await d1Query("CREATE TABLE IF NOT EXISTS trainer_exams (id TEXT PRIMARY KEY, exam_json TEXT NOT NULL, answers TEXT DEFAULT '', score INTEGER DEFAULT 0, level TEXT DEFAULT '', summary TEXT DEFAULT '', category TEXT DEFAULT 'general', created_at INTEGER DEFAULT (unixepoch()))");
+    await d1Query("INSERT INTO trainer_exams (id, exam_json, category) VALUES (?,?,?)", [exam.id, JSON.stringify(exam), cat]);
+    if (process.env.N8N_AI_WEBHOOK_URL) { try { const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ type:'start_exam', category:cat }) }); const t = await r.text(); if (r.ok && t && !t.startsWith('<')) { const d = JSON.parse(t); if (d.questions?.length) { exam.title=d.title||exam.title; exam.questions=d.questions; await d1Query("UPDATE trainer_exams SET exam_json=? WHERE id=?",[JSON.stringify(exam),exam.id]); } } } catch {} }
     res.json(exam);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.post("/api/trainer/exams/submit", async (req, res) => {
   try {
-    const { examId, answers } = req.body || {};
-    if (!examId) return res.status(400).json({ error: "examId required" });
-    const row = d1Rows(await d1Query("SELECT * FROM trainer_exams WHERE id = ?", [examId]))[0];
-    if (!row) return res.status(404).json({ error: "Exam not found" });
-
-    let exam, score = 0, level = 'foundation', summary = '';
-    try { exam = JSON.parse(row.exam_json); } catch { exam = { questions: [] }; }
-    const questionCount = exam.questions?.length || 5;
-    const answerText = typeof answers === 'string' ? answers : JSON.stringify(answers || {});
-
-    if (process.env.N8N_AI_WEBHOOK_URL) {
-      try {
-        const n8nRes = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'grade_exam', exam, answers, overview: {}, sessionId: 'trainer-exams' })
-        });
-        const text = await n8nRes.text();
-        if (n8nRes.ok && text && !text.startsWith('<')) {
-          const data = JSON.parse(text);
-          score = data.score || Math.round(Math.random() * 40 + 50);
-          level = data.level || 'intermediate';
-          summary = data.summary || 'Exam graded by AI. Review your answers for improvement areas.';
-        }
-      } catch {}
-    }
-
-    if (!summary) {
-      score = Math.round(Math.random() * 35 + 50);
-      level = score >= 80 ? 'advanced' : score >= 60 ? 'intermediate' : 'foundation';
-      summary = `You scored ${score}%. ${questionCount} questions answered. Level: ${level}. Keep practicing to improve.`;
-    }
-
-    await d1Query("UPDATE trainer_exams SET answers = ?, score = ?, level = ?, summary = ? WHERE id = ?", [answerText, score, level, summary, examId]);
-    res.json({ score, level, summary, questionCount });
+    const { examId, answers } = req.body||{}; if (!examId) return res.status(400).json({ error:"examId required" });
+    const row = d1Rows(await d1Query("SELECT * FROM trainer_exams WHERE id=?",[examId]))[0]; if (!row) return res.status(404).json({ error:"Not found" });
+    let exam, s=0, l='foundation', sum=''; try { exam=JSON.parse(row.exam_json); } catch { exam={questions:[]}; }
+    if (process.env.N8N_AI_WEBHOOK_URL) { try { const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ type:'grade_exam', exam, answers }) }); const t = await r.text(); if (r.ok && t && !t.startsWith('<')) { const d = JSON.parse(t); s=d.score||60; l=d.level||'intermediate'; sum=d.summary||'Graded by AI.'; } } catch {} }
+    if (!sum) { s=Math.round(Math.random()*35+50); l=s>=80?'advanced':s>=60?'intermediate':'foundation'; sum=`Scored ${s}%. Level: ${l}.`; }
+    await d1Query("UPDATE trainer_exams SET answers=?,score=?,level=?,summary=? WHERE id=?",[typeof answers==='string'?answers:JSON.stringify(answers||{}),s,l,sum,examId]);
+    res.json({ score:s, level:l, summary:sum });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.get("/api/trainer/exams", async (_req, res) => {
-  try {
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_exams (id TEXT PRIMARY KEY, exam_json TEXT NOT NULL, answers TEXT DEFAULT '', score INTEGER DEFAULT 0, level TEXT DEFAULT '', summary TEXT DEFAULT '', category TEXT DEFAULT 'general', created_at INTEGER DEFAULT (unixepoch()))`);
-    const rows = d1Rows(await d1Query("SELECT * FROM trainer_exams ORDER BY created_at DESC LIMIT 20"));
-    res.json(rows);
-  } catch { res.json([]); }
+  try { await d1Query("CREATE TABLE IF NOT EXISTS trainer_exams (id TEXT PRIMARY KEY, exam_json TEXT NOT NULL, answers TEXT DEFAULT '', score INTEGER DEFAULT 0, level TEXT DEFAULT '', summary TEXT DEFAULT '', category TEXT DEFAULT 'general', created_at INTEGER DEFAULT (unixepoch()))"); res.json(d1Rows(await d1Query("SELECT * FROM trainer_exams ORDER BY created_at DESC LIMIT 20"))); } catch { res.json([]); }
 });
 
 app.get("/api/trainer/overview", async (_req, res) => {
   try {
-    const [challenges, exams, vocabCount] = await Promise.all([
-      d1Query("SELECT COUNT(*) as c FROM trainer_challenges WHERE status = 'active'").catch(() => [{ results: [{ c: 0 }] }]),
-      d1Query("SELECT COUNT(*) as c FROM trainer_exams").catch(() => [{ results: [{ c: 0 }] }]),
-      d1Query("SELECT COUNT(*) as c FROM vocab").catch(() => [{ results: [{ c: 0 }] }])
-    ]);
-    const challengeCount = d1Rows(challenges)[0]?.c || 0;
-    const examCount = d1Rows(exams)[0]?.c || 0;
-    const words = d1Rows(vocabCount)[0]?.c || 0;
-
-    let avgScore = 0;
-    const examRows = d1Rows(await d1Query("SELECT score FROM trainer_exams WHERE score > 0 ORDER BY created_at DESC LIMIT 10").catch(() => [[]]));
-    if (examRows.length) avgScore = Math.round(examRows.reduce((a, r) => a + (r.score || 0), 0) / examRows.length);
-
-    res.json({ challenges: challengeCount, exams: examCount, words, avgScore, level: avgScore >= 80 ? 'advanced' : avgScore >= 60 ? 'intermediate' : 'foundation' });
-  } catch { res.json({ challenges: 0, exams: 0, words: 0, avgScore: 0, level: 'foundation' }); }
+    const [ch, ex, vc] = await Promise.all([d1Query("SELECT COUNT(*) as c FROM trainer_challenges WHERE status='active'").catch(()=>[[{c:0}]]), d1Query("SELECT COUNT(*) as c FROM trainer_exams").catch(()=>[[{c:0}]]), d1Query("SELECT COUNT(*) as c FROM vocab").catch(()=>[[{c:0}]])]);
+    const cc=d1Rows(ch)[0]?.c||0, ec=d1Rows(ex)[0]?.c||0, wc=d1Rows(vc)[0]?.c||0;
+    const rows=d1Rows(await d1Query("SELECT score FROM trainer_exams WHERE score>0 ORDER BY created_at DESC LIMIT 10").catch(()=>[[]]));
+    const av=rows.length?Math.round(rows.reduce((a,r)=>a+(r.score||0),0)/rows.length):0;
+    res.json({ challenges:cc, exams:ec, words:wc, avgScore:av, level:av>=80?'advanced':av>=60?'intermediate':'foundation' });
+  } catch { res.json({ challenges:0, exams:0, words:0, avgScore:0, level:'foundation' }); }
 });
 
 // ── Cloudflare Sites Proxy ──────────────────────────
@@ -1353,67 +1012,77 @@ async function callOpenAI(message) {
   return data.choices?.[0]?.message?.content || null;
 }
 
-async function callN8N(message, sessionId = "default") {
+async function callN8N(message) {
   const url = process.env.N8N_AI_WEBHOOK_URL;
   if (!url) return null;
-
   try {
     const r = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.TELEGRAM_BOT_TOKEN || ""}`,
+        "X-Telegram-Token": process.env.TELEGRAM_BOT_TOKEN || ""
       },
-      body: JSON.stringify({
-        message,
-        text: message,
-        sessionId,
-        session_id: sessionId
-      })
+      body: JSON.stringify({ message, system: AI_SYSTEM_PROMPT })
     });
-
-    const raw = await r.text();
-
+    const text = await r.text();
     if (!r.ok) {
-      console.error("callN8N HTTP error:", r.status, raw);
+      console.error("n8n webhook error:", r.status, text.slice(0, 200));
       return null;
     }
-
-    console.error("callN8N raw response:", raw.slice(0, 500));
-
-    let json;
     try {
-      json = JSON.parse(raw);
-    } catch (e) {
-      return {
-        response: raw || "",
-        action: null,
-        buttons: [],
-        needsConfirm: false,
-        confirmAction: null
-      };
+      const data = JSON.parse(text);
+      if (typeof data === 'string') return { response: data, action: null };
+      return { response: data.response || data.text || data.message || data.output || '', action: data.action || null, needsConfirm: data.needsConfirm || false, confirmAction: data.confirmAction || null };
+    } catch {
+      return { response: text, action: null };
     }
-
-    return {
-      response: json.response || json.text || json.message || "",
-      action: json.action || null,
-      buttons: Array.isArray(json.buttons)
-        ? json.buttons.map(b => {
-            if (String(b.label || "").includes("Back") || String(b.label || "").includes("⬅")) {
-              return { ...b, action: "back" };
-            }
-            return b;
-          })
-        : [],
-      needsConfirm: !!json.needsConfirm,
-      confirmAction: json.confirmAction || null
-    };
   } catch (e) {
-    console.error("callN8N failed:", e.message || e);
+    console.error("n8n webhook unreachable:", e.message);
     return null;
   }
 }
 
+// Debug endpoint to check AI connectivity
+app.get("/api/ai/health", async (_req, res) => {
+  const status = {
+    n8nConfigured: !!process.env.N8N_AI_WEBHOOK_URL,
+    n8nUrl: process.env.N8N_AI_WEBHOOK_URL || "(not set)",
+    openaiConfigured: !!process.env.OPENAI_API_KEY,
+    n8nStatus: "unknown",
+    fallbackActive: true,
+  };
+  if (process.env.N8N_AI_WEBHOOK_URL) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.TELEGRAM_BOT_TOKEN || ""}`,
+        "X-Telegram-Token": process.env.TELEGRAM_BOT_TOKEN || ""
+      };
+      const r = await fetch(process.env.N8N_AI_WEBHOOK_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ message: "ping", system: "Reply with just 'pong'." }),
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!r.ok) {
+        const text = await r.text();
+        status.n8nStatus = `HTTP ${r.status}: ${text.slice(0, 100)}`;
+      } else {
+        const data = await r.json().catch(() => ({}));
+        status.n8nStatus = "connected";
+        status.n8nSampleResponse = typeof data === 'string' ? data.slice(0, 60) : (data.response || data.text || data.message || JSON.stringify(data)).slice(0, 60);
+      }
+    } catch (e) {
+      status.n8nStatus = `unreachable: ${e.message}`;
+    }
+  }
+  res.json(status);
+});
 
+// ── CHAT BRIDGE helpers ─────────────────────────
+
+// Store a web chat message and forward to Telegram
 async function bridgeToTelegram(sessionId, message) {
   if (!process.env.TELEGRAM_BOT_TOKEN) return;
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "800625752";
@@ -1430,253 +1099,6 @@ async function bridgeFromTelegram(sessionId, text) {
   const id = "bridge_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
   await d1Query("CREATE TABLE IF NOT EXISTS chat_bridge (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, sender TEXT NOT NULL, text TEXT NOT NULL, delivered INTEGER DEFAULT 0, created_at INTEGER DEFAULT (unixepoch()))");
   await d1Query("INSERT INTO chat_bridge (id, session_id, sender, text) VALUES (?,?,?,?)", [id, sessionId, "bot", text]);
-}
-
-
-
-function vocabButtons() {
-  return [
-    { label: "⬅️ Back", action: "back" },
-    { label: "📋 List Vocab", action: "command", command: "#list" },
-    { label: "➕ Add Vocab", action: "command", command: "#add " },
-    { label: "🔎 Search Vocab", action: "command", command: "#search " },
-    { label: "📚 Open Vocab", action: "navigate", section: "vocab" },
-    { label: "📋 Menu", action: "menu" }
-  ];
-}
-
-async function runVocabCommand(command, enriched = {}) {
-  command = String(command || "").trim();
-
-  await d1Query(`
-    CREATE TABLE IF NOT EXISTS vocab (
-      id TEXT PRIMARY KEY,
-      word TEXT NOT NULL,
-      translation TEXT NOT NULL,
-      example TEXT DEFAULT '',
-      source_lang TEXT DEFAULT 'en',
-      target_lang TEXT DEFAULT 'ar',
-      tags TEXT DEFAULT '[]',
-      created_at INTEGER DEFAULT (unixepoch())
-    )
-  `);
-
-  function parseVocabText(input) {
-    input = String(input || "").trim();
-
-    let word = input;
-    let translation = "";
-    let example = "";
-
-    // Supports:
-    // #add Onward = إلى الأمام
-    // #add Onward - إلى الأمام
-    // #add Onward: إلى الأمام
-    const patterns = [
-      /^(.*?)\s*=\s*(.*?)$/,
-      /^(.*?)\s+-\s+(.*?)$/,
-      /^(.*?)\s*:\s*(.*?)$/
-    ];
-
-    for (const pattern of patterns) {
-      const m = input.match(pattern);
-      if (m && m[1] && m[2]) {
-        word = m[1].trim();
-        translation = m[2].trim();
-        break;
-      }
-    }
-
-    if (enriched.word) word = String(enriched.word).trim();
-    if (enriched.text && !word) word = String(enriched.text).trim();
-    if (enriched.translation) translation = String(enriched.translation).trim();
-    if (enriched.example) example = String(enriched.example).trim();
-
-    // The Vocab page requires translation.
-    // If AI did not provide translation, use word as placeholder.
-    if (!translation) translation = word;
-
-    return { word, translation, example };
-  }
-
-  if (!command || command.toLowerCase() === "#add") {
-    return {
-      response: "What word do you want to add after #add?",
-      action: null,
-      buttons: vocabButtons(),
-      needsConfirm: false,
-      confirmAction: null
-    };
-  }
-
-  if (command.toLowerCase().startsWith("#add ")) {
-    const text = command.slice(5).trim();
-
-    if (!text && !enriched.text && !enriched.word) {
-      return {
-        response: "What word do you want to add after #add?",
-        action: null,
-        buttons: vocabButtons(),
-        needsConfirm: false,
-        confirmAction: null
-      };
-    }
-
-    const { word, translation, example } = parseVocabText(text);
-    const id = "vocab_" + Date.now() + "_" + Math.random().toString(16).slice(2);
-
-    await d1Query(
-      "INSERT INTO vocab (id, word, translation, example, source_lang, target_lang, tags) VALUES (?,?,?,?,?,?,?)",
-      [
-        id,
-        word,
-        translation,
-        example,
-        enriched.source_lang || "en",
-        enriched.target_lang || "ar",
-        JSON.stringify(enriched.tags || [])
-      ]
-    );
-
-    const responseLines = [
-      "Added vocabulary: " + word,
-      translation && translation !== word ? "Arabic: " + translation : null,
-      example ? "Example: " + example : null
-    ].filter(Boolean);
-
-    return {
-      response: responseLines.join("\n"),
-      action: { type: "nav", params: { section: "vocab" } },
-      buttons: [
-        { label: "⬅️ Back", action: "back" },
-        { label: "➕ Add Another", action: "command", command: "#add " },
-        { label: "📋 List Vocab", action: "command", command: "#list" },
-        { label: "🔎 Search Vocab", action: "command", command: "#search " },
-        { label: "📚 Open Vocab", action: "navigate", section: "vocab" },
-        { label: "📋 Menu", action: "menu" }
-      ],
-      needsConfirm: false,
-      confirmAction: null
-    };
-  }
-
-  if (command.toLowerCase() === "#list") {
-    const result = await d1Query(
-      "SELECT word, translation, example, created_at FROM vocab ORDER BY created_at DESC LIMIT 50"
-    );
-
-    const rows = d1Rows(result);
-
-    if (!rows.length) {
-      return {
-        response: "Your vocabulary list is empty. Add one with #add WORD.",
-        action: null,
-        buttons: vocabButtons(),
-        needsConfirm: false,
-        confirmAction: null
-      };
-    }
-
-    const list = rows.map((r, i) => {
-      const w = r.word || "";
-      const t = r.translation || "";
-      return t && t !== w ? `${i + 1}. ${w} = ${t}` : `${i + 1}. ${w}`;
-    }).join("\n");
-
-    return {
-      response: "Vocabulary list:\n" + list,
-      action: { type: "nav", params: { section: "vocab" } },
-      buttons: vocabButtons(),
-      needsConfirm: false,
-      confirmAction: null
-    };
-  }
-
-  if (command.toLowerCase().startsWith("#search ")) {
-    const term = command.slice(8).trim();
-
-    if (!term) {
-      return {
-        response: "What word do you want to search for after #search?",
-        action: null,
-        buttons: vocabButtons(),
-        needsConfirm: false,
-        confirmAction: null
-      };
-    }
-
-    const result = await d1Query(
-      "SELECT word, translation, example, created_at FROM vocab WHERE lower(word) LIKE lower(?) OR lower(translation) LIKE lower(?) OR lower(example) LIKE lower(?) ORDER BY created_at DESC LIMIT 50",
-      ["%" + term + "%", "%" + term + "%", "%" + term + "%"]
-    );
-
-    const rows = d1Rows(result);
-
-    if (!rows.length) {
-      return {
-        response: "No vocabulary entries found for: " + term,
-        action: null,
-        buttons: [
-          { label: "⬅️ Back", action: "back" },
-          { label: "➕ Add " + term, action: "command", command: "#add " + term },
-          { label: "📋 List Vocab", action: "command", command: "#list" },
-          { label: "📚 Open Vocab", action: "navigate", section: "vocab" },
-          { label: "📋 Menu", action: "menu" }
-        ],
-        needsConfirm: false,
-        confirmAction: null
-      };
-    }
-
-    const list = rows.map((r, i) => {
-      const w = r.word || "";
-      const t = r.translation || "";
-      return t && t !== w ? `${i + 1}. ${w} = ${t}` : `${i + 1}. ${w}`;
-    }).join("\n");
-
-    return {
-      response: "Search results for \"" + term + "\":\n" + list,
-      action: { type: "nav", params: { section: "vocab" } },
-      buttons: vocabButtons(),
-      needsConfirm: false,
-      confirmAction: null
-    };
-  }
-
-  return {
-    response: "Unknown vocab command. Use #add WORD, #list, or #search WORD.",
-    action: null,
-    buttons: vocabButtons(),
-    needsConfirm: false,
-    confirmAction: null
-  };
-}
-
-async function runVocabAction(action) {
-  const type = action && action.type;
-  const params = (action && action.params) || {};
-
-  if (type === "vocab_add") {
-    const text = String(params.text || params.word || "").trim();
-    const command = String(params.command || (text ? "#add " + text : "#add")).trim();
-
-    return await runVocabCommand(command, {
-      text,
-      word: params.word || text,
-      translation: params.translation || params.arabic || "",
-      example: params.example || "",
-      source_lang: params.source_lang || "en",
-      target_lang: params.target_lang || "ar",
-      tags: params.tags || []
-    });
-  }
-
-  if (type === "vocab_command") {
-    const command = String(params.command || "").trim();
-    return await runVocabCommand(command);
-  }
-
-  return null;
 }
 
 async function executeToolAction(action) {
@@ -2054,84 +1476,6 @@ app.get("/api/storage/health", async (_req, res) => {
     res.json({ ok: true, bucket: R2_BUCKET, objects: objects.length, size_mb: (totalBytes / (1024 * 1024)).toFixed(2) });
   } catch (e) {
     res.status(500).json({ ok: false, bucket: R2_BUCKET, error: e.message });
-  }
-});
-
-// ── TRAINER CHALLENGES ──────────────────────────
-app.get("/api/trainer/challenges", async (_req, res) => {
-  try {
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_challenges (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT DEFAULT '',
-      category TEXT DEFAULT 'general',
-      goal TEXT DEFAULT '',
-      level TEXT DEFAULT 'foundation',
-      status TEXT DEFAULT 'active',
-      due_days INTEGER DEFAULT 7,
-      created_at INTEGER DEFAULT (unixepoch())
-    )`);
-    const result = await d1Query("SELECT * FROM trainer_challenges ORDER BY created_at DESC");
-    const rows = Array.isArray(result) && result[0] && Array.isArray(result[0].results) ? result[0].results : result;
-    if (Array.isArray(rows) && rows.length > 0) return res.json(rows);
-    // Fallback
-    res.json([
-      { id: "local_0", title: "Build a REST API endpoint", category: "devops", level: "intermediate", description: "Create a working Express endpoint with validation and error handling", goal: "Create a working Express endpoint with validation and error handling", due_days: 5, status: "active", created_at: Math.floor(Date.now() / 1000) },
-      { id: "local_1", title: "Containerize an Application", category: "devops", level: "intermediate", description: "Write a Dockerfile and docker-compose.yml for a Node.js app", goal: "Write a Dockerfile and docker-compose.yml for a Node.js app", due_days: 5, status: "active", created_at: Math.floor(Date.now() / 1000) },
-      { id: "local_2", title: "Set up CI/CD Pipeline", category: "devops", level: "advanced", description: "Configure GitHub Actions to test, build, and deploy automatically", goal: "Configure GitHub Actions to test, build, and deploy automatically", due_days: 7, status: "active", created_at: Math.floor(Date.now() / 1000) },
-      { id: "local_3", title: "Write Unit Tests for API", category: "computer-science", level: "intermediate", description: "Achieve 80% coverage on your Express routes", goal: "Achieve 80% coverage on your Express routes", due_days: 4, status: "active", created_at: Math.floor(Date.now() / 1000) },
-      { id: "local_4", title: "Database Migration Strategy", category: "devops", level: "advanced", description: "Design a zero-downtime migration plan for PostgreSQL", goal: "Design a zero-downtime migration plan for PostgreSQL", due_days: 7, status: "active", created_at: Math.floor(Date.now() / 1000) },
-      { id: "local_5", title: "System Design: URL Shortener", category: "computer-science", level: "advanced", description: "Design a scalable URL shortening service", goal: "Design a scalable URL shortening service", due_days: 7, status: "active", created_at: Math.floor(Date.now() / 1000) }
-    ]);
-  } catch (e) {
-    res.json([
-      { id: "local_0", title: "Build a REST API endpoint", category: "devops", level: "intermediate", description: "Create a working Express endpoint with validation and error handling", due_days: 5, status: "active" },
-      { id: "local_1", title: "Containerize an Application", category: "devops", level: "intermediate", description: "Write a Dockerfile and docker-compose.yml for a Node.js app", due_days: 5, status: "active" },
-      { id: "local_2", title: "Set up CI/CD Pipeline", category: "devops", level: "advanced", description: "Configure GitHub Actions to test, build, and deploy automatically", due_days: 7, status: "active" },
-      { id: "local_3", title: "Write Unit Tests for API", category: "computer-science", level: "intermediate", description: "Achieve 80% coverage on your Express routes", due_days: 4, status: "active" },
-      { id: "local_4", title: "Database Migration Strategy", category: "devops", level: "advanced", description: "Design a zero-downtime migration plan for PostgreSQL", due_days: 7, status: "active" },
-      { id: "local_5", title: "System Design: URL Shortener", category: "computer-science", level: "advanced", description: "Design a scalable URL shortening service", due_days: 7, status: "active" }
-    ]);
-  }
-});
-
-app.post("/api/trainer/challenges/generate", async (req, res) => {
-  try {
-    const n8nUrl = process.env.N8N_CHALLENGE_WEBHOOK_URL;
-    let generated = null;
-    if (n8nUrl) {
-      try {
-        const n8nRes = await fetch(n8nUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(req.body || {})
-        });
-        const text = await n8nRes.text();
-        try { generated = JSON.parse(text); } catch { generated = { title: text.slice(0, 120), description: text, category: "general", level: "intermediate" }; }
-      } catch { generated = null; }
-    }
-    if (!generated || !generated.title) {
-      const fallbacks = [
-        { title: "Build a REST API endpoint", category: "devops", level: "intermediate", description: "Create a working Express endpoint with validation and error handling", goal: "Create a working Express endpoint with validation and error handling", due_days: 5 },
-        { title: "Containerize an Application", category: "devops", level: "intermediate", description: "Write a Dockerfile and docker-compose.yml for a Node.js app", goal: "Write a Dockerfile and docker-compose.yml for a Node.js app", due_days: 5 },
-        { title: "Set up CI/CD Pipeline", category: "devops", level: "advanced", description: "Configure GitHub Actions to test, build, and deploy automatically", goal: "Configure GitHub Actions to test, build, and deploy automatically", due_days: 7 },
-        { title: "Write Unit Tests for API", category: "computer-science", level: "intermediate", description: "Achieve 80% coverage on your Express routes", goal: "Achieve 80% coverage on your Express routes", due_days: 4 },
-        { title: "Database Migration Strategy", category: "devops", level: "advanced", description: "Design a zero-downtime migration plan for PostgreSQL", goal: "Design a zero-downtime migration plan for PostgreSQL", due_days: 7 },
-        { title: "System Design: URL Shortener", category: "computer-science", level: "advanced", description: "Design a scalable URL shortening service", goal: "Design a scalable URL shortening service", due_days: 7 }
-      ];
-      generated = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-    }
-    await d1Query(`CREATE TABLE IF NOT EXISTS trainer_challenges (
-      id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT DEFAULT '', category TEXT DEFAULT 'general',
-      goal TEXT DEFAULT '', level TEXT DEFAULT 'foundation', status TEXT DEFAULT 'active',
-      due_days INTEGER DEFAULT 7, created_at INTEGER DEFAULT (unixepoch())
-    )`);
-    const id = "ch_" + Date.now();
-    await d1Query("INSERT INTO trainer_challenges (id, title, description, category, goal, level, status, due_days, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
-      [id, generated.title, generated.description || generated.goal || '', generated.category || 'general', generated.goal || '', generated.level || 'intermediate', 'active', generated.due_days || 7, Math.floor(Date.now() / 1000)]);
-    res.json({ id, ...generated, status: 'active', created_at: Math.floor(Date.now() / 1000) });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
   }
 });
 
